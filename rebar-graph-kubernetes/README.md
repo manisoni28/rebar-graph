@@ -3,6 +3,8 @@
 
 ## usage
 
+The following will create a neo4j database instance inside your kubernetes cluster:
+
 ```bash
 cat <<EOF | kubectl create -f -
 ---
@@ -48,11 +50,16 @@ spec:
   selector:
     app: neo4j
   sessionAffinity: None
+EOF
 ```
 
-```
+Once the neo4j service and deployment have started, you can expose the ports locally so that you can use your browser to interact with the server:
+
+```bash
 kubectl port-forward deployment/neo4j 7474:7474 7687:7687
 ```
+
+Now you should be able to point your browser to [http://localhost:7474](http://localhost:7474) and use the neo4j console.
 
 ## Sample Queries
 
