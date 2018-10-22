@@ -1,0 +1,39 @@
+
+plugins {
+  id "us.kirchmeier.capsule" version "1.0.2"
+}
+
+task fatCapsule(type: FatCapsule) {
+  applicationClass 'rebar.graph.aws.Main'
+}
+
+mainClassName = "rebar.graph.aws.Main"
+
+
+task buildZip(type: Zip) {
+    archiveName = "lambda.zip"
+    from compileJava
+    from processResources              
+    into('lib') {
+        from configurations.compileClasspath
+    }           
+}
+
+build.dependsOn buildZip
+
+dependencies {
+
+    compile project(':rebar-graph-core')
+    compile "com.amazonaws:aws-java-sdk-ec2:${AWS_VERSION}"
+    compile "com.amazonaws:aws-java-sdk-sts:${AWS_VERSION}"
+    compile "com.amazonaws:aws-java-sdk-rds:${AWS_VERSION}"
+    compile "com.amazonaws:aws-java-sdk-sqs:${AWS_VERSION}"
+    compile "com.amazonaws:aws-java-sdk-sns:${AWS_VERSION}"
+    compile "com.amazonaws:aws-java-sdk-s3:${AWS_VERSION}"
+    compile "com.amazonaws:aws-java-sdk-lambda:${AWS_VERSION}"
+    compile "com.amazonaws:aws-java-sdk-api-gateway:${AWS_VERSION}"
+    compile "com.amazonaws:aws-java-sdk-autoscaling:${AWS_VERSION}"
+    testCompile project(':rebar-graph-test')
+    
+
+}

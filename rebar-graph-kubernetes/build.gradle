@@ -1,0 +1,29 @@
+plugins {
+  id "us.kirchmeier.capsule" version "1.0.2"
+}
+
+task fatCapsule(type: FatCapsule) {
+  applicationClass 'rebar.graph.kubernetes.Main'
+}
+
+mainClassName = "rebar.graph.kubernetes.Main"
+
+task buildImage(type:Exec) {
+  workingDir '.'
+  //on linux
+  commandLine './build-image'
+}
+
+build.dependsOn buildImage
+buildImage.dependsOn fatCapsule
+
+dependencies {
+
+    compile project(':rebar-graph-core')
+    compile "io.fabric8:kubernetes-client:${FABRIC8_VERSION}"
+    compile "com.amazonaws:aws-java-sdk-eks:${AWS_VERSION}"
+    compile "ch.qos.logback:logback-classic:${LOGBACK_VERSION}"
+    testCompile project(':rebar-graph-test')
+
+
+}

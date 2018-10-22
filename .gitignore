@@ -1,0 +1,10 @@
+.classpath
+.project
+.gradle/
+.settings/
+*.class
+build/
+bin/
+.serverless/
+serverless.yml
+*.swp

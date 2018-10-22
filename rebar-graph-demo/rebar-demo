@@ -1,0 +1,48 @@
+#!/bin/sh
+
+cat <<EOF >>/var/lib/neo4j/conf/neo4j.conf
+
+dbms.security.auth_enabled=false
+
+EOF
+
+cat <<EOF
+
+Starting Neo4J...
+
+EOF
+
+neo4j start
+
+
+NEO4J_STATUS=1
+while [ "$NEO4J_STATUS" -ne 0 ]; do
+    sleep 10
+    echo "Waiting for neo4j to finish starting..."
+    curl http://localhost:7474 >/dev/null 2>&1
+    NEO4J_STATUS=$?
+done
+
+echo "Neo4j ready."
+
+if [ -d /app/.kube ]; then
+    
+    cp -R /app/.kube $HOME/.kube 
+    sed -i.bak -e 's/localhost/host.docker.internal/g' $HOME/.kube/config
+   
+   
+fi
+
+cat <<EOF
+
+Starting rebar.  Once started, point your brower to:
+
+http://localhost:7474
+
+
+EOF
+
+export GRAPH_URL=bolt://localhost:7687
+
+cd /app
+java -jar ./rebar-graph-demo.jar

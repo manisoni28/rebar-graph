@@ -1,0 +1,60 @@
+
+plugins {
+  id "com.github.hierynomus.license" version "0.14.0" 
+}
+apply plugin: 'eclipse'
+apply plugin: 'java'
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    jcenter()
+}
+
+group 'rebar.graph'
+
+subprojects {
+
+   
+
+    apply plugin: 'java'
+    apply plugin: 'maven'
+    apply plugin: 'eclipse'
+    apply plugin: 'application'
+    apply plugin: 'jacoco'
+    apply plugin: "com.github.hierynomus.license"
+
+    configurations {
+        all*.exclude group: 'commons-logging'
+    }
+
+    sourceCompatibility="1.8"
+    targetCompatibility="1.8"
+     repositories {
+        mavenLocal()
+        mavenCentral()
+        jcenter()
+        
+    }
+
+    license {
+    	header rootProject.file('LICENSE')
+        excludes(["**/*.xml", "**/*.conf"])
+    	strictCheck false
+	}
+    jacocoTestReport {
+    reports {
+        xml.enabled true
+        csv.enabled false
+    }
+    }
+    test {
+        useJUnitPlatform()
+        testLogging.showStandardStreams = true
+        reports {
+            junitXml.enabled = true
+            html.enabled = true
+        }
+        finalizedBy jacocoTestReport
+    }
+}

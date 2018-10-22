@@ -1,0 +1,21 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: rebar-graph-kubernetes
+  namespace: default
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: rebar-graph-kubernetes
+    spec:
+      containers:
+        - name: rebar
+          image: rebar-graph-kubernetes
+          imagePullPolicy: Never
+          env:
+            - name: GRAPH_URL
+              value: "bolt://neo4j.default.svc.cluster.local:7687"
+        

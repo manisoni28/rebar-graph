@@ -1,0 +1,15 @@
+
+
+
+dependencies {
+
+    compile "com.fasterxml.jackson.core:jackson-databind:${JACKSON_VERSION}"
+    compile "com.google.guava:guava:${GUAVA_VERSION}"
+    compile "org.slf4j:slf4j-api:${SLF4J_VERSION}"
+    compileOnly "org.slf4j:jcl-over-slf4j:${SLF4J_VERSION}"
+    compileOnly "org.apache.tinkerpop:gremlin-driver:${GREMLIN_VERSION}"
+    testCompile "org.apache.tinkerpop:tinkergraph-gremlin:${GREMLIN_VERSION}"
+    testCompile "ch.qos.logback:logback-classic:${LOGBACK_VERSION}"
+    testCompile "org.junit.jupiter:junit-jupiter-engine:${JUNIT_VERSION}"
+    testCompile "org.assertj:assertj-core:${ASSERTJ_VERSION}"
+}
