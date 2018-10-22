@@ -83,11 +83,13 @@ spec:
     spec:
       containers:
         - name: rebar
-          image: rebar-graph-kubernetes
+          image: rebar/rebar-graph-kubernetes
           imagePullPolicy: Always
           env:
             - name: GRAPH_URL
               value: "bolt://neo4j.default.svc.cluster.local:7687"
+            - name: KUBE_CLUSTER_ID
+              value: "mycluster"
 EOF
 ```
 
