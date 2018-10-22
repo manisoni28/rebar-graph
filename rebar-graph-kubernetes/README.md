@@ -61,6 +61,37 @@ kubectl port-forward deployment/neo4j 7474:7474 7687:7687
 
 Now you should be able to point your browser to [http://localhost:7474](http://localhost:7474) and use the neo4j console.
 
+## Schedule Rebar in Kubernetes
+
+Now you should be able to schedule an instance of `rebar-graph-kubernetes` inside your kubeernetes cluster.  In this example,
+rebar will connect to the neo4j instance created abvoe. 
+
+```bash
+cat <<EOF | kubectl create -f -
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: rebar-graph-kubernetes
+  namespace: default
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: rebar-graph-kubernetes
+    spec:
+      containers:
+        - name: rebar
+          image: rebar-graph-kubernetes
+          imagePullPolicy: Always
+          env:
+            - name: GRAPH_URL
+              value: "bolt://neo4j.default.svc.cluster.local:7687"
+```
+
+Note: If you want to connect to a different neo4j instance, just set the `GRAPH_URL` environment property as you see fit. `GRAPH_USERNAME` and `GRAPH_PASSWORD` are supported options if your neo4j instance has auth enabled.
+
 ## Sample Queries
 
 ```
