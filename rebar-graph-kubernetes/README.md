@@ -1,6 +1,59 @@
 
 # rebar-graph-kubernetes
 
+## usage
+
+```bash
+cat <<EOF | kubectl create -f -
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: neo4j
+  namespace: default
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: neo4j
+    spec:
+      containers:
+        - name: neo4j
+          image: neo4j:3.4.9
+          imagePullPolicy: IfNotPresent
+          env:
+          - name: NEO4J_AUTH
+            value: "none"
+          - name: NEO4J_ACCEPT_LICENSE_AGREEMENT
+            value: "yes"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: neo4j
+  name: neo4j
+  namespace: default
+spec:
+  ports:
+  - name: console
+    port: 7474
+    protocol: TCP
+    targetPort: 7474
+  - name: bolt
+    port: 7687
+    protocol: TCP
+    targetPort: 7687
+  selector:
+    app: neo4j
+  sessionAffinity: None
+```
+
+```
+kubectl port-forward deployment/neo4j 7474:7474 7687:7687
+```
+
 ## Sample Queries
 
 ```

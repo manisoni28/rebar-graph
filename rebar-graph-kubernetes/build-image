@@ -2,3 +2,4 @@
 
 
 docker build . -t rebar-graph-kubernetes
+docker tag rebar-graph-kubernetes rebar/rebar-graph-kubernetes
