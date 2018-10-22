@@ -120,7 +120,7 @@ public class KubeScanner extends Scanner {
 
 		ObjectNode n = toJson(svc);
 
-		System.out.println(n.path("name"));
+
 		ServiceSpec spec = svc.getSpec();
 
 		ObjectNode x = Json.objectMapper().valueToTree(spec);
@@ -360,19 +360,16 @@ public class KubeScanner extends Scanner {
 		long ts = getRebarGraph().getGraphDB().getTimestamp();
 		getKubernetesClient().services().inAnyNamespace().list().getItems().forEach(it -> {
 
+			
 			projectService(it, it.getMetadata().getNamespace(), it.getMetadata().getName());
 		});
-
-		// for reasons unknonwn, the following two entities aren't getting returned
-		// properly:
-		// 1) KubeService namespace=kube-system name=kube-scheduler
-		// 2) KubeService namespace=kube-system name=kube-controller-manager
-		// They get caught in the GC phase, but it adds 2 calls to the kube control
-		// plane.
-
-		gc(Service.class, ts);
+	
+		
 
 		scanEndpoints();
+		gc(Service.class, ts);
+
+	
 	}
 
 	ObjectNode toJson(HasMetadata hmd) {
@@ -763,10 +760,12 @@ public class KubeScanner extends Scanner {
 				}
 			});
 		});
-
+		
+	
+		
 		getRebarGraph().getGraphDB().nodes(toEntityType(Service.class)).id(CLUSTER_ID, getClusterId()).id(NAMESPACE, ns)
-				.id(NAME, name).properties(n).merge();
-
+				.id(NAME, name).properties(n).match();  // we use match here so that we don't create phantom services
+		ensureNamespaceRelationships(Service.class);
 		execGraphOperation(MergeServiceEndpointsOperation.class, n);
 	}
 
@@ -974,8 +973,8 @@ public class KubeScanner extends Scanner {
 		scanDeployments();
 		scanPods(); // should come before ReplicSet,Service,DaemonSet
 		scanReplicaSets();
-		scanServices();
 		scanDaemonSets();
+		scanServices();
 
 	}
 }

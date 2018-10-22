@@ -25,34 +25,33 @@ import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.zjsonpatch.internal.guava.Strings;
 import rebar.graph.core.RebarGraph;
 
+
 public class Main {
 
 	public static void main(String[] args) {
 
+		
+		// This is intended to be invoked from a pod inside the cluster.
+		// If it exits with an exception, it is ok.  Kubernetes should reschedule us.
 		Logger logger = LoggerFactory.getLogger(Main.class);
-		
-		
-		
-		
+
+	
 		RebarGraph g = new RebarGraph.Builder().build();
-		
-		KubeScanner scanner = g.createBuilder(KubernetesScannerBuilder.class).withClusterId("foo").build();
+
+	
+		KubeScanner scanner =g.createBuilder(KubernetesScannerBuilder.class).build();
+		scanner.scanCluster();
 		scanner.watchEvents();
 		while (true == true) {
-			try {
-				scanner.scan();
 
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			
+			scanner.scan();
+
 			try {
 				Thread.sleep(60000);
+			} catch (Exception e) {
 			}
-			catch (Exception e) {}
 		}
 
-		
 	}
 
 }
