@@ -35,6 +35,7 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 import rebar.graph.driver.GraphException;
+import rebar.graph.driver.GraphSchema;
 
 public abstract class GraphDB {
 
@@ -292,4 +293,5 @@ public abstract class GraphDB {
 		return copy;
 	}
 
+	public abstract GraphSchema schema();
 }

@@ -86,4 +86,5 @@ public abstract class GraphDriver {
 	}
 	public abstract GraphTemplate newTemplate();
 
+	public abstract GraphSchema schema();
 }

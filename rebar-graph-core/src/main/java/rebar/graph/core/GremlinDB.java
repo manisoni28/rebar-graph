@@ -25,6 +25,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.base.Strings;
 
 import rebar.graph.driver.GraphException;
+import rebar.graph.driver.GraphSchema;
 import rebar.graph.driver.gremlin.GremlinDriver;
 
 public class GremlinDB extends GraphDB {
@@ -85,4 +86,7 @@ public class GremlinDB extends GraphDB {
 		return (T) new GremlinNodeOperation();
 	}
 
+	public GraphSchema schema() {
+		return driver.schema();
+	}
 }

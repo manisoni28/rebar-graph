@@ -44,6 +44,7 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import rebar.graph.driver.GraphDriver;
+import rebar.graph.driver.GraphSchema;
 
 public class GremlinDriver extends GraphDriver {
 
@@ -220,6 +221,11 @@ public class GremlinDriver extends GraphDriver {
 
 	public GremlinTemplate newTemplate() {
 		return new GremlinTemplate(this);
+	}
+
+	@Override
+	public GraphSchema schema() {
+		throw new UnsupportedOperationException();
 	}
 
 }

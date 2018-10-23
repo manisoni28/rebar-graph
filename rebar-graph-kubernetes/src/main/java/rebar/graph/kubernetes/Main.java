@@ -18,11 +18,6 @@ package rebar.graph.kubernetes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.fabric8.kubernetes.api.model.Config;
-import io.fabric8.kubernetes.client.ConfigBuilder;
-import io.fabric8.kubernetes.client.DefaultKubernetesClient;
-import io.fabric8.kubernetes.client.KubernetesClient;
-import io.fabric8.zjsonpatch.internal.guava.Strings;
 import rebar.graph.core.RebarGraph;
 
 
@@ -40,12 +35,12 @@ public class Main {
 
 	
 		KubeScanner scanner =g.createBuilder(KubernetesScannerBuilder.class).build();
-		scanner.scanCluster();
-		scanner.watchEvents();
+		scanner.applyConstraints();
 		while (true == true) {
-
+			
+			
 			scanner.scan();
-
+			scanner.watchEvents(); // idempotent
 			try {
 				Thread.sleep(60000);
 			} catch (Exception e) {

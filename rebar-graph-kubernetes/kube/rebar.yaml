@@ -1,0 +1,83 @@
+# ServiceAccount named 'rebar-graph' that the rebar pod will run as
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: rebar-graph
+  namespace: default
+
+# ClusterRole that 'rebar-graph-kubernetes' pods will use.
+# Note that we have to use ClusterRole rather than Role because
+# we want visibility to objects outside our namespace and to 
+# non-namespaced objects. 
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  annotations:
+    rbac.authorization.kubernetes.io/autoupdate: "true"
+  labels:
+  name: rebar-graph
+  namespace: default
+rules:
+- apiGroups:
+  - ""
+  resources: ["*"]
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - extensions
+  resources: ["*"]
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - apps
+  resources: ["*"]
+  verbs:
+  - get
+  - list
+  - watch
+
+# ClusterRoleBinding connects our role and service account
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: rebar-graph
+subjects:
+- kind: ServiceAccount
+  name: rebar-graph
+  namespace: default
+roleRef:
+  kind: ClusterRole
+  name: rebar-graph
+  apiGroup: rbac.authorization.k8s.io
+
+# The actual deployment of rebar-graph-kubernetes
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: rebar-graph-kubernetes
+  namespace: default
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: rebar-graph-kubernetes
+    spec:
+      serviceAccountName: rebar-graph
+      containers:
+        - name: rebar
+          image: rebar/rebar-graph-kubernetes
+          imagePullPolicy: Always
+          env:
+            - name: GRAPH_URL
+              value: "bolt://neo4j.default.svc.cluster.local:7687"
+            - name: KUBE_CLUSTER_ID
+              value: "mycluster"

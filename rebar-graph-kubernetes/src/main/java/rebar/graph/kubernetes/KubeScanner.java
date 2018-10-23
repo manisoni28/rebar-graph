@@ -345,11 +345,10 @@ public class KubeScanner extends Scanner {
 
 	}
 
+
 	private void ensureNamespaceRelationships(Class<? extends HasMetadata> clazz) {
 
-		if (Pod.class.isAssignableFrom(clazz) || ReplicaSet.class.isAssignableFrom(clazz)) {
-			return;
-		}
+	
 		getRebarGraph().getGraphDB().nodes(toEntityType(Namespace.class)).id(CLUSTER_ID, getClusterId()).relationship(HAS)
 				.on(NAME, NAMESPACE).to(toEntityType(clazz)).id(CLUSTER_ID, getClusterId()).merge();
 
@@ -368,7 +367,7 @@ public class KubeScanner extends Scanner {
 
 		scanEndpoints();
 		gc(Service.class, ts);
-
+		ensureNamespaceRelationships(Service.class);
 	
 	}
 
@@ -787,7 +786,7 @@ public class KubeScanner extends Scanner {
 
 		});
 		gc(ReplicaSet.class, ts);
-		// no namespace relationship
+		ensureNamespaceRelationships(ReplicaSet.class);
 		ensureOwnerReferences(ReplicaSet.class, Pod.class);
 	}
 
@@ -976,5 +975,17 @@ public class KubeScanner extends Scanner {
 		scanDaemonSets();
 		scanServices();
 
+	}
+	
+	public void applyConstraints() {
+		getRebarGraph().getGraphDB().schema().ensureUniqueIndex("KubeNode", "uid");
+		getRebarGraph().getGraphDB().schema().ensureUniqueIndex("KubePod", "uid");
+		getRebarGraph().getGraphDB().schema().ensureUniqueIndex("KubeDeployment", "uid");
+		getRebarGraph().getGraphDB().schema().ensureUniqueIndex("KubeReplicaSet", "uid");
+		getRebarGraph().getGraphDB().schema().ensureUniqueIndex("KubeDaemonSet", "uid");
+		getRebarGraph().getGraphDB().schema().ensureUniqueIndex("KubeService", "uid");
+		getRebarGraph().getGraphDB().schema().ensureUniqueIndex("KubeNamespace", "uid");
+		
+		
 	}
 }

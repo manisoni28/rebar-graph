@@ -36,6 +36,7 @@ import com.google.common.collect.MapDifference;
 import com.google.common.collect.Maps;
 
 import rebar.graph.driver.GraphException;
+import rebar.graph.driver.GraphSchema;
 import rebar.graph.neo4j.Neo4jDriver;
 
 public class Neo4jGraphDB extends GraphDB {
@@ -383,6 +384,8 @@ public class Neo4jGraphDB extends GraphDB {
 		return (T) new Neo4jNodeOperation();
 	}
 	
-	
+	public GraphSchema schema() {
+		return this.neo4j.schema();
+	}
 	
 }

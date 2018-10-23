@@ -203,4 +203,7 @@ public class Neo4jDriver extends GraphDriver {
 		return new Neo4jTemplate(driver);
 	}
 
+	public Neo4jSchema schema() {
+		return new Neo4jSchema(this);
+	}
 }
