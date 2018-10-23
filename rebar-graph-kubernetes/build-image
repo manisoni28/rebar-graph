@@ -1,5 +1,10 @@
 #!/bin/bash
 
 
+REMOTE_TAG=rebar/rebar-graph-kubernetes:latest
+
 docker build . -t rebar-graph-kubernetes --build-arg GIT_COMMIT=$(git log -1 --format=%h) --build-arg GIT_REPO=$(git remote get-url origin)
-docker tag rebar-graph-kubernetes rebar/rebar-graph-kubernetes
+docker tag rebar-graph-kubernetes ${REMOTE_TAG}
+
+echo
+echo to push to docker hub: docker push ${REMOTE_TAG}
