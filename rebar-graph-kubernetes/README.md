@@ -7,7 +7,8 @@ You will need a neo4j instance to store the graph data.  Assuming you don't have
 neo4j database instance as a pod inside your cluster:
 
 ```bash
-kubectl create -f https://raw.githubusercontent.com/rebar-cloud/rebar-graph/master/rebar-graph-kubernetes/neo4j.yaml
+kubectl create -f \
+  https://raw.githubusercontent.com/rebar-cloud/rebar-graph/master/rebar-graph-kubernetes/neo4j.yaml
 ```
 
 Once the neo4j pod has started, you can expose the ports locally using `kubectl port-forward` so that you can use the neo4j
@@ -27,7 +28,8 @@ Now you should be able to schedule an instance of `rebar-graph-kubernetes` insid
 rebar will connect to the neo4j instance created above. 
 
 ```bash
-kubectl create -f https://raw.githubusercontent.com/rebar-cloud/rebar-graph/master/rebar-graph-kubernetes/rebar.yaml
+kubectl create -f \
+  https://raw.githubusercontent.com/rebar-cloud/rebar-graph/master/rebar-graph-kubernetes/rebar.yaml
 ```
 
 Note: If you want to connect to a different neo4j instance, just set the `GRAPH_URL` environment property as you see fit. `GRAPH_USERNAME` and `GRAPH_PASSWORD` are supported options if your neo4j instance has auth enabled.
