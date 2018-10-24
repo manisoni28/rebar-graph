@@ -659,7 +659,7 @@ public class KubeScanner extends Scanner {
 
 	public void scanDeployments() {
 		long ts = getRebarGraph().getGraphDB().getTimestamp();
-		getKubernetesClient().apps().deployments().list().getItems().forEach(it -> {
+		getKubernetesClient().apps().deployments().inAnyNamespace().list().getItems().forEach(it -> {
 			projectDeployment(it, it.getMetadata().getNamespace(), it.getMetadata().getName());
 		});
 		gc(Deployment.class, ts);
