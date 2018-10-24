@@ -48,10 +48,17 @@ And then point your browser to [http://localhost:7474](http://localhost:7474).
 
 You should then be able to issue Cypher queries against your graph.
 
-To a quick look at the whole graph:
+To a have quick look at the whole graph:
 
 ```
 match (a) return a
 ```
 
+You can start looking at pieces of the graph:
+
+```
+match (k:KubeCluster)--(n:KubeNamespace)--(d:KubeDeployment)--(rs:KubeReplicaSet)--(p:KubePod)
+return
+k,n,d,rs,p
+```
 
