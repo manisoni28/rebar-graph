@@ -20,7 +20,7 @@ kubectl port-forward deployment/neo4j 7474:7474 7687:7687
 
 Now you should be able to point your browser to [http://localhost:7474](http://localhost:7474) and use the neo4j console.
 
-Note: This neo4j instance is for demo purprosed only.  If the neo4j pod is restarted all data will be lost.  
+Note: This neo4j instance is for demo purposes only.  If the neo4j pod is restarted all data will be lost.  
 
 ## Deploy rebar-graph-kubernetes
 
