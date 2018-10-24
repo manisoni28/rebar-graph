@@ -8,3 +8,4 @@ bin/
 .serverless/
 serverless.yml
 *.swp
+rebar-delete.sh
