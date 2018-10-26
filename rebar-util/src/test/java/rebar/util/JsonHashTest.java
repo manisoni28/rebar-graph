@@ -13,25 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package rebar.graph.doc;
+package rebar.util;
 
-import java.io.File;
-import java.io.IOException;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-import rebar.graph.neo4j.Neo4jDriver;
+import rebar.util.Json;
+import rebar.util.JsonHash;
 
-public class GraphDoc {
+public class JsonHashTest {
 
-	
-	
-	public static void main(String [] args) throws IOException {
-		DataModelMarkdown dm2 = new DataModelMarkdown().parse(new File("../rebar-graph-aws/README.md")).withNeo4jDriver(new Neo4jDriver.Builder().build());
-		dm2.mergeAll(p->p.startsWith("Aws")).write();
-	
-		
-		dm2 = new DataModelMarkdown().parse(new File("../rebar-graph-kubernetes/README.md")).withNeo4jDriver(new Neo4jDriver.Builder().build());
-		dm2.mergeAll(p->p.startsWith("Kube")).write();
-	
+	@Test
+	public void testIt() {
+
+		Assertions.assertThat(JsonHash.sha256().digest(Json.objectNode().put("a", 1).put("b", 2)).hash().toString())
+				.isEqualTo(JsonHash.sha256().digest(Json.objectNode().put("b", 2).put("a", 1)).hash().toString());
+
 	}
 
 }

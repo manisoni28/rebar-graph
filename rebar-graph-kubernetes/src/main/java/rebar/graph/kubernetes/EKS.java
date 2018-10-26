@@ -1,3 +1,18 @@
+/**
+ * Copyright 2018 Rob Schoening
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package rebar.graph.kubernetes;
 
 import java.io.UnsupportedEncodingException;
@@ -40,6 +55,7 @@ public class EKS {
 		String clusterName;
 		AWSCredentialsProvider credentialsProvider;
 		long refreshSecs = TimeUnit.MINUTES.toSeconds(5);
+
 		protected void refresh() {
 
 			KubernetesClient client = clientRef.get();
@@ -76,9 +92,9 @@ public class EKS {
 
 		public KubernetesClient build() {
 
-			Preconditions.checkArgument(!Strings.isNullOrEmpty(url),"url must be set");
-			Preconditions.checkArgument(!Strings.isNullOrEmpty(clusterName),"clusterName must be set");
-			Preconditions.checkArgument(this.provider!=null,"credentials provider must be set");
+			Preconditions.checkArgument(!Strings.isNullOrEmpty(url), "url must be set");
+			Preconditions.checkArgument(!Strings.isNullOrEmpty(clusterName), "clusterName must be set");
+			Preconditions.checkArgument(this.provider != null, "credentials provider must be set");
 			String initialToken = generateToken(clusterName);
 			DefaultKubernetesClient client = new DefaultKubernetesClient(
 					configBuilder.withMasterUrl(url).withOauthToken(initialToken).build());
@@ -89,8 +105,8 @@ public class EKS {
 			entry.clientRef = ref;
 			entry.credentialsProvider = provider;
 			entry.clusterName = clusterName;
-		
-			executor.scheduleWithFixedDelay(entry::refresh, 0, entry.refreshSecs,TimeUnit.SECONDS);
+
+			executor.scheduleWithFixedDelay(entry::refresh, 0, entry.refreshSecs, TimeUnit.SECONDS);
 
 			return client;
 		}
@@ -100,8 +116,6 @@ public class EKS {
 			return this;
 		}
 	}
-
-
 
 	public static String generateToken(String clusterName) {
 		return generateToken(clusterName, new DefaultAWSCredentialsProviderChain());
@@ -120,11 +134,11 @@ public class EKS {
 		request.addParameter("Version", "2011-06-15");
 		request.addHeader("x-k8s-aws-id", clusterName);
 		AWS4Signer signer = new AWS4Signer();
-		signer.setRegionName("us-east-1"); // needs to be us-east-1 
+		signer.setRegionName("us-east-1"); // needs to be us-east-1
 		signer.setServiceName("sts");
 
 		signer.presignRequest(request, credentials.getCredentials(),
-				new java.util.Date(System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(60)));  // must be <=60 seconds
+				new java.util.Date(System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(60))); // must be <=60 seconds
 
 		StringBuilder sb = new StringBuilder();
 
@@ -146,5 +160,12 @@ public class EKS {
 		String val = "k8s-aws-v1." + BaseEncoding.base64Url().encode(sb.toString().getBytes());
 
 		return val;
+	}
+
+	void foo() {
+		KubernetesClient client = EKS.newClientBuilder()
+		.withUrl("https://mycluster-api.amazonaws.com")
+		.withClusterName("mycluster").build();
+
 	}
 }

@@ -109,6 +109,12 @@ public class KubeScanner extends Scanner {
 		n.remove("data");
 		n.put(GraphDB.ENTITY_GROUP, "kubernetes");
 		n.put(GraphDB.ENTITY_TYPE, "KubeCluster");
+		
+		Optional<JsonNode> existing = getRebarGraph().getGraphDB().nodes(KUBE_CLUSTER_LABEL).id(CLUSTER_ID, getClusterId()).match().findFirst();
+		if ((!existing.isPresent()) || (!existing.get().has("name"))) {
+			n.put("name", clusterId);
+		}
+		
 		getRebarGraph().getGraphDB().nodes(KUBE_CLUSTER_LABEL).id(CLUSTER_ID, getClusterId()).properties(n).merge();
 
 	}
@@ -978,6 +984,9 @@ public class KubeScanner extends Scanner {
 	}
 	
 	public void applyConstraints() {
+		
+		getRebarGraph().getGraphDB().schema().ensureUniqueIndex("KubeCluster", "name");
+		getRebarGraph().getGraphDB().schema().ensureUniqueIndex("KubeCluster", "clusterId");
 		getRebarGraph().getGraphDB().schema().ensureUniqueIndex("KubeNode", "uid");
 		getRebarGraph().getGraphDB().schema().ensureUniqueIndex("KubePod", "uid");
 		getRebarGraph().getGraphDB().schema().ensureUniqueIndex("KubeDeployment", "uid");
