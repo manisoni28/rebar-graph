@@ -30,8 +30,7 @@ public class EnvConfigTest {
 			Assertions.assertThat(c.get("USER").get()).isEqualTo(System.getenv("USER"));
 		}
 
-		Assertions.assertThat(c.get("JAVA_VERSION").get()).isEqualTo(System.getProperty("java.version"));
-		
+			
 		
 		
 	}
