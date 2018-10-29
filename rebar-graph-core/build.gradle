@@ -7,7 +7,6 @@ dependencies {
     compile project(':rebar-graph-driver-gremlin')
     compile "org.slf4j:slf4j-api:${SLF4J_VERSION}"
     compile "org.slf4j:jcl-over-slf4j:${SLF4J_VERSION}"
-    compile "com.amazonaws:aws-java-sdk-core:${AWS_VERSION}"
 
     compile "com.fasterxml.jackson.core:jackson-databind:${JACKSON_VERSION}"
     compile "com.fasterxml.jackson.dataformat:jackson-dataformat-cbor:${JACKSON_VERSION}"
@@ -16,8 +15,7 @@ dependencies {
 
     compile "com.google.guava:guava:${GUAVA_VERSION}"
     compile "com.machinezoo.noexception:noexception:${NOEXCEPTION_VERSION}"
-    compile 'com.amazonaws:aws-lambda-java-core:1.2.0'
-    compile "com.amazonaws:aws-lambda-java-events:2.2.2"
+
 
     testCompile "org.apache.tinkerpop:tinkergraph-gremlin:${GREMLIN_VERSION}"
     testCompile "org.assertj:assertj-core:${ASSERTJ_VERSION}"

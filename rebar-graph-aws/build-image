@@ -1,0 +1,10 @@
+#!/bin/bash
+
+
+REMOTE_TAG=rebar/rebar-graph-aws:latest
+
+docker build . -t rebar-graph-aws --build-arg GIT_COMMIT=$(git log -1 --format=%h) --build-arg GIT_REPO=$(git remote get-url origin) || exit 99
+docker tag rebar-graph-aws ${REMOTE_TAG} || exit 99
+
+echo
+echo to push to docker hub: docker push ${REMOTE_TAG}

@@ -1,5 +1,0 @@
-#!/bin/sh
-
-docker build . -t rebar-graph-demo:latest
-
-docker tag rebar-graph-demo:latest rebar/rebar-graph-demo:latest

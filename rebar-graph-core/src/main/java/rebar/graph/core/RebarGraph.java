@@ -56,7 +56,14 @@ public class RebarGraph {
 		}
 		
 
-	
+		public Builder withGraphPassword(String password) {
+			env.put("GRAPH_PASSWORD", password);
+			return this;
+		}
+		public Builder withGraphUsername(String username) {
+			env.put("GRAPH_USERNAME", username);
+			return this;
+		}
 		public Builder withGraphUrl(String url) {
 			env.put("GRAPH_URL", url);
 			return (this);
@@ -88,7 +95,11 @@ public class RebarGraph {
 			Optional<String> graphUrl = getEnv("GRAPH_URL");
 			if (graphUrl.isPresent()) {
 				
-				GraphDriver driver = new GraphDriver.Builder().withUrl(graphUrl.get()).build();
+				GraphDriver.Builder b = new GraphDriver.Builder().withUrl(graphUrl.get());
+				if (env.containsKey("GRAPH_USERNAME") && env.containsKey("GRAPH_PASSWORD")) {
+					b =b.withUsername(env.get("GRAPH_USERNAME")).withPassword(env.get("GRAPH_PASSWORD"));
+				}
+				GraphDriver driver = b.build();
 				if (driver.getClass().getName().toLowerCase().contains("neo4j")) {
 					Neo4jGraphDB gw = new Neo4jGraphDB((Neo4jDriver) driver);
 					rg.graphWriter = gw;

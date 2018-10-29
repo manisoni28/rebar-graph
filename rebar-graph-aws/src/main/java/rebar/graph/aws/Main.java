@@ -13,23 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package rebar.graph.demo;
+package rebar.graph.aws;
 
 import rebar.graph.core.RebarGraph;
-import rebar.graph.kubernetes.KubeScanner;
-import rebar.graph.kubernetes.KubernetesScannerBuilder;
 
 public class Main {
 
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) {
 
 		RebarGraph g = new RebarGraph.Builder().build();
-		
-		KubeScanner scanner = g.createBuilder(KubernetesScannerBuilder.class).build();
-		
-		System.out.println(scanner.getClusterId());
-		new Thread(new KubeRunner(g)).start();
-		new Thread(new AwsRunner(g)).start();
+
+		AwsScanner aws = g.createBuilder(AwsScannerBuilder.class).build();
+
+		boolean running = true;
+		while (running) {
+			aws.getScanner(AllEntityScanner.class).scan();
+			try {
+				Thread.sleep(60000L);
+			} catch (Exception e) {
+			}
+		}
 
 	}
+
 }

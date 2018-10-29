@@ -20,6 +20,13 @@ task buildZip(type: Zip) {
 }
 
 build.dependsOn buildZip
+build.dependsOn fatCapsule
+
+task buildImage(type:Exec, dependsOn:build) {
+  workingDir '.'
+  //on linux
+  commandLine './build-image'
+}
 
 dependencies {
 
@@ -33,6 +40,10 @@ dependencies {
     compile "com.amazonaws:aws-java-sdk-lambda:${AWS_VERSION}"
     compile "com.amazonaws:aws-java-sdk-api-gateway:${AWS_VERSION}"
     compile "com.amazonaws:aws-java-sdk-autoscaling:${AWS_VERSION}"
+    
+    compile 'com.amazonaws:aws-lambda-java-core:1.2.0'
+	compile "com.amazonaws:aws-lambda-java-events:2.2.2"
+    compile "ch.qos.logback:logback-classic:${LOGBACK_VERSION}"
     testCompile project(':rebar-graph-test')
     
 

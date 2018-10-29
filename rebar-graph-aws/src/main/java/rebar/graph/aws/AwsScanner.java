@@ -108,17 +108,7 @@ public final class AwsScanner extends Scanner {
 			throw new RebarException(e);
 		}
 	}
-	public Ec2InstanceScanner newEc2Scanner() {
-		return new Ec2InstanceScanner(this);
-	}
 
-	public VpcScanner newVpcScanner() {
-		return getScanner(VpcScanner.class);
-	}
-
-	public AsgScanner newAsgScanner() {
-		return getScanner(AsgScanner.class);
-	}
 
 	public Regions getRegion() {
 		return region;
@@ -149,7 +139,7 @@ public final class AwsScanner extends Scanner {
 
 	@Override
 	public void doScan() {
-		throw new UnsupportedOperationException();
+		getScanner(AllEntityScanner.class);
 	}
 	public void maybeThrow(Exception e) {
 		if (isFailOnError()) {
