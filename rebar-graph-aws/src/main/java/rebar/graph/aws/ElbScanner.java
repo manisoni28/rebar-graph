@@ -10,6 +10,7 @@ import com.amazonaws.services.elasticloadbalancing.AmazonElasticLoadBalancingCli
 import com.amazonaws.services.elasticloadbalancing.model.DescribeLoadBalancersRequest;
 import com.amazonaws.services.elasticloadbalancing.model.DescribeLoadBalancersResult;
 import com.amazonaws.services.elasticloadbalancing.model.LoadBalancerDescription;
+import com.amazonaws.services.elasticloadbalancing.model.LoadBalancerNotFoundException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -29,44 +30,44 @@ public class ElbScanner extends AbstractEntityScanner<String> {
 		super(scanner);
 	}
 
-	
 	public static class ElbRelationshipGraphOperation implements GraphOperation {
 
 		@Override
 		public Stream<JsonNode> exec(Scanner ctx, JsonNode n, Neo4jDriver neo4j) {
-		
+
 			String arn = n.path("arn").asText();
 			String region = n.path("region").asText();
 			String account = n.path("account").asText();
 			String cypher = "match (elb:AwsElb {arn:{arn}}),(ec2:AwsEc2Instance {region:{region},account:{account}}) where ec2.instanceId in elb.instances merge (elb)-[r:DISTRIBUTES_TRAFFIC_TO]->(ec2) set r.graphUpdateTs=timestamp()";
-			
-			neo4j.cypher(cypher).param("arn", arn).param("account",account).param("region",region).exec();
-			
+
+			neo4j.cypher(cypher).param("arn", arn).param("account", account).param("region", region).exec();
+
 			cypher = "match (elb:AwsElb {arn:{arn}})-[r]->(ec2) where NOT ec2.instanceId in elb.instances delete r";
-			neo4j.cypher(cypher).param("arn", arn).param("account",account).param("region",region).exec();
-				
-			
+			neo4j.cypher(cypher).param("arn", arn).param("account", account).param("region", region).exec();
+
 			// ELB -> AwsSubnet
-			
+
 			cypher = "match (elb:AwsElb {arn:{arn}}),(subnet:AwsSubnet {region:{region},account:{account}}) where subnet.subnetId in elb.subnets merge (elb)-[r:RESIDES_IN]->(subnet) set r.graphUpdateTs=timestamp()";
-			neo4j.cypher(cypher).param("arn", arn).param("account",account).param("region",region).exec();
-			
+			neo4j.cypher(cypher).param("arn", arn).param("account", account).param("region", region).exec();
+
 			cypher = "match (elb:AwsElb {arn:{arn}})-[r:RESIDES_IN]->(subnet:AwsSubnet) where NOT subnet.subnetId in elb.subnets delete r";
-			neo4j.cypher(cypher).param("arn", arn).param("account",account).param("region",region).exec();
-			
+			neo4j.cypher(cypher).param("arn", arn).param("account", account).param("region", region).exec();
+
 			return Stream.of();
-			
+
 		}
 
 		@Override
 		public Stream<JsonNode> exec(Scanner ctx, JsonNode n, Graph g) {
 			throw new UnsupportedOperationException();
 		}
-		
+
 	}
+
 	@Override
 	protected void doScan() {
 
+		scanElbByName("foo");
 		long ts = System.currentTimeMillis();
 
 		AmazonElasticLoadBalancingClient client = getClient(AmazonElasticLoadBalancingClientBuilder.class);
@@ -75,16 +76,14 @@ public class ElbScanner extends AbstractEntityScanner<String> {
 
 		do {
 			DescribeLoadBalancersResult result = client.describeLoadBalancers(request);
-			
-			String nextMarker = result.getNextMarker();
-		
 
-				result.getLoadBalancerDescriptions().iterator().forEachRemaining(elb->{
-					tryExecute(()->project(elb));
-				});
-			
-			
-				request.setMarker(nextMarker);
+			String nextMarker = result.getNextMarker();
+
+			result.getLoadBalancerDescriptions().iterator().forEachRemaining(elb -> {
+				tryExecute(() -> project(elb));
+			});
+
+			request.setMarker(nextMarker);
 		} while (!Strings.isNullOrEmpty(request.getMarker()));
 
 		// handle tags
@@ -93,38 +92,48 @@ public class ElbScanner extends AbstractEntityScanner<String> {
 
 	}
 
-	public String toArn(LoadBalancerDescription elb) {
-		return String.format("arn:aws:elasticloadbalancing:%s:%s:loadbalancer/app/%s",getRegion().getName(),getAccount(),elb.getLoadBalancerName());	
+	protected String toArn(LoadBalancerDescription elb) {
+		return String.format("arn:aws:elasticloadbalancing:%s:%s:loadbalancer/app/%s", getRegion().getName(),
+				getAccount(), elb.getLoadBalancerName());
 	}
+
 	protected void project(LoadBalancerDescription elb) {
 		ObjectNode n = toJson(elb);
 		n.put("name", elb.getLoadBalancerName());
 		n.put("arn", toArn(elb));
-	
-		
+
 		getGraphDB().nodes("AwsElb").idKey("arn").properties(n).merge();
-		
+
 		List<String> instances = Lists.newArrayList();
 		ArrayNode instancesNode = Json.arrayNode();
-		elb.getInstances().forEach(instance->{
+		elb.getInstances().forEach(instance -> {
 			instances.add(instance.getInstanceId());
 			instancesNode.add(instance.getInstanceId());
 		});
-		n.set("instances",instancesNode);
+		n.set("instances", instancesNode);
 		getAwsScanner().execGraphOperation(ElbRelationshipGraphOperation.class, n);
-		
-	}
-	protected void scanElbByName(String name) {
-		AmazonElasticLoadBalancingClient client = getClient(AmazonElasticLoadBalancingClientBuilder.class);
-		DescribeLoadBalancersRequest request = new DescribeLoadBalancersRequest();
-		request.withLoadBalancerNames(name);
 
-		
-		DescribeLoadBalancersResult result = client.describeLoadBalancers(request);
-		result.getLoadBalancerDescriptions().forEach(it->{
-			project(it);
-		});
 	}
+
+	protected void scanElbByName(String name) {
+
+		try {
+			if (Strings.isNullOrEmpty(name)) {
+				return;
+			}
+			AmazonElasticLoadBalancingClient client = getClient(AmazonElasticLoadBalancingClientBuilder.class);
+			DescribeLoadBalancersRequest request = new DescribeLoadBalancersRequest();
+			request.withLoadBalancerNames(name);
+			DescribeLoadBalancersResult result = client.describeLoadBalancers(request);
+			result.getLoadBalancerDescriptions().forEach(it -> {
+				project(it);
+			});
+
+		} catch (LoadBalancerNotFoundException e) {
+			getGraphDB().nodes("AwsElb").id("region", getRegionName()).id("account", getAccount()).id("name", name).delete();
+		}
+	}
+
 	@Override
 	public void scan(JsonNode entity) {
 		assertEntityOwner(entity);
