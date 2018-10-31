@@ -35,7 +35,7 @@ public class LaunchConfigScanner extends AbstractEntityScanner<LaunchConfigurati
 
 	@Override
 	public void doScan() {
-		// TODO Auto-generated method stub
+		scanLaunchConfigs();
 
 	}
 

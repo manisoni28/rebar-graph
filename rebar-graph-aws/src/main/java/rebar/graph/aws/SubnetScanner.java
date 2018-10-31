@@ -43,6 +43,7 @@ public class SubnetScanner extends AbstractEntityScanner<Subnet> {
 		getGraphDB().nodes(AwsEntities.VPC_TYPE).id(VpcScanner.VPC_ID_PROPERTY, it.getVpcId()).relationship("HAS")
 				.to("AwsSubnet").id("subnetId", it.getSubnetId()).merge();
 
+		getGraphDB().nodes().label("AwsSubnet").id("arn",n.path("arn").asText()).relationship("RESIDES_IN").on("availabilityZone","name").to("AwsAvailabilityZone").merge();
 	}
 
 	protected Optional<String> toArn(Subnet subnet) {

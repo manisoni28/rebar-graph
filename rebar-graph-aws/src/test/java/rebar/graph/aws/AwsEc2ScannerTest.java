@@ -27,7 +27,7 @@ public class AwsEc2ScannerTest extends AwsIntegrationTest {
 	public void testIt() {
 
 		
-		getAwsScanner().getScanner(VpcScanner.class);
+		getAwsScanner().scan();
 		//getAwsScanner().newAsgScanner().scanLaunchConfigByName("foo");
 		// getAwsScanner().newEc2Scanner().scanLaunchTemplates();
 		 

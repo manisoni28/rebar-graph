@@ -30,6 +30,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
 import com.google.common.base.Stopwatch;
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.machinezoo.noexception.Exceptions;
 
@@ -50,6 +51,9 @@ public abstract class AbstractEntityScanner<A extends Object> {
 
 	protected void gc(String type, long cutoff) {
 
+		if (Strings.isNullOrEmpty(type)) {
+			return;
+		}
 		Stopwatch sw = Stopwatch.createStarted();
 	
 		getGraphDB().nodes().whereAttributeLessThan(GraphDB.UPDATE_TS, cutoff).label(type).id("region",

@@ -137,6 +137,7 @@ public class SecurityGroupScanner extends AbstractEntityScanner<SecurityGroup> {
 					.to("AwsSecurityGroup").id("arn", n.path("arn").asText()).merge();
 		}
 
+	
 	}
 
 }

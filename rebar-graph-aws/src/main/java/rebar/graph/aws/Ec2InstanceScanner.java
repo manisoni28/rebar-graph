@@ -16,6 +16,9 @@
 package rebar.graph.aws;
 
 import java.util.Optional;
+import java.util.stream.Stream;
+
+import org.apache.tinkerpop.gremlin.structure.Graph;
 
 import com.amazonaws.services.ec2.AmazonEC2;
 import com.amazonaws.services.ec2.AmazonEC2ClientBuilder;
@@ -25,11 +28,16 @@ import com.amazonaws.services.ec2.model.DescribeInstancesResult;
 import com.amazonaws.services.ec2.model.Instance;
 import com.amazonaws.services.ec2.model.Reservation;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableSet;
 
 import rebar.graph.core.GraphDB;
+import rebar.graph.core.GraphOperation;
+import rebar.graph.core.Scanner;
+import rebar.graph.neo4j.Neo4jDriver;
+import rebar.util.Json;
 import rebar.util.RebarException;
 
 public class Ec2InstanceScanner extends AbstractEntityScanner<Instance> {
@@ -39,6 +47,32 @@ public class Ec2InstanceScanner extends AbstractEntityScanner<Instance> {
 
 	}
 
+	public static class InstanceGraphOperation implements GraphOperation {
+
+		@Override
+		public Stream<JsonNode> exec(Scanner ctx, JsonNode n, Neo4jDriver neo4j) {
+			
+			long ts = ctx.getRebarGraph().getGraphDB().getTimestamp();
+			String arn = n.path("arn").asText();
+			String cypher = "match (a:AwsEc2Instance {arn:{arn}}),"
+					+ " (s:AwsSecurityGroup {account:{account},region:{region}}) "
+					+ " where s.groupId in a.securityGroupIds "
+					+ " merge (a)-[r:USES]->(s) "
+					+ "set r.graphUpdateTs=timestamp()";
+			neo4j.cypher(cypher).param("arn", n.path("arn").asText()).param("region", n.path("region").asText()).param("account", n.path("account").asText()).exec();
+			
+			cypher = "match (a:AwsEc2Instance {arn:{arn}})-[r:USES]-> (s:AwsSecurityGroup)where r.graphUpdateTs<{ts} delete r";
+			
+			neo4j.cypher(cypher).param("arn", arn).param("ts",ts).exec();
+			return Stream.of();
+		}
+
+		@Override
+		public Stream<JsonNode> exec(Scanner ctx, JsonNode n, Graph g) {
+			return Stream.of();
+		}
+		
+	}
 	public ObjectNode toJson(Instance instance, Reservation reservation) {
 
 		ObjectNode n = toJson(instance);
@@ -58,6 +92,18 @@ public class Ec2InstanceScanner extends AbstractEntityScanner<Instance> {
 			n.put("reservationId", reservation.getReservationId());
 		}
 
+		ArrayNode securityGroupNames = Json.arrayNode();	
+		ArrayNode securityGroupIds = Json.arrayNode();
+		
+		n.path("securityGroups").forEach(sg->{
+			securityGroupNames.add(sg.path("groupName"));
+			securityGroupIds.add(sg.path("groupId"));
+		});
+		
+		n.set("securityGroupNames", securityGroupNames);
+		n.set("securityGroupIds", securityGroupIds);
+		n.remove("securityGroups");
+		
 		return n;
 
 	}
@@ -76,6 +122,9 @@ public class Ec2InstanceScanner extends AbstractEntityScanner<Instance> {
 					.to("AwsSubnet")
 					.id("subnetId", instance.getSubnetId(), "region", getRegionName(), "account", getAccount()).merge();
 		}
+		
+		getAwsScanner().execGraphOperation(InstanceGraphOperation.class, n);
+	
 	}
 
 	protected Optional<String> toArn(Instance instance) {

@@ -139,7 +139,7 @@ public final class AwsScanner extends Scanner {
 
 	@Override
 	public void doScan() {
-		getScanner(AllEntityScanner.class);
+		getScanner(AllEntityScanner.class).scan();
 	}
 	public void maybeThrow(Exception e) {
 		if (isFailOnError()) {
