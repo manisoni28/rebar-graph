@@ -76,7 +76,7 @@ public class Ec2InstanceScanner extends AbstractEntityScanner<Instance> {
 	public ObjectNode toJson(Instance instance, Reservation reservation) {
 
 		ObjectNode n = toJson(instance);
-
+		
 		if (instance.getState() != null) {
 			n.put("stateCode", instance.getState().getCode());
 			n.put("stateName", instance.getState().getName());
@@ -91,7 +91,7 @@ public class Ec2InstanceScanner extends AbstractEntityScanner<Instance> {
 			n.put("reservationRequesterId", reservation.getRequesterId());
 			n.put("reservationId", reservation.getReservationId());
 		}
-
+		
 		ArrayNode securityGroupNames = Json.arrayNode();	
 		ArrayNode securityGroupIds = Json.arrayNode();
 		
@@ -103,7 +103,9 @@ public class Ec2InstanceScanner extends AbstractEntityScanner<Instance> {
 		n.set("securityGroupNames", securityGroupNames);
 		n.set("securityGroupIds", securityGroupIds);
 		n.remove("securityGroups");
-		
+		instance.getTags().forEach(tag->{
+			n.put(TAG_PREFIX+tag.getKey(),tag.getValue());
+		});
 		return n;
 
 	}
@@ -114,7 +116,7 @@ public class Ec2InstanceScanner extends AbstractEntityScanner<Instance> {
 
 		ObjectNode n = toJson(instance, r);
 
-		getGraphDB().nodes().label("AwsEc2Instance").idKey("arn").properties(n).merge();
+		getGraphDB().nodes().label("AwsEc2Instance").idKey("arn").withTagPrefixes(TAG_PREFIXES).properties(n).merge();
 
 		String subnetId = instance.getSubnetId();
 		if (!Strings.isNullOrEmpty(subnetId)) {

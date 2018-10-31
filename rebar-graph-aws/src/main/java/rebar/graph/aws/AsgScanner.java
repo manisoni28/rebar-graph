@@ -17,6 +17,7 @@ package rebar.graph.aws;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.tinkerpop.gremlin.structure.Graph;
@@ -34,6 +35,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
 import rebar.graph.core.GraphDB;
@@ -71,14 +73,21 @@ public class AsgScanner extends AbstractEntityScanner<AutoScalingGroup> {
 			} );
 			
 		
-
+			
+			
 			String cypher = "match (a:AwsAsg {arn:{arn}}),(s:AwsSubnet {account:{account}, region:{region}}) where s.subnetId in {subnets}  merge (a)-[r:LAUNCHES_INSTANCES_IN]->(s) ";
 
 			neo4j.cypher(cypher).param("arn", n.path("arn").asText()).param("account", n.path("account").asText())
 					.param("region", n.path("region").asText()).param("subnets", subnets).exec();
 
 			
+			List<String> instances = toStringList(n.path("instances"));
 	
+			cypher = "match (asg:AwsAsg {arn:{arn}}), (ec2:AwsEc2Instance {region:{region},account:{account}}) where ec2.instanceId in {instances} merge (asg)-[r:HAS]->(ec2)";
+			neo4j.cypher(cypher).param("arn", arn).param("region",region).param("account", account).param("instances", instances).exec();
+			
+			cypher = "match (asg:AwsAsg {arn:{arn}})-[r]->(ec2:AwsEc2Instance) where NOT ec2.instanceId in asg.instances delete r";
+			neo4j.cypher(cypher).param("arn", arn).exec();
 			
 			String launchConfigurationName = n.path("launchConfigurationName").asText();
 			if (!Strings.isNullOrEmpty(launchConfigurationName)) {
@@ -101,9 +110,23 @@ public class AsgScanner extends AbstractEntityScanner<AutoScalingGroup> {
 			}
 
 			
+			List<String> loadBalancerNames = null;
+			JsonNode lbn = n.path("loadBalancerNames");
+			if (lbn.isArray()) {
+				loadBalancerNames = Json.objectMapper().convertValue(lbn, List.class);
+			}
+			else {
+				loadBalancerNames = ImmutableList.of();
+			}
 			
-		
-
+			// establish relationship between ELB->ASG
+			cypher = "match (elb:AwsElb {region:{region},account:{account}}),(asg:AwsAsg {arn:{arn}}) where elb.name in asg.loadBalancerNames merge (elb)-[r:ATTACHED_TO]->(asg) set r.graphUpdateTs=timestamp()";
+			neo4j.cypher(cypher).param("arn", arn).param("region", region).param("account", account).param("names", loadBalancerNames).exec();
+			
+			// delete old ELB->ASG
+			cypher = "match (elb:AwsElb)-[r:ATTACHED_TO]->(asg:AwsAsg {arn:{arn}}) where NOT (elb.name in asg.loadBalancerNames) delete r";
+			neo4j.cypher(cypher).param("arn", arn).exec();
+			
 			return Stream.of();
 		}
 
@@ -114,30 +137,22 @@ public class AsgScanner extends AbstractEntityScanner<AutoScalingGroup> {
 
 	}
 
-	protected void projectRelationship(AutoScalingGroup asg,
-			com.amazonaws.services.autoscaling.model.Instance instance) {
 
-		getGraphDB().nodes("AwsEc2Instance").id("region", getRegionName()).id("account", getAccount())
-				.id("instanceId", instance.getInstanceId())
-				.property("autoScalingGroupName", asg.getAutoScalingGroupName()).merge();
-
-	}
 
 	protected void project(AutoScalingGroup asg) {
 
 		ObjectNode n = toJson(asg);
 
-		getGraphDB().nodes(AwsEntities.ASG_TYPE).idKey("arn").properties(n).merge();
+		getGraphDB().nodes(AwsEntities.ASG_TYPE).withTagPrefixes(TAG_PREFIXES).idKey("arn").properties(n).merge();
 
-		asg.getInstances().forEach(instance -> {
-			projectRelationship(asg, instance);
-		});
-
+		
+	
 		getAwsScanner().execGraphOperation(AsgScanner.AsgRelationshipGraphOperation.class, n);
 	}
 
 	protected ObjectNode toJson(AutoScalingGroup asg) {
 
+	
 		ObjectNode n = super.toJson(asg);
 		n.set("name", n.path("autoScalingGroupName"));
 		n.remove("launchTemplate");
@@ -158,7 +173,13 @@ public class AsgScanner extends AbstractEntityScanner<AutoScalingGroup> {
 			n.put("launchTemplateId", (String) null).put("launchTemplateName", (String) null)
 					.put("launchTemplateVersion", (String) null);
 		}
+		
+		asg.getTags().forEach(tag->{
+			n.put(TAG_PREFIX+tag.getKey(),tag.getValue());
+		});
+		n.remove("tags");
 
+	
 		return n;
 
 	}
@@ -224,4 +245,14 @@ public class AsgScanner extends AbstractEntityScanner<AutoScalingGroup> {
 
 	}
 
+	public static List<String> toStringList(JsonNode n) {
+		if (n==null || !n.isArray()) {
+			return ImmutableList.of();
+		}
+		List<String> list = Lists.newArrayList();
+		n.forEach(it->{
+				list.add(it.asText(null));
+		});
+		return list;
+	}
 }

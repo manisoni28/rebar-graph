@@ -37,6 +37,7 @@ dependencies {
     compile "com.amazonaws:aws-java-sdk-sqs:${AWS_VERSION}"
     compile "com.amazonaws:aws-java-sdk-sns:${AWS_VERSION}"
     compile "com.amazonaws:aws-java-sdk-s3:${AWS_VERSION}"
+    compile "com.amazonaws:aws-java-sdk-elasticloadbalancing:${AWS_VERSION}"
     compile "com.amazonaws:aws-java-sdk-lambda:${AWS_VERSION}"
     compile "com.amazonaws:aws-java-sdk-api-gateway:${AWS_VERSION}"
     compile "com.amazonaws:aws-java-sdk-autoscaling:${AWS_VERSION}"

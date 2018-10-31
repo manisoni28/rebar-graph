@@ -38,3 +38,48 @@ The following will display the entire graph:
 ```
 match (a) return a;
 ```
+
+
+| Type | Status | Notes |
+|------|-------|-------|
+| AwsRegion | ✅ |  |
+| AwsAvailabilityZone | ✅ |  |
+| AwsAccount | ✅ | |
+| AwsVpc | ✅ | |
+| AwsSubnet | ✅  | |
+| AwsSecurityGroup | ✅  | |
+| AwsAsg | ✅ |  |
+| AwsElb | ✅ |  |
+| AwsEc2Instance | ✅ |  |
+| AwsLaunchConfig | ✅ | |
+| AwsLaunchTemplate | ✅ | |
+| AwsAmi | ⛔| |
+| AwsS3Bucket   | ⛔ | |
+| AwsEksCluster | ⛔ | |
+| AwsRdsCluster | ⛔ | |
+| AwsRoute53RecordSet | ⛔ | |
+| AwsRoute53HostedZone   | ⛔ | |
+| AwsAlb | ⛔ | |
+| AwsNlb | ⛔ | |
+| AwsTargetGroup| ⛔ | |
+| AwsSqsQueue | ⛔ | |
+| AwsSnsTopic | ⛔ | |
+| AwsSnsSubscription | ⛔ | |
+| AwsSes | ⛔ | |
+| AwsGlue | ⛔ | |
+| AwsKinesisStream | ⛔ | |
+| AwsRouteTable | ⛔ | |
+| AwsVpnGateway   | ⛔ | |
+| AwsVpcPeeringConnection   | ⛔ | |
+| AwsVpcEndpoint   | ⛔ | |
+| AwsInternetGateway | ⛔ | |
+| AwsIamUser   | ⛔ | |
+| AwsIamInlinePolicy   | ⛔ | |
+| AwsIamRole | ⛔ | |
+| AwsIamPolicy | ⛔ | |
+| AwsIamManagedPolicy| ⛔ | |
+| AwsEc2NetworkInterface| ⛔ | |
+| AwsEcrRepository| ⛔ | |
+| AwsDynamoDbTable| ⛔ | |
+
+

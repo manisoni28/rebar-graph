@@ -17,6 +17,7 @@ package rebar.graph.aws;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
@@ -31,6 +32,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
 import com.google.common.base.Stopwatch;
 import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.machinezoo.noexception.Exceptions;
 
@@ -42,7 +44,8 @@ public abstract class AbstractEntityScanner<A extends Object> {
 	Logger logger = LoggerFactory.getLogger(getClass());
 	AwsScanner scanner;
 
-	
+	public static final String TAG_PREFIX="tag_";
+	protected static final Set<String> TAG_PREFIXES=ImmutableSet.of(TAG_PREFIX);
 	
 	AbstractEntityScanner(AwsScanner scanner) {
 		this.scanner = scanner;

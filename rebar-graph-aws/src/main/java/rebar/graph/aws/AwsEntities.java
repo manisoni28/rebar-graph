@@ -37,6 +37,8 @@ public class AwsEntities {
 	public static final String SECURITY_GROUP_TYPE="AwsSecurityGroup";
 	public static final String VPC_TYPE="AwsVpc";
 	public static final String SUBNET_TYPE="AwsSubnet";
+	
+	
 	private AwsEntities(String account, Regions region) {
 		this.account = account;
 		this.region = region;
