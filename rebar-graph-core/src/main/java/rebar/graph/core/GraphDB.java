@@ -15,9 +15,12 @@
  */
 package rebar.graph.core;
 
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import org.slf4j.Logger;
@@ -30,6 +33,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -93,12 +97,15 @@ public abstract class GraphDB {
 
 		protected Set<String> removeAttributes = Sets.newHashSet();
 
+		protected Collection<String> shadowAttributePrefixes = ImmutableSet.of();
+		
 		protected RelationshipOperation relOp;
 		protected String attributeLessThanName;
 		protected long attributeLessThanValue = 0;
 
 		public abstract <T extends RelationshipOperation> T relationship(String name);
 
+		
 		@SuppressWarnings("unchecked")
 		public <T extends NodeOperation> T removeProperties(String... properties) {
 			if (properties != null) {
@@ -206,7 +213,17 @@ public abstract class GraphDB {
 			return (T) this;
 		}
 
+		public  <T extends NodeOperation> T withTagPrefixes(Set<String> prefixes) {
+			if (prefixes==null) {
+				this.shadowAttributePrefixes = ImmutableSet.of();
+			}
+			else {
+				this.shadowAttributePrefixes = ImmutableSet.copyOf(prefixes);
+			}
+			return (T) this;
+		}
 	}
+
 
 	/*
 	 * public abstract class MatchNodesOperation extends NodeOperation { protected
@@ -294,4 +311,8 @@ public abstract class GraphDB {
 	}
 
 	public abstract GraphSchema schema();
+	
+	
+	
+
 }
