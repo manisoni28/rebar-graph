@@ -53,7 +53,7 @@ match (a) return a;
 | AwsEc2Instance | ✅ |  |
 | AwsLaunchConfig | ✅ | |
 | AwsLaunchTemplate | ✅ | |
-| AwsAmi | ⛔| |
+| AwsAmi | ✅ | |
 | AwsS3Bucket   | ⛔ | |
 | AwsEksCluster | ⛔ | |
 | AwsRdsCluster | ⛔ | |

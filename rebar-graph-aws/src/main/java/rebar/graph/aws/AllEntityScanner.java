@@ -21,7 +21,7 @@ public class AllEntityScanner extends SerialScanner {
 		super(scanner);
 
 		addScanners(AccountScanner.class, RegionScanner.class, VpcScanner.class, AvailabilityZoneScanner.class,
-				SecurityGroupScanner.class, SubnetScanner.class, Ec2InstanceScanner.class, LaunchConfigScanner.class,
+				SecurityGroupScanner.class, SubnetScanner.class, Ec2InstanceScanner.class,AmiScanner.class, LaunchConfigScanner.class,
 				LaunchTemplateScanner.class, ElbScanner.class, AsgScanner.class, LambdaFunctionScanner.class);
 	}
 

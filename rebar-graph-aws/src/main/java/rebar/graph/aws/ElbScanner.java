@@ -16,6 +16,7 @@
 package rebar.graph.aws;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.apache.tinkerpop.gremlin.structure.Graph;
@@ -39,7 +40,7 @@ import rebar.graph.neo4j.Neo4jDriver;
 import rebar.util.Json;
 import rebar.util.RebarException;
 
-public class ElbScanner extends AbstractEntityScanner<String> {
+public class ElbScanner extends AbstractEntityScanner<LoadBalancerDescription> {
 
 	public ElbScanner(AwsScanner scanner) {
 		super(scanner);
@@ -107,17 +108,16 @@ public class ElbScanner extends AbstractEntityScanner<String> {
 
 	}
 
-	protected String toArn(LoadBalancerDescription elb) {
-		return String.format("arn:aws:elasticloadbalancing:%s:%s:loadbalancer/app/%s", getRegion().getName(),
-				getAccount(), elb.getLoadBalancerName());
+	protected Optional<String> toArn(LoadBalancerDescription elb) {
+		return Optional.of(String.format("arn:aws:elasticloadbalancing:%s:%s:loadbalancer/app/%s", getRegion().getName(),
+				getAccount(), elb.getLoadBalancerName()));
 	}
 
 	protected void project(LoadBalancerDescription elb) {
 		ObjectNode n = toJson(elb);
 		n.put("name", elb.getLoadBalancerName());
-		n.put("arn", toArn(elb));
+		n.put("arn", toArn(elb).get());
 
-		getGraphDB().nodes("AwsElb").idKey("arn").properties(n).merge();
 
 		List<String> instances = Lists.newArrayList();
 		ArrayNode instancesNode = Json.arrayNode();
@@ -126,6 +126,8 @@ public class ElbScanner extends AbstractEntityScanner<String> {
 			instancesNode.add(instance.getInstanceId());
 		});
 		n.set("instances", instancesNode);
+		getGraphDB().nodes("AwsElb").idKey("arn").properties(n).merge();
+
 		getAwsScanner().execGraphOperation(ElbRelationshipGraphOperation.class, n);
 
 	}
