@@ -84,13 +84,14 @@ public class AsgScanner extends AbstractEntityScanner<AutoScalingGroup> {
 			cypher = "match (asg:AwsAsg {arn:{arn}})-[r]->(ec2:AwsEc2Instance) where NOT ec2.instanceId in asg.instances delete r";
 			neo4j.cypher(cypher).param("arn", arn).exec();
 			
+			
 			String launchConfigurationName = n.path("launchConfigurationName").asText();
 			if (!Strings.isNullOrEmpty(launchConfigurationName)) {
 				cypher = "match (a:AwsAsg {arn:{arn}}),(t:AwsLaunchConfig {account:{account}, region:{region},launchConfigurationName:{launchConfigurationName}}) merge (a)-[r:USES]->(t) set r.graphUpdateTs=timestamp()";
 				neo4j.cypher(cypher).param("account", account).param("region", region)
 				.param("launchConfigurationName", launchConfigurationName).param("arn", arn).exec();
 				
-				cypher = "match (a:AwsAsg {arn:{arn}} )-[r]->(AwsLaunchConfig) where r.graphUpdateTs<{ts} delete r";
+				cypher = "match (a:AwsAsg {arn:{arn}} )-[r]->(c:AwsLaunchConfig) where r.graphUpdateTs<{ts} delete r";
 				neo4j.cypher(cypher).param("arn", arn).param("ts", ts).exec();
 			}
 
@@ -100,11 +101,11 @@ public class AsgScanner extends AbstractEntityScanner<AutoScalingGroup> {
 				neo4j.cypher(cypher).param("account", account).param("region", region)
 						.param("launchTemplateId", launchTemplateId).param("arn", arn).exec();
 				
-				cypher = "match (a:AwsAsg {arn:{arn}} )-[r]->(AwsLaunchTemplate) where r.graphUpdateTs<{ts} delete r";
+				cypher = "match (a:AwsAsg {arn:{arn}} )-[r]->(t:AwsLaunchTemplate) where r.graphUpdateTs<{ts} delete r";
 				neo4j.cypher(cypher).param("arn", arn).param("ts", ts).exec();
 			}
 
-			
+
 			List<String> loadBalancerNames = null;
 			JsonNode lbn = n.path("loadBalancerNames");
 			if (lbn.isArray()) {
@@ -138,17 +139,6 @@ public class AsgScanner extends AbstractEntityScanner<AutoScalingGroup> {
 
 		ObjectNode n = toJson(asg);
 
-		getGraphDB().nodes(AwsEntities.ASG_TYPE).withTagPrefixes(TAG_PREFIXES).idKey("arn").properties(n).merge();
-
-		
-	
-		getAwsScanner().execGraphOperation(AsgScanner.AsgRelationshipGraphOperation.class, n);
-	}
-
-	protected ObjectNode toJson(AutoScalingGroup asg) {
-
-	
-		ObjectNode n = super.toJson(asg);
 		n.set("name", n.path("autoScalingGroupName"));
 		n.remove("launchTemplate");
 		n.put("vpcZoneIdentifier", asg.getVPCZoneIdentifier());
@@ -173,11 +163,15 @@ public class AsgScanner extends AbstractEntityScanner<AutoScalingGroup> {
 			n.put(TAG_PREFIX+tag.getKey(),tag.getValue());
 		});
 		n.remove("tags");
+		
+		getGraphDB().nodes(AwsEntities.ASG_TYPE).withTagPrefixes(TAG_PREFIXES).idKey("arn").properties(n).merge();
 
+		
 	
-		return n;
-
+		getAwsScanner().execGraphOperation(AsgScanner.AsgRelationshipGraphOperation.class, n);
 	}
+
+
 
 	protected Optional<String> toArn(AutoScalingGroup awsEntity) {
 		return Optional.ofNullable(awsEntity.getAutoScalingGroupARN());
@@ -203,7 +197,7 @@ public class AsgScanner extends AbstractEntityScanner<AutoScalingGroup> {
 	}
 
 	public void doScan() {
-
+		
 		long ts = getGraphDB().getTimestamp();
 		AmazonAutoScalingClient client = getClient(AmazonAutoScalingClientBuilder.class);
 

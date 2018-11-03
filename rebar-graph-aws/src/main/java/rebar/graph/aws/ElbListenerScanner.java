@@ -11,6 +11,7 @@ import com.amazonaws.services.elasticloadbalancingv2.model.DescribeListenersResu
 import com.amazonaws.services.elasticloadbalancingv2.model.DescribeTargetGroupsRequest;
 import com.amazonaws.services.elasticloadbalancingv2.model.DescribeTargetGroupsResult;
 import com.amazonaws.services.elasticloadbalancingv2.model.Listener;
+import com.amazonaws.services.elasticloadbalancingv2.model.ListenerNotFoundException;
 import com.amazonaws.services.elasticloadbalancingv2.model.TargetGroup;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -21,24 +22,22 @@ import rebar.graph.core.Scanner;
 import rebar.graph.neo4j.Neo4jDriver;
 import rebar.util.Json;
 
-public class ElbV2ListenerScanner extends AbstractEntityScanner<Listener> {
+public class ElbListenerScanner extends AbstractEntityScanner<Listener> {
 
 	public static class RelationshipGraphOperation implements GraphOperation {
 
 		@Override
 		public Stream<JsonNode> exec(Scanner ctx, JsonNode n, Neo4jDriver neo4j) {
-			
+
 			String loadBalancerArn = n.path("loadBalancerArn").asText().trim();
 			long ts = ctx.getRebarGraph().getGraphDB().getTimestamp();
-			String cypher = "match (a:AwsLoadBalancer {arn:{arn}}),(x:AwsLoadBalancerListener {loadBalancerArn:{arn}}) merge (a)-[r:HAS]->(x) set r.graphUpdateTs=timestamp()";
-	
+			String cypher = "match (a:AwsElb {arn:{arn}}),(x:AwsElbListener {loadBalancerArn:{arn}}) merge (a)-[r:HAS]->(x) set r.graphUpdateTs=timestamp()";
+
 			neo4j.cypher(cypher).param("arn", loadBalancerArn).exec();
-				
-			
-			cypher = "match (a:AwsLoadBalancer {arn:{arn}})-[r]->(x:AwsLoadBalancerListener) where r.graphUpdateTs<{ts} delete r,x";
+
+			cypher = "match (a:AwsElb {arn:{arn}})-[r]->(x:AwsElbListener) where r.graphUpdateTs<{ts} delete r,x";
 			neo4j.cypher(cypher).param("arn", loadBalancerArn).param("ts", ts).exec();
-			
-			
+
 			return Stream.of();
 		}
 
@@ -49,22 +48,24 @@ public class ElbV2ListenerScanner extends AbstractEntityScanner<Listener> {
 
 	}
 
-	public ElbV2ListenerScanner(AwsScanner scanner) {
+	public ElbListenerScanner(AwsScanner scanner) {
 		super(scanner);
 	}
 
 	@Override
 	protected void doScan() {
 		long ts = getGraphDB().getTimestamp();
-		
-		getGraphDB().nodes("AwsLoadBalancer").id("region",getRegionName()).id("account",getAccount()).match().map(n->n.path("arn").asText()).forEach(arn->{
-			scanListenerByLoadBalancerArn(arn);
-		});
-		
-		gc("AwsLoadBalancerListener", ts);
+
+		getGraphDB().nodes("AwsElb").id("region", getRegionName()).id("account", getAccount()).match()
+				.filter(n -> n.path("type").asText().equals("network") || n.path("type").asText().equals("application")).map(n -> n.path("arn").asText())
+				.forEach(arn -> {
+					scanListenersByLoadBalancerArn(arn);
+				});
+
+		gc("AwsElbListener", ts);
 	}
 
-	public void scanListenerByLoadBalancerArn(String arn) {
+	public void scanListenersByLoadBalancerArn(String arn) {
 		AmazonElasticLoadBalancingClient client = getAwsScanner()
 				.getClient(AmazonElasticLoadBalancingClientBuilder.class);
 
@@ -78,34 +79,42 @@ public class ElbV2ListenerScanner extends AbstractEntityScanner<Listener> {
 			});
 			request.setMarker(result.getNextMarker());
 		} while (!Strings.isNullOrEmpty(request.getMarker()));
-		
-		
-		getAwsScanner().execGraphOperation(RelationshipGraphOperation.class, Json.objectNode().put("loadBalancerArn", arn));
+
+		getAwsScanner().execGraphOperation(RelationshipGraphOperation.class,
+				Json.objectNode().put("loadBalancerArn", arn));
 	}
 
 	protected void project(Listener listener) {
 		ObjectNode n = toJson(listener);
 
 		n.put("arn", listener.getListenerArn());
-	
 
-		getGraphDB().nodes("AwsLoadBalancerListener").idKey("arn").properties(n).merge();
-		
+		getGraphDB().nodes("AwsElbListener").idKey("arn").properties(n).merge();
+
 	}
 
 	@Override
 	public void scan(JsonNode entity) {
-		String arn = entity.path("arn").asText();
-		AmazonElasticLoadBalancingClient client = getAwsScanner()
-				.getClient(AmazonElasticLoadBalancingClientBuilder.class);
+		try {
+			String arn = entity.path("arn").asText();
+			String type = entity.path("type").asText();
+			if (!(type.equals("application") || type.equals("network"))) {
+				return;
+			}
+			AmazonElasticLoadBalancingClient client = getAwsScanner()
+					.getClient(AmazonElasticLoadBalancingClientBuilder.class);
 
-		DescribeListenersRequest request = new DescribeListenersRequest().withListenerArns(arn);
+			DescribeListenersRequest request = new DescribeListenersRequest().withListenerArns(arn);
 
-		DescribeListenersResult result = client.describeListeners(request);
+			DescribeListenersResult result = client.describeListeners(request);
 
-		result.getListeners().forEach(it -> {
-			project(it);
-		});
+			result.getListeners().forEach(it -> {
+				project(it);
+			});
+
+		} catch (ListenerNotFoundException e) {
+			// TODO delete
+		}
 
 	}
 

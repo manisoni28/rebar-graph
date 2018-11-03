@@ -27,6 +27,7 @@ public class Main {
 
 		boolean running = true;
 		while (running) {
+			
 			aws.getScanner(AllEntityScanner.class).scan();
 			try {
 				Thread.sleep(60000L);
