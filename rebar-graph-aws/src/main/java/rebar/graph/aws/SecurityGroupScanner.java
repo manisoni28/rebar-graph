@@ -28,6 +28,8 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableSet;
 
+import rebar.util.Json;
+
 public class SecurityGroupScanner extends AbstractEntityScanner<SecurityGroup> {
 
 	public SecurityGroupScanner(AwsScanner scanner) {
@@ -122,6 +124,13 @@ public class SecurityGroupScanner extends AbstractEntityScanner<SecurityGroup> {
 		
 		ObjectNode n = super.toJson(awsObject);
 		n.set("name", n.path("groupName"));
+		
+		
+		n.path("tags").forEach(it->{
+			n.put(TAG_PREFIX+it.path("key").asText(),it.path("value").asText());
+		});
+		n.remove("tags");
+		
 		return n;
 	}
 
@@ -130,7 +139,7 @@ public class SecurityGroupScanner extends AbstractEntityScanner<SecurityGroup> {
 		ObjectNode n = toJson(sg);
 		n.set("name", n.path("groupName"));
 
-		getGraphDB().nodes().label("AwsSecurityGroup").idKey("arn").properties(n).merge();
+		getGraphDB().nodes().label("AwsSecurityGroup").withTagPrefixes(TAG_PREFIXES).idKey("arn").properties(n).merge();
 
 		if (!Strings.isNullOrEmpty(sg.getVpcId())) {
 			getGraphDB().nodes("AwsVpc").id("vpcId", sg.getVpcId()).relationship("HAS")

@@ -59,21 +59,16 @@ public class AsgScanner extends AbstractEntityScanner<AutoScalingGroup> {
 		@Override
 		public Stream<JsonNode> exec(Scanner ctx, JsonNode n, Neo4jDriver neo4j) {
 
-			
 			long ts = ctx.getRebarGraph().getGraphDB().getTimestamp();
 			
 			String region = n.path("region").asText();
 			String account = n.path("account").asText();
 			String arn = n.path("arn").asText();
 			
-			
 			List<String> subnets = Lists.newArrayList();
 			n.path("vpcZoneIdentifier").forEach(it->{
 				subnets.add(it.asText());
-			} );
-			
-		
-			
+			});
 			
 			String cypher = "match (a:AwsAsg {arn:{arn}}),(s:AwsSubnet {account:{account}, region:{region}}) where s.subnetId in {subnets}  merge (a)-[r:LAUNCHES_INSTANCES_IN]->(s) ";
 

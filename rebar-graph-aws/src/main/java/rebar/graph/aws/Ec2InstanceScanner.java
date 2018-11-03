@@ -59,6 +59,7 @@ public class Ec2InstanceScanner extends AbstractEntityScanner<Instance> {
 					+ " where s.groupId in a.securityGroupIds "
 					+ " merge (a)-[r:USES]->(s) "
 					+ "set r.graphUpdateTs=timestamp()";
+			
 			neo4j.cypher(cypher).param("arn", n.path("arn").asText()).param("region", n.path("region").asText()).param("account", n.path("account").asText()).exec();
 			
 			cypher = "match (a:AwsEc2Instance {arn:{arn}})-[r:USES]-> (s:AwsSecurityGroup)where r.graphUpdateTs<{ts} delete r";
@@ -106,6 +107,7 @@ public class Ec2InstanceScanner extends AbstractEntityScanner<Instance> {
 		instance.getTags().forEach(tag->{
 			n.put(TAG_PREFIX+tag.getKey(),tag.getValue());
 		});
+		
 		return n;
 
 	}
