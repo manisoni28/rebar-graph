@@ -123,7 +123,7 @@ public abstract class AbstractEntityScanner<A extends Object> {
 	}
 	
 	@SuppressWarnings("unchecked")
-	protected final ObjectNode toJson(Object awsObject) {
+	protected ObjectNode toJson(A awsObject) {
 		
 		Preconditions.checkNotNull(awsObject);
 		ObjectNode n = Json.objectMapper().valueToTree(awsObject);

@@ -8,6 +8,7 @@ import com.amazonaws.services.elasticloadbalancingv2.AmazonElasticLoadBalancingC
 import com.amazonaws.services.elasticloadbalancingv2.AmazonElasticLoadBalancingClientBuilder;
 import com.amazonaws.services.elasticloadbalancingv2.model.DescribeTargetGroupsRequest;
 import com.amazonaws.services.elasticloadbalancingv2.model.DescribeTargetGroupsResult;
+import com.amazonaws.services.elasticloadbalancingv2.model.DescribeTargetHealthRequest;
 import com.amazonaws.services.elasticloadbalancingv2.model.Listener;
 import com.amazonaws.services.elasticloadbalancingv2.model.TargetGroup;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -88,7 +89,7 @@ public class ElbTargetGroupScanner extends AbstractEntityScanner<TargetGroup> {
 		ObjectNode n = toJson(tg);
 		n.put("name", n.path("targetGroupName").asText());
 		n.put("arn", tg.getTargetGroupArn());
-
+		
 		getGraphDB().nodes("AwsElbTargetGroup").idKey("name", "region", "account").properties(n).merge();
 		getAwsScanner().execGraphOperation(TargetGroupGraphOperation.class, n);
 	}
@@ -110,6 +111,7 @@ public class ElbTargetGroupScanner extends AbstractEntityScanner<TargetGroup> {
 		AmazonElasticLoadBalancingClient client = getAwsScanner()
 				.getClient(AmazonElasticLoadBalancingClientBuilder.class);
 
+		
 		DescribeTargetGroupsRequest tgRequest = new DescribeTargetGroupsRequest().withNames(name);
 
 		DescribeTargetGroupsResult result = client.describeTargetGroups(tgRequest);
