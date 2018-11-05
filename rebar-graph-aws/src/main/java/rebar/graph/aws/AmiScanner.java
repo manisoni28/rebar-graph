@@ -46,7 +46,7 @@ public class AmiScanner extends AbstractEntityScanner<Image> {
 		super(scanner);
 	}
 
-	public void project(Image image) {
+	protected void project(Image image) {
 		ObjectNode n = toJson(image);
 		n.set("account", n.get("ownerId"));
 
@@ -122,11 +122,7 @@ public class AmiScanner extends AbstractEntityScanner<Image> {
 
 	}
 
-	@Override
-	public void scan(JsonNode entity) {
-
-		String imageId = entity.path("imageId").asText();
-		
+	public void scanImageId(String imageId) {
 		try {
 			AmazonEC2 ec2 = getClient(AmazonEC2ClientBuilder.class);
 			DescribeImagesRequest request = new DescribeImagesRequest().withImageIds(imageId);
@@ -140,6 +136,13 @@ public class AmiScanner extends AbstractEntityScanner<Image> {
 				getGraphDB().nodes("AwsAmi").id("region", getRegionName()).id("imageId", imageId).delete();
 			}
 		}
+	}
+	@Override
+	public void scan(JsonNode entity) {
+
+		String imageId = entity.path("imageId").asText();
+		
+		scanImageId(imageId);
 
 	}
 
