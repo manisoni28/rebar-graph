@@ -7,4 +7,4 @@ steps:
   commands:
   - env
   - pwd
-  - touch ${GRADLE_HOME}/foo.txt
+  - touch $GRADLE_HOME/foo.txt
