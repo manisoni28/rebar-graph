@@ -22,6 +22,9 @@ import java.util.Optional;
 
 public abstract class GraphDriver {
 
+	public static final String GRAPH_URL="GRAPH_URL";
+	public static final String GRAPH_USERNAME="GRAPH_USERNAME";
+	public static final String GRAPH_PASSWORD="GRAPH_PASSWORD";
 	
 	public static class Builder {
 		
@@ -37,23 +40,23 @@ public abstract class GraphDriver {
 			return Optional.ofNullable(System.getenv(s));
 		}
 		public Optional<String> getUrl() {
-			return getEnv("GRAPH_URL");
+			return getEnv(GRAPH_URL);
 		}
 		public Builder withUrl(String url) {
-			return withEnv("GRAPH_URL",url);
+			return withEnv(GRAPH_URL,url);
 		}
 
 		public Optional<String> getUsername() {
-			return getEnv("GRAPH_USERNAME");
+			return getEnv(GRAPH_USERNAME);
 		}
 		public Builder withUsername(String username) {
-			return withEnv("GRAPH_USERNAME",username);
+			return withEnv(GRAPH_USERNAME,username);
 		}
 		public Optional<String> getPassword() {
-			return getEnv("GRAPH_PASSWORD");
+			return getEnv(GRAPH_PASSWORD);
 		}
 		public Builder withPassword(String password) {
-			return withEnv("GRAPH_PASSWORD",password);
+			return withEnv(GRAPH_PASSWORD,password);
 		}
 		
 		public Builder withEnv(String key, String val) {
@@ -67,7 +70,7 @@ public abstract class GraphDriver {
 		}
 		public GraphDriver build()  {
 			try {
-				Optional url = getEnv("GRAPH_URL");
+				Optional url = getEnv(GRAPH_URL);
 				if (url.isPresent()) {
 				
 					Builder b = (Builder) Class.forName("rebar.graph.neo4j.Neo4jDriver$Builder").newInstance();
@@ -76,7 +79,7 @@ public abstract class GraphDriver {
 				
 				}
 				else {
-					throw new GraphException("GRAPH_URL not set");
+					throw new GraphException(GRAPH_URL+" not set");
 				}
 			}
 			catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {

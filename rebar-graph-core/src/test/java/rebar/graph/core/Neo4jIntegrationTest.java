@@ -75,13 +75,10 @@ public class Neo4jIntegrationTest {
 		if (neo4jAvailable == null) {
 			try {
 
-				// we use NEO4j_URL, NEO4J_USERNAME and NEO4J_PASSWORD because unlike runtime,
-				// we may be running tests
-				// against multiple databases during the test suite
 
-				String tryUrl = getTestProperty("NEO4J_URL").orElse(getDefaultNeo4jUrl());
-				Optional<String> username = getTestProperty("NEO4J_USERNAME");
-				Optional<String> password = getTestProperty("NEO4J_PASSWORD");
+				String tryUrl = getTestProperty(GraphDriver.GRAPH_URL).orElse(getDefaultNeo4jUrl());
+				Optional<String> username = getTestProperty(GraphDriver.GRAPH_USERNAME);
+				Optional<String> password = getTestProperty(GraphDriver.GRAPH_PASSWORD);
 				logger.info("trying {}",tryUrl);
 				GraphDriver.Builder builder = new GraphDriver.Builder().withUrl(tryUrl);
 				if (username.isPresent()) {

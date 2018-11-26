@@ -82,11 +82,11 @@ public class NeoDriverTest extends Neo4jIntegrationTest {
 
 	
 	private GraphDriver.Builder applyCredentials(GraphDriver.Builder b) {
-		if (getTestProperty("NEO4J_USERNAME").isPresent()) {
-			b =b.withUsername(getTestProperty("NEO4J_USERNAME").get());
+		if (getTestProperty(GraphDriver.GRAPH_USERNAME).isPresent()) {
+			b =b.withUsername(getTestProperty(GraphDriver.GRAPH_USERNAME).get());
 		}
-		if (getTestProperty("NEO4J_PASSWORD").isPresent()) {
-			b =b.withPassword(getTestProperty("NEO4J_PASSWORD").get());
+		if (getTestProperty(GraphDriver.GRAPH_PASSWORD).isPresent()) {
+			b =b.withPassword(getTestProperty(GraphDriver.GRAPH_PASSWORD).get());
 		}
 		return b;
 	}

@@ -48,17 +48,17 @@ public class Neo4jDriver extends GraphDriver {
 		
 		@Override
 		public Optional<String> getUrl() {
-			return getEnv("NEO4J_URL");
+			return getEnv(GRAPH_URL);
 		}
 
 		@Override
 		public Optional<String> getUsername() {
-			return getEnv("NEO4J_USERNAME");
+			return getEnv(GRAPH_USERNAME);
 		}
 
 		@Override
 		public Optional<String> getPassword() {
-			return getEnv("NEO4J_PASSWORD");
+			return getEnv(GRAPH_PASSWORD);
 		}
 
 		public Builder withDriver(Driver d) {
@@ -74,14 +74,7 @@ public class Neo4jDriver extends GraphDriver {
 				return val;
 			}
 			
-			s = s.replace("GRAPH_", "NEO4J_");
-			val = super.getEnv(s.replace("GRAPH_","NEO4J_"));
-			if (val.isPresent()) {
-				return val;
-			}
-			
-			val = super.getEnv(s.replace("NEO4J_","GRAPH_"));
-			return val;
+			return Optional.empty();
 		}
 
 		@Override

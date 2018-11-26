@@ -1,0 +1,43 @@
+
+plugins {
+  id "us.kirchmeier.capsule" version "1.0.2"
+}
+
+task fatCapsule(type: FatCapsule) {
+  applicationClass 'rebar.graph.aliyun.AliyunMain'
+}
+
+mainClassName = "rebar.graph.aliyun.AliyunMain"
+
+
+task buildZip(type: Zip) {
+    archiveName = "lambda.zip"
+    from compileJava
+    from processResources              
+    into('lib') {
+        from configurations.compileClasspath
+    }           
+}
+
+build.dependsOn buildZip
+build.dependsOn fatCapsule
+
+task buildImage(type:Exec, dependsOn:build) {
+  workingDir '.'
+  //on linux
+  commandLine './build-image'
+}
+
+dependencies {
+
+    compile project(':rebar-graph-core')
+
+    compile 'com.aliyun:aliyun-java-sdk-ecs:4.13.0'
+    compile 'com.aliyun:aliyun-java-sdk-core:4.2.1'
+    compile 'com.aliyun:aliyun-java-sdk-sts:3.0.0'
+    compile 'com.aliyun.oss:aliyun-sdk-oss:3.3.0'
+    compile "ch.qos.logback:logback-classic:${LOGBACK_VERSION}"
+    testCompile project(':rebar-graph-test')
+    
+
+}

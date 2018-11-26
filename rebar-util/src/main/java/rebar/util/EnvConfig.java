@@ -31,6 +31,11 @@ public class EnvConfig {
 		
 	}
 
+	public EnvConfig copy() {
+		EnvConfig copy = new EnvConfig();
+		copy.env = new HashMap<>(copy.env);
+		return copy;
+	}
 	public EnvConfig withEnv(String key, String val) {
 		
 		Map<String,String> copy = new HashMap<>(env);

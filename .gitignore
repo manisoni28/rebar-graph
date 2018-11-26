@@ -9,3 +9,4 @@ bin/
 serverless.yml
 *.swp
 rebar-delete.sh
+PrivateTest.java

@@ -15,6 +15,10 @@
  */
 package rebar.graph.core;
 
+import static rebar.graph.driver.GraphDriver.GRAPH_PASSWORD;
+import static rebar.graph.driver.GraphDriver.GRAPH_URL;
+import static rebar.graph.driver.GraphDriver.GRAPH_USERNAME;
+
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -28,15 +32,21 @@ import com.google.common.collect.Maps;
 import rebar.graph.driver.GraphDriver;
 import rebar.graph.driver.GraphException;
 import rebar.graph.neo4j.Neo4jDriver;
+import rebar.util.EnvConfig;
+import rebar.util.RebarException;
 
 public class RebarGraph {
 
-	static org.slf4j.Logger logger = LoggerFactory.getLogger(RebarGraph.class);
 	
 
-	Map<String, Supplier<? extends Scanner>> supplierMap = Maps.newConcurrentMap();
+	
+	static org.slf4j.Logger logger = LoggerFactory.getLogger(RebarGraph.class);
 
+	Map<String, Supplier<? extends Scanner>> supplierMap = Maps.newConcurrentMap();
+	
 	GraphDB graphWriter;
+
+	EnvConfig env = null;
 	
 	private RebarGraph() {
 
@@ -45,84 +55,109 @@ public class RebarGraph {
 	public static class Builder {
 
 		GraphDB graphDb;
-		
-		Map<String,String> env = Maps.newHashMap();
+
+		EnvConfig env = new EnvConfig();
 
 		Graph g;
 
+		
+		public Builder withEnv(EnvConfig cfg) {
+			this.env = cfg.copy();
+			return this;
+		}
 		public Builder withGraphDB(GraphDB graphWriter) {
 			this.graphDb = graphWriter;
 			return this;
 		}
-		
 
 		public Builder withGraphPassword(String password) {
-			env.put("GRAPH_PASSWORD", password);
+			env.withEnv(GRAPH_PASSWORD, password);
 			return this;
 		}
+
 		public Builder withGraphUsername(String username) {
-			env.put("GRAPH_USERNAME", username);
+			env.withEnv(GRAPH_USERNAME, username);
 			return this;
 		}
+
 		public Builder withGraphUrl(String url) {
-			env.put("GRAPH_URL", url);
+			env.withEnv(GRAPH_URL, url);
 			return (this);
 		}
 
 		public Builder withInMemoryTinkerGraph() {
-			env.put("GRAPH_URL", "memory");
+			env.withEnv(GRAPH_URL, "memory");
 			return this;
 		}
 
 		public Optional<String> getEnv(String name) {
-			String val = env.get(name);
-			if (val==null) {
-				val = System.getenv(name);
-			}
-			
-			return Optional.ofNullable(val);
+			return env.get(name);
 		}
-	
+
+		
+
 		public RebarGraph build() {
 
 			RebarGraph rg = new RebarGraph();
 
-			if (graphDb!=null) {
+			if (graphDb != null) {
 				rg.graphWriter = graphDb;
+				rg.env = env;
 				return rg;
 			}
-			
-			Optional<String> graphUrl = getEnv("GRAPH_URL");
+
+			Optional<String> graphUrl = getEnv(GRAPH_URL);
 			if (graphUrl.isPresent()) {
-				
+
 				GraphDriver.Builder b = new GraphDriver.Builder().withUrl(graphUrl.get());
-				if (env.containsKey("GRAPH_USERNAME") && env.containsKey("GRAPH_PASSWORD")) {
-					b =b.withUsername(env.get("GRAPH_USERNAME")).withPassword(env.get("GRAPH_PASSWORD"));
+				if (env.get(GRAPH_USERNAME).isPresent() && env.get(GRAPH_PASSWORD).isPresent()) {
+					b = b.withUsername(env.get(GRAPH_USERNAME).get()).withPassword(env.get(GRAPH_PASSWORD).get());
 				}
 				GraphDriver driver = b.build();
 				if (driver.getClass().getName().toLowerCase().contains("neo4j")) {
 					Neo4jGraphDB gw = new Neo4jGraphDB((Neo4jDriver) driver);
 					rg.graphWriter = gw;
+					rg.env = env;
 					return rg;
+				} else {
+					throw new GraphException("GRAPH_URL " + graphUrl.get() + " not supported");
 				}
-				else {
-					throw new GraphException("GRAPH_URL "+graphUrl.get()+" not supported");
-				}
-				
-			}
-			else {
+
+			} else {
 				throw new GraphException("GRAPH_URL not set");
 			}
-			
-		
 
 		}
 	}
 
+
+	protected <T extends ScannerBuilder<? extends Scanner>> T createBuilder() {
+		try {
+			Optional<String> scannerClass = env.get("REBAR_SCANNER");
+			if (!scannerClass.isPresent()) {
+				throw new RebarException("REBAR_SCANNER not set");
+			}
+			String className = scannerClass.get();
+			if (!className.endsWith("Builder")) {
+				className = className + "Builder";
+			}
+			Class clazz = Class.forName(className);
+
+			T t = (T) createBuilder(clazz);
+
+			return t;
+		} catch (ClassNotFoundException e) {
+			throw new RebarException(e);
+		}
+
+	}
+
+	
 	public <T extends ScannerBuilder<? extends Scanner>> T createBuilder(Class<T> clazz) {
 		try {
 			T t = (T) clazz.newInstance();
 			t.setRebarGraph(this);
+			t.withEnv(env);
 			Preconditions.checkNotNull(t.getRebarGraph());
 			return t;
 		} catch (IllegalAccessException | InstantiationException e) {
@@ -133,10 +168,6 @@ public class RebarGraph {
 	public GraphDB getGraphDB() {
 		return graphWriter;
 	}
-	
-
-
-
 
 	public <T extends Scanner> void registerScanner(Class<T> scannerType, String name, Supplier<T> supplier) {
 		String key = scannerType.getName() + ":" + name;

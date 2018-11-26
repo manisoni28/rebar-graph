@@ -15,6 +15,10 @@
  */
 package rebar.graph.neo4j;
 
+import static rebar.graph.driver.GraphDriver.GRAPH_PASSWORD;
+import static rebar.graph.driver.GraphDriver.GRAPH_URL;
+import static rebar.graph.driver.GraphDriver.GRAPH_USERNAME;
+
 import java.util.Optional;
 
 import org.junit.jupiter.api.Assumptions;
@@ -75,14 +79,10 @@ public abstract class Neo4jIntegrationTest {
 		if (neo4jAvailable == null) {
 			try {
 
-				// we use NEO4j_URL, NEO4J_USERNAME and NEO4J_PASSWORD because unlike runtime,
-				// we may be running tests
-				// against multiple databases during the test suite
-
-				String tryUrl = getTestProperty("NEO4J_URL").orElse(getDefaultNeo4jUrl());
-				Optional<String> username = getTestProperty("NEO4J_USERNAME");
-				Optional<String> password = getTestProperty("NEO4J_PASSWORD");
-				logger.info("trying {}",tryUrl);
+				String tryUrl = getTestProperty(GRAPH_URL).orElse(getDefaultNeo4jUrl());
+				Optional<String> username = getTestProperty(GRAPH_USERNAME);
+				Optional<String> password = getTestProperty(GRAPH_PASSWORD);
+				logger.info("trying {}", tryUrl);
 				GraphDriver.Builder builder = new GraphDriver.Builder().withUrl(tryUrl);
 				if (username.isPresent()) {
 					builder = builder.withUsername(username.get());

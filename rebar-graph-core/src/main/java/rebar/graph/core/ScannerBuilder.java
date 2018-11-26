@@ -19,10 +19,14 @@ import java.util.function.Supplier;
 
 import com.google.common.base.Suppliers;
 
+import rebar.util.EnvConfig;
+
 public abstract class ScannerBuilder<X> {
 
 	RebarGraph graph;
 
+	EnvConfig env = new EnvConfig();
+	
 	public abstract X build();
 
 	
@@ -43,4 +47,8 @@ public abstract class ScannerBuilder<X> {
 		this.graph = rg;
 	}
 
+	protected <T extends ScannerBuilder> T withEnv(EnvConfig env) {
+		this.env =  env.copy();
+		return (T) this;
+	}
 }
