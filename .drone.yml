@@ -5,7 +5,7 @@ steps:
 - name: test
   image: gradle:jdk8
   commands:
-  - export GRADLE_USER_HOME=/drone/.gradle
+  - export GRADLE_USER_HOME=/drone/src/.gradle
   - mkdir $GRADLE_USER_HOME
   - env
   - pwd
