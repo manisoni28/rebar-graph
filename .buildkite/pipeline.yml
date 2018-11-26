@@ -1,4 +1,5 @@
 steps:
   - command:
+    - apk add openjdk8
     - ./gradlew clean check
     
