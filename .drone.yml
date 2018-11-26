@@ -5,9 +5,11 @@ steps:
 - name: test
   image: gradle:jdk8
   environment:
-    - GRADLE_USER_HOME=${HOME}/.gradle
+    - GRADLE_USER_HOME=/drone/.gradle
   commands:
+  - export GRADLE_USER_HOME=${HOME}/.gradle
   - env
   - pwd
   - whoami
+  - touch $GRADLE_USER_HOME/foo.txt
   - gradle check
