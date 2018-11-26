@@ -4,8 +4,6 @@ name: default
 steps:
 - name: test
   image: gradle:jdk8
-  environment:
-    - GRADLE_USER_HOME=/drone/.gradle
   commands:
   - export GRADLE_USER_HOME=${HOME}/.gradle
   - env
