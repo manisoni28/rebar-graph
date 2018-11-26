@@ -4,8 +4,10 @@ name: default
 steps:
 - name: test
   image: gradle:jdk8
+  environment: 
+  - GRADLE_USER_HOME=${HOME}/.gradle
   commands:
   - env
   - pwd
   - whoami
-  - touch $GRADLE_HOME/foo.txt
+  - gradle check
