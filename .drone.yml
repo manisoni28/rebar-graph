@@ -3,12 +3,9 @@ name: default
 
 steps:
 - name: test
-  image: gradle:jdk8
+  image: openjdk:8
   commands:
-  - export GRADLE_USER_HOME=/drone/src/.gradle
-  - mkdir $GRADLE_USER_HOME
   - env
   - pwd
   - whoami
-  - touch $GRADLE_USER_HOME/foo.txt
-  - gradle check
+  - ./gradlew check
