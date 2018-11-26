@@ -6,6 +6,7 @@ steps:
   image: gradle:jdk8
   commands:
   - export GRADLE_USER_HOME=/drone/.gradle
+  - mkdir $GRADLE_USER_HOME
   - env
   - pwd
   - whoami
