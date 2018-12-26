@@ -2,7 +2,7 @@
 plugins {
   id 'com.github.johnrengelman.shadow' version '4.0.3'
 }
-
+apply plugin: 'application'
 
 
 mainClassName = "rebar.graph.docker.DockerMain"

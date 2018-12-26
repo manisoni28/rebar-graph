@@ -1,4 +1,4 @@
-
+apply plugin: 'application'
 
 mainClassName="rebar.graph.doc.GraphDoc"
 dependencies {

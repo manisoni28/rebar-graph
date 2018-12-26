@@ -18,7 +18,17 @@ steps:
   - pwd
   - ./gradlew dependencies
   - ./tools/wait-for-neo4j
-  - ./gradlew clean check
-- name: docker
-  commands:
-  - ./rebar-graph-kubernetes/build-image
+  - ./gradlew clean build
+- name: rebar-graph-kubernetes
+  image: plugins/docker
+  settings:
+    context: rebar-graph-kubernetes
+    repo: rebar/rebar-graph-kubernetes
+    dockerfile: rebar-graph-kubernetes/Dockerfile
+    auto_tag: true
+    username: 
+        from_secret: DOCKER_REGISTRY_USERNAME
+    password:
+        from_secret: DOCKER_REGISTRY_PASSWORD
+
+

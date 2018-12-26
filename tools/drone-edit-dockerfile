@@ -1,0 +1,20 @@
+#!/bin/bash
+
+
+
+
+
+for FILENAME in $(find $CI_WORKSPACE -name 'Dockerfile') ; do
+echo editing $FILENAME
+pushd `dirname $FILENAME` 2>/dev/null
+echo
+echo
+DOCKERFILE_DIR=`pwd`
+DOCKERFILE_DIR=`basename $DOCKERFILE_DIR`
+popd 2>/dev/null
+sed -i.bak "s/COPY /COPY $DOCKERFILE_DIR\//g" $FILENAME
+cat $FILENAME
+done
+
+
+

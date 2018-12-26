@@ -20,7 +20,6 @@ subprojects {
     apply plugin: 'java'
     apply plugin: 'maven'
     apply plugin: 'eclipse'
-    apply plugin: 'application'
     apply plugin: 'jacoco'
     apply plugin: "com.github.hierynomus.license"
 
