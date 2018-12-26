@@ -2,6 +2,7 @@
 plugins {
   id "com.github.hierynomus.license" version "0.14.0" 
 }
+
 apply plugin: 'eclipse'
 apply plugin: 'java'
 

@@ -2,6 +2,7 @@
 #
 # Check https://circleci.com/docs/2.0/language-java/ for more details
 #
+
 version: 2
 jobs:
   build:
@@ -12,7 +13,10 @@ jobs:
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
       # documented at https://circleci.com/docs/2.0/circleci-images/
-      # - image: circleci/postgres:9.4
+      - image: neo4j
+        environment:
+          NEO4J_AUTH: "none"
+          NEO4J_ACCEPT_LICENSE_AGREEMENT: "yes"
 
     working_directory: ~/repo
 
@@ -31,12 +35,24 @@ jobs:
           # fallback to using the latest cache if no exact match is found
           - v1-dependencies-
 
-      - run: gradle dependencies
+        
+      # run tests!
+      - run: 
+          name: Build and Test
+          command: ./gradlew clean build
 
       - save_cache:
           paths:
             - ~/.gradle
           key: v1-dependencies-{{ checksum "build.gradle" }}
-        
-      # run tests!
-      - run: ./gradlew clean build
+          
+      - setup_remote_docker
+
+      - run:
+          name: Build and Publish Docker Images
+          command: |
+            echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
+            docker build -t rebar-graph-kubernetes -t rebar/rebar-graph-kubernetes rebar-graph-kubernetes
+            docker build -t rebar-graph-aws -t rebar/rebar-graph-aws rebar-graph-aws
+            docker push rebar/rebar-graph-kubernetes
+            docker logout
