@@ -7,7 +7,7 @@ GRAPH_URL=$(echo $GRAPH_URL | sed 's/bolt/http/')
 echo $GRAPH_URL
 for COUNT in {0..60}
 do
-    curl $GRAPH_URL
+    curl --silent $GRAPH_URL
     if [ "$?" = "0" ]; then
         echo OK
         exit 0

@@ -2,7 +2,7 @@
 
 # Rebar Graph
 
-[![CircleCI](https://circleci.com/gh/rebar-cloud/rebar-graph.svg?style=svg)](https://circleci.com/gh/rebar-cloud/rebar-graph)
+[![Build Status](https://cloud.drone.io/api/badges/rebar-cloud/rebar-graph/status.svg)](https://cloud.drone.io/rebar-cloud/rebar-graph)
 
 Builds and maintains a graph model of your infrastructure.
 
