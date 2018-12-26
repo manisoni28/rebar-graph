@@ -1,6 +1,6 @@
 apply plugin: 'java'
 
-
+mainClassName='dummy'
 dependencies {
     compile project(':rebar-util')
     compile project(':rebar-graph-driver-neo4j')

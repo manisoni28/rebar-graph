@@ -71,22 +71,22 @@ public class RebarGraph {
 		}
 
 		public Builder withGraphPassword(String password) {
-			env.withEnv(GRAPH_PASSWORD, password);
+			env = env.withEnv(GRAPH_PASSWORD, password);
 			return this;
 		}
 
 		public Builder withGraphUsername(String username) {
-			env.withEnv(GRAPH_USERNAME, username);
+			env = env.withEnv(GRAPH_USERNAME, username);
 			return this;
 		}
 
 		public Builder withGraphUrl(String url) {
-			env.withEnv(GRAPH_URL, url);
+			env = env.withEnv(GRAPH_URL, url);
 			return (this);
 		}
 
 		public Builder withInMemoryTinkerGraph() {
-			env.withEnv(GRAPH_URL, "memory");
+			env = env.withEnv(GRAPH_URL, "memory");
 			return this;
 		}
 
