@@ -42,22 +42,22 @@ public abstract class AbstractIntegrationTest {
 		if (this.rebarGraph!=null) {
 			return;
 		}
-		String url = "bolt://localhost:7687";
-		try {
-			RebarGraph graph = new RebarGraph.Builder().withGraphUrl(url).build();
 
+		try {
+			RebarGraph graph = new RebarGraph.Builder().build();
+			
 			graph.getGraphDB().nodes().label("JUnitTest").match().forEach(it->{
 			//	System.out.println(">> "+it);
 			});
 
 	
 			rebarGraph = graph;
-			logger.info("test is using: {}",url);
+		
 			cleanupTestData();
 		} catch (Exception e) {
 
 			e.printStackTrace();
-			logger.warn("could not connect to {} ... provider will be blacklisted",url);
+			logger.warn("could not connect to {} ... provider will be blacklisted");
 
 			Assumptions.assumeTrue(false);
 		}

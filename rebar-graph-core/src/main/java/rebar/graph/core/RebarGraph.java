@@ -107,6 +107,7 @@ public class RebarGraph {
 			}
 
 			Optional<String> graphUrl = getEnv(GRAPH_URL);
+			logger.info("GRAPH_URL: {}",graphUrl.orElse(""));
 			if (graphUrl.isPresent()) {
 
 				GraphDriver.Builder b = new GraphDriver.Builder().withUrl(graphUrl.get());

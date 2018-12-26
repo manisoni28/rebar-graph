@@ -18,4 +18,4 @@ steps:
   - pwd
   - ./gradlew dependencies
   - ./tools/wait-for-neo4j
-  - ./gradlew check
+  - ./gradlew clean check 

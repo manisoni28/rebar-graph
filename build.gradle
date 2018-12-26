@@ -51,6 +51,7 @@ subprojects {
     test {
         useJUnitPlatform()
         testLogging.showStandardStreams = true
+        environment 'GRAPH_URL', System.getenv('GRAPH_URL') ?: "bolt://localhost:7687"
         reports {
             junitXml.enabled = true
             html.enabled = true
