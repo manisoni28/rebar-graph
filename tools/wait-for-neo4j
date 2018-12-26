@@ -1,0 +1,15 @@
+#!/bin/bash
+
+export GRAPH_URL=${GRAPH_URL-"http://localhost:7474"}
+
+for COUNT in {0..60}
+do
+    curl $GRAPH_URL
+    if [ "$?" = "0" ]; then
+        echo OK
+        exit 0
+    fi
+    sleep 1
+done
+
+exit 0

@@ -15,6 +15,5 @@ steps:
   - env
   - pwd
   - whoami
-  - sleep 30
-  - curl http://neo4j:7474
+  - ./tools/wait-for-neo4j
   - ./gradlew check
