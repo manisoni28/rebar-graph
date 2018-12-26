@@ -1,0 +1,10 @@
+#!/bin/bash
+
+REPO_NAME=$(basename $(pwd))
+docker build . -t $REPO_NAME -t rebar/$REPO_NAME || exit 99
+
+echo
+echo To push to docker hub: 
+echo
+echo     docker push rebar/${REPO_NAME}
+echo
