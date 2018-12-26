@@ -16,6 +16,6 @@ steps:
   commands:
   - env
   - pwd
-  - whoami
+  - ./gradlew dependencies
   - ./tools/wait-for-neo4j
   - ./gradlew check
