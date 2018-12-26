@@ -12,7 +12,7 @@ chmod +x /bin/kubectl
 
 
 COPY src/main/docker/app /app
-COPY build/libs/rebar-graph-kubernetes-capsule.jar /app/app.jar
+COPY build/libs/rebar-graph-kubernetes-all.jar /app/app.jar
 
 
 RUN chmod +x /app/docker-init
