@@ -14,4 +14,3 @@ To get started have a look at the following modules:
 | Kubernetes | [rebar-graph-kubernetes](https://github.com/rebar-cloud/rebar-graph/blob/master/rebar-graph-kubernetes/README.md)|
 
 
-
