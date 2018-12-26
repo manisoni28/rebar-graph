@@ -49,11 +49,5 @@ jobs:
       - setup_remote_docker
 
       - run:
-          name: Build and Publish Docker Images
-          command: |
-            echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
-            docker build rebar-graph-kubernetes -t rebar/rebar-graph-kubernetes --build-arg CI_BUILD_URL=${CIRCLE_BUILD_URL} --build-arg GIT_COMMIT=${CIRCLE_SHA1} --build-arg GIT_REPO=${CIRCLE_REPOSITORY_URL}
-            docker build rebar-graph-aws -t rebar/rebar-graph-aws --build-arg CI_BUILD_URL=${CIRCLE_BUILD_URL} --build-arg GIT_COMMIT=${CIRCLE_SHA1} --build-arg GIT_REPO=${CIRCLE_REPOSITORY_URL}
-            docker push rebar/rebar-graph-kubernetes
-            docker push rebar/rebar-graph-aws
-            docker logout
+          name: Docker Images
+          command: tools/circleci-publish-images
