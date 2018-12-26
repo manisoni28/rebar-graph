@@ -11,6 +11,8 @@ services:
 steps:
 - name: build
   image: openjdk:8
+  environment:
+    GRAPH_URL: bolt://neo4j:7687
   commands:
   - env
   - pwd
