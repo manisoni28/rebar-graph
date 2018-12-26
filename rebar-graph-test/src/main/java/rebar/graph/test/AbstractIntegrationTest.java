@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 import rebar.graph.core.Neo4jGraphDB;
 import rebar.graph.core.RebarGraph;
 import rebar.graph.neo4j.Neo4jDriver;
+import rebar.util.EnvConfig;
 
 
 
@@ -43,8 +44,18 @@ public abstract class AbstractIntegrationTest {
 			return;
 		}
 
+		EnvConfig checkConfig = new EnvConfig();
+		
+	
 		try {
-			RebarGraph graph = new RebarGraph.Builder().build();
+			RebarGraph.Builder b = new RebarGraph.Builder();
+			
+			if (!new EnvConfig().get("GRAPH_URL").isPresent()) {
+				LoggerFactory.getLogger(AbstractIntegrationTest.class).info("GRAPH_URL not set ... defaulting to bolt://localhost:7687");
+				b = b.withGraphUrl("bolt://localhost:7687");
+			}
+			
+			RebarGraph graph = b.build();
 			
 			graph.getGraphDB().nodes().label("JUnitTest").match().forEach(it->{
 			//	System.out.println(">> "+it);
@@ -56,8 +67,8 @@ public abstract class AbstractIntegrationTest {
 			cleanupTestData();
 		} catch (Exception e) {
 
-			e.printStackTrace();
-			logger.warn("could not connect to {} ... provider will be blacklisted");
+	
+			logger.warn("could not connect to neo4j",e);
 
 			Assumptions.assumeTrue(false);
 		}
