@@ -108,6 +108,7 @@ public class KubeScanner extends Scanner {
 
 		VersionInfo version = getKubernetesClient().getVersion();
 
+		getKubernetesClient().pods().inAnyNamespace().list();
 		ObjectNode n = Json.objectMapper().valueToTree(version);
 
 		n.put("masterUrl", url.toExternalForm());

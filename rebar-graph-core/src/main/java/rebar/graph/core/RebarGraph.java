@@ -107,6 +107,12 @@ public class RebarGraph {
 			}
 
 			Optional<String> graphUrl = getEnv(GRAPH_URL);
+			if (!graphUrl.isPresent()) {
+				
+				graphUrl = Optional.of("bolt://localhost:7687");
+				
+				logger.info("GRAPH_URL not set ... defaulting to {}",graphUrl.get());
+			}
 			logger.info("GRAPH_URL: {}",graphUrl.orElse(""));
 			if (graphUrl.isPresent()) {
 

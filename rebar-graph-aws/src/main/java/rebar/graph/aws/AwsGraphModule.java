@@ -13,36 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package rebar.graph.kubernetes;
+package rebar.graph.aws;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import rebar.graph.core.AbstractGraphModule;
+import rebar.graph.core.Main;
 import rebar.graph.core.RebarGraph;
 
-
-public class Main {
+public class AwsGraphModule extends AbstractGraphModule {
 
 	public static void main(String[] args) {
+		Main.main(args);
+	}
+	
+	public void run() {
 
 		
-		// This is intended to be invoked from a pod inside the cluster.
-		// If it exits with an exception, it is ok.  Kubernetes should reschedule us.
-		Logger logger = LoggerFactory.getLogger(Main.class);
 
-	
-		RebarGraph g = new RebarGraph.Builder().build();
+		AwsScanner aws = getRebarGraph().createBuilder(AwsScannerBuilder.class).build();
 
-	
-		KubeScanner scanner =g.createBuilder(KubernetesScannerBuilder.class).build();
-		scanner.applyConstraints();
-		while (true == true) {
+		boolean running = true;
+		while (running) {
 			
-			
-			scanner.scan();
-			scanner.watchEvents(); // idempotent
+			aws.getScanner(AllEntityScanner.class).scan();
 			try {
-				Thread.sleep(60000);
+				Thread.sleep(60000L);
 			} catch (Exception e) {
 			}
 		}

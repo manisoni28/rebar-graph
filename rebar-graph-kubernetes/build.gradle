@@ -3,15 +3,8 @@ plugins {
 }
 apply plugin: 'application'
 
-mainClassName = "rebar.graph.kubernetes.Main"
+mainClassName = "rebar.graph.core.Main"
 
-task buildImage(type:Exec) {
-  workingDir '.'
-  //on linux
-  commandLine './build-image'
-}
-
-buildImage.dependsOn shadowJar
 
 dependencies {
 
@@ -20,6 +13,5 @@ dependencies {
     compile "com.amazonaws:aws-java-sdk-eks:${AWS_VERSION}"
     compile "ch.qos.logback:logback-classic:${LOGBACK_VERSION}"
     testCompile project(':rebar-graph-test')
-
 
 }

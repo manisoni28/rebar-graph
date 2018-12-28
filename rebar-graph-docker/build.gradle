@@ -5,34 +5,14 @@ plugins {
 apply plugin: 'application'
 
 
-mainClassName = "rebar.graph.docker.DockerMain"
+mainClassName = "rebar.graph.core.Main"
 
-
-task buildZip(type: Zip) {
-    archiveName = "lambda.zip"
-    from compileJava
-    from processResources              
-    into('lib') {
-        from configurations.compileClasspath
-    }           
-}
-
-build.dependsOn buildZip
-build.dependsOn shadowJar
-
-task buildImage(type:Exec, dependsOn:build) {
-  workingDir '.'
-  //on linux
-  commandLine './build-image'
-}
 
 dependencies {
 
     compile project(':rebar-graph-core')
 
     compile 'com.spotify:docker-client:8.14.3'
-    compile 'com.amazonaws:aws-lambda-java-core:1.2.0'
-	compile "com.amazonaws:aws-lambda-java-events:2.2.2"
     compile "ch.qos.logback:logback-classic:${LOGBACK_VERSION}"
     testCompile project(':rebar-graph-test')
     

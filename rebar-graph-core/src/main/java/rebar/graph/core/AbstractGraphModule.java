@@ -13,28 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package rebar.graph.aws;
+package rebar.graph.core;
 
-import rebar.graph.core.RebarGraph;
+public abstract class AbstractGraphModule implements GraphModule {
 
-public class Main {
+	
+	RebarGraph rebarGraph;
+	
+	public AbstractGraphModule() {
+		
+	}
 
-	public static void main(String[] args) {
 
-		RebarGraph g = new RebarGraph.Builder().build();
-
-		AwsScanner aws = g.createBuilder(AwsScannerBuilder.class).build();
-
-		boolean running = true;
-		while (running) {
-			
-			aws.getScanner(AllEntityScanner.class).scan();
-			try {
-				Thread.sleep(60000L);
-			} catch (Exception e) {
-			}
-		}
-
+	@Override
+	public RebarGraph getRebarGraph() {
+		return rebarGraph;
 	}
 
 }
