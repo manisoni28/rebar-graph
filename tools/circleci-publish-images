@@ -17,6 +17,7 @@ push_image() {
 build_image docker
 build_image kubernetes
 build_image aws
+build_image alibaba
 
 
 if [ ! "${CIRCLE_BRANCH}" = "master" ]; then
@@ -31,6 +32,7 @@ fi
 push_image docker
 push_image kubernetes
 push_image aws
+push_image alibaba
 
 docker logout 
 
