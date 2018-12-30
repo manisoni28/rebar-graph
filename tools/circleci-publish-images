@@ -3,9 +3,16 @@
 
 
 
+build_image() {
+    docker build rebar-graph-$1 -t rebar/graph-$1 --build-arg CI_BUILD_URL=${CIRCLE_BUILD_URL} --build-arg GIT_COMMIT=${CIRCLE_SHA1} --build-arg GIT_REPO=${CIRCLE_REPOSITORY_URL} || exit 99
+}
+push_image() {
+    docker push rebar/rebar-graph-$1 || exit 99
+}
 
-docker build rebar-graph-kubernetes -t rebar/rebar-graph-kubernetes --build-arg CI_BUILD_URL=${CIRCLE_BUILD_URL} --build-arg GIT_COMMIT=${CIRCLE_SHA1} --build-arg GIT_REPO=${CIRCLE_REPOSITORY_URL} || exit 99
-docker build rebar-graph-aws -t rebar/rebar-graph-aws --build-arg CI_BUILD_URL=${CIRCLE_BUILD_URL} --build-arg GIT_COMMIT=${CIRCLE_SHA1} --build-arg GIT_REPO=${CIRCLE_REPOSITORY_URL} || exit 99
+build_image docker
+build_image kubernetes
+build_image aws
 
 
 if [ ! "${CIRCLE_BRANCH}" = "master" ]; then
@@ -17,8 +24,10 @@ if [ ! "${DOCKER_PASSWORD}" = "" ]; then
     echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
 fi
 
-docker push rebar/rebar-graph-kubernetes || exit 99
-docker push rebar/rebar-graph-aws || exit 99
+push_image docker
+push_image kubernetes
+push_image aws
+
 docker logout 
 
 
