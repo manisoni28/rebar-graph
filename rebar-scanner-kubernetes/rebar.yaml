@@ -6,7 +6,7 @@ metadata:
   name: rebar-graph
   namespace: default
 
-# ClusterRole that 'rebar-graph-kubernetes' pods will use.
+# ClusterRole that 'rebar-scanner-kubernetes' pods will use.
 # Note that we have to use ClusterRole rather than Role because
 # we want visibility to objects outside our namespace and to 
 # non-namespaced objects. 
@@ -57,24 +57,24 @@ roleRef:
   name: rebar-graph
   apiGroup: rbac.authorization.k8s.io
 
-# The actual deployment of rebar-graph-kubernetes
+# The actual deployment of rebar-scanner-kubernetes
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: rebar-graph-kubernetes
+  name: rebar-scanner-kubernetes
   namespace: default
 spec:
   replicas: 1
   template:
     metadata:
       labels:
-        app: rebar-graph-kubernetes
+        app: rebar-scanner-kubernetes
     spec:
       serviceAccountName: rebar-graph
       containers:
         - name: rebar
-          image: rebar/rebar-graph-kubernetes
+          image: rebar/rebar-scanner-kubernetes
           imagePullPolicy: Always
           env:
             - name: GRAPH_URL

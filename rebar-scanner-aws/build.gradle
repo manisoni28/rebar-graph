@@ -9,7 +9,7 @@ mainClassName = "rebar.graph.core.Main"
 
 dependencies {
 
-    compile project(':rebar-graph-core')
+    compile project(':rebar-scanner-core')
     compile "com.amazonaws:aws-java-sdk-ec2:${AWS_VERSION}"
     compile "com.amazonaws:aws-java-sdk-sts:${AWS_VERSION}"
     compile "com.amazonaws:aws-java-sdk-rds:${AWS_VERSION}"
@@ -25,7 +25,7 @@ dependencies {
     compile 'com.amazonaws:aws-lambda-java-core:1.2.0'
 	compile "com.amazonaws:aws-lambda-java-events:2.2.2"
     compile "ch.qos.logback:logback-classic:${LOGBACK_VERSION}"
-    testCompile project(':rebar-graph-test')
+    testCompile project(':rebar-scanner-test')
     
 
 }

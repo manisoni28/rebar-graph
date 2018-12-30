@@ -1,20 +1,17 @@
-
 plugins {
   id 'com.github.johnrengelman.shadow' version '4.0.3'
 }
 apply plugin: 'application'
-
 
 mainClassName = "rebar.graph.core.Main"
 
 
 dependencies {
 
-    compile project(':rebar-graph-core')
-
-    compile 'com.spotify:docker-client:8.14.3'
+    compile project(':rebar-scanner-core')
+    compile "io.fabric8:kubernetes-client:${FABRIC8_VERSION}"
+    compile "com.amazonaws:aws-java-sdk-eks:${AWS_VERSION}"
     compile "ch.qos.logback:logback-classic:${LOGBACK_VERSION}"
-    testCompile project(':rebar-graph-test')
-    
+    testCompile project(':rebar-scanner-test')
 
 }

@@ -33,9 +33,9 @@ public class TestMe {
 		
 		final DockerClient docker = DefaultDockerClient.fromEnv().build();
 		
-		docker.pull("rebar/rebar-graph-kubernetes:latest");
+		docker.pull("rebar/rebar-scanner-kubernetes:latest");
 		
-		ImageInfo ii = docker.inspectImage("rebar/rebar-graph-kubernetes:latest");
+		ImageInfo ii = docker.inspectImage("rebar/rebar-scanner-kubernetes:latest");
 		
 		
 		JsonNode n = Json.objectMapper().valueToTree(ii);

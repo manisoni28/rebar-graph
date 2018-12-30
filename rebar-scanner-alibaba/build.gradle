@@ -9,14 +9,14 @@ mainClassName = "rebar.graph.core.Main"
 
 dependencies {
 
-    compile project(':rebar-graph-core')
+    compile project(':rebar-scanner-core')
 
     compile 'com.aliyun:aliyun-java-sdk-ecs:4.13.0'
     compile 'com.aliyun:aliyun-java-sdk-core:4.2.1'
     compile 'com.aliyun:aliyun-java-sdk-sts:3.0.0'
     compile 'com.aliyun.oss:aliyun-sdk-oss:3.3.0'
     compile "ch.qos.logback:logback-classic:${LOGBACK_VERSION}"
-    testCompile project(':rebar-graph-test')
+    testCompile project(':rebar-scanner-test')
     
 
 }
