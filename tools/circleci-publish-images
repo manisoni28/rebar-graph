@@ -4,7 +4,11 @@
 
 
 build_image() {
-    docker build rebar-graph-$1 -t rebar/graph-$1 --build-arg CI_BUILD_URL=${CIRCLE_BUILD_URL} --build-arg GIT_COMMIT=${CIRCLE_SHA1} --build-arg GIT_REPO=${CIRCLE_REPOSITORY_URL} || exit 99
+    docker build rebar-graph-$1 \
+    -t rebar/rebar-graph-$1 \
+    --build-arg CI_BUILD_URL=${CIRCLE_BUILD_URL} \
+    --build-arg GIT_COMMIT=${CIRCLE_SHA1} \
+    --build-arg GIT_REPO=${CIRCLE_REPOSITORY_URL} || exit 99
 }
 push_image() {
     docker push rebar/rebar-graph-$1 || exit 99
