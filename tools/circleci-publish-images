@@ -19,6 +19,11 @@ build_image kubernetes
 build_image aws
 build_image alibaba
 
+docker build rebar-dashboard -t rebar/rebar-dashboard \
+    --build-arg CI_BUILD_URL=${CIRCLE_BUILD_URL} \
+    --build-arg GIT_COMMIT=${CIRCLE_SHA1} \
+    --build-arg GIT_REPO=${CIRCLE_REPOSITORY_URL} || exit 99
+
 
 if [ ! "${CIRCLE_BRANCH}" = "master" ]; then
     echo "branch $CIRCLE_BRANCH is not master ... will not publish images"
@@ -33,6 +38,7 @@ push_image docker
 push_image kubernetes
 push_image aws
 push_image alibaba
+docker push rebar/rebar-dashboard || exit 99
 
 docker logout 
 
