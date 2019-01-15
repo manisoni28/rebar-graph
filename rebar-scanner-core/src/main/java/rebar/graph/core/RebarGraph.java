@@ -37,19 +37,16 @@ import rebar.util.RebarException;
 
 public class RebarGraph {
 
-	
-
-	
 	static org.slf4j.Logger logger = LoggerFactory.getLogger(RebarGraph.class);
 
 	Map<String, Supplier<? extends Scanner>> supplierMap = Maps.newConcurrentMap();
-	
+
 	GraphDB graphWriter;
 
 	EnvConfig env = null;
-	
+
 	ScanQueue queue;
-	
+
 	private RebarGraph() {
 
 	}
@@ -62,11 +59,11 @@ public class RebarGraph {
 
 		Graph g;
 
-		
 		public Builder withEnv(EnvConfig cfg) {
 			this.env = cfg.copy();
 			return this;
 		}
+
 		public Builder withGraphDB(GraphDB graphWriter) {
 			this.graphDb = graphWriter;
 			return this;
@@ -96,8 +93,6 @@ public class RebarGraph {
 			return env.get(name);
 		}
 
-		
-
 		public RebarGraph build() {
 
 			RebarGraph rg = new RebarGraph();
@@ -105,17 +100,23 @@ public class RebarGraph {
 			if (graphDb != null) {
 				rg.graphWriter = graphDb;
 				rg.env = env;
+
+				if (graphDb instanceof Neo4jGraphDB) {
+					Neo4jScanQueue queue = new Neo4jScanQueue(Neo4jGraphDB.class.cast(graphDb).getNeo4jDriver());
+					queue.start();
+					rg.queue = queue;
+				}
 				return rg;
 			}
 
 			Optional<String> graphUrl = getEnv(GRAPH_URL);
 			if (!graphUrl.isPresent()) {
-				
+
 				graphUrl = Optional.of("bolt://localhost:7687");
-				
-				logger.info("GRAPH_URL not set ... defaulting to {}",graphUrl.get());
+
+				logger.info("GRAPH_URL not set ... defaulting to {}", graphUrl.get());
 			}
-			logger.info("GRAPH_URL: {}",graphUrl.orElse(""));
+			logger.info("GRAPH_URL: {}", graphUrl.orElse(""));
 			if (graphUrl.isPresent()) {
 
 				GraphDriver.Builder b = new GraphDriver.Builder().withUrl(graphUrl.get());
@@ -142,7 +143,6 @@ public class RebarGraph {
 		}
 	}
 
-
 	protected <T extends ScannerBuilder<? extends Scanner>> T createBuilder() {
 		try {
 			Optional<String> scannerClass = env.get("REBAR_SCANNER");
@@ -164,7 +164,6 @@ public class RebarGraph {
 
 	}
 
-	
 	public <T extends ScannerBuilder<? extends Scanner>> T createBuilder(Class<T> clazz) {
 		try {
 			T t = (T) clazz.newInstance();
@@ -197,7 +196,7 @@ public class RebarGraph {
 		}
 		return (T) supplier.get();
 	}
-	
+
 	public ScanQueue getScanQueue() {
 		return queue;
 	}

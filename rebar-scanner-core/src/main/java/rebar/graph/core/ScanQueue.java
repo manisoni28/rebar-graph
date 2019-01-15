@@ -12,8 +12,8 @@ import com.fasterxml.jackson.databind.JsonNode;
  */
 public interface ScanQueue {
 
-	public void submit(String type, String a, String b, String c, String d);
+	public void submit(String type, String a, String ...n);
 	
-	public void subscribe(String type, String a, String b, Consumer<JsonNode> s);
+	public void subscribe(Consumer<JsonNode> consumer, String type, String a, String b);
 	
 }

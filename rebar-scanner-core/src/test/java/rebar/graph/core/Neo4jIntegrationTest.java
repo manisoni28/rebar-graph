@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
 import rebar.graph.driver.GraphDriver;
 import rebar.graph.neo4j.Neo4jDriver;
 
-public class Neo4jIntegrationTest {
+class Neo4jIntegrationTest {
 
 
 	static Logger logger = LoggerFactory.getLogger(Neo4jIntegrationTest.class);

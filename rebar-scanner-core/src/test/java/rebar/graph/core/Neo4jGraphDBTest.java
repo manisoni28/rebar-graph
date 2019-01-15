@@ -24,7 +24,7 @@ import com.google.common.collect.ImmutableMap;
 import rebar.graph.driver.GraphException;
 import rebar.util.Json;
 
-public class Neo4jGraphDBTest extends Neo4jIntegrationTest {
+class Neo4jGraphDBTest extends Neo4jIntegrationTest {
 
 	@Test
 	public void testIt() {
