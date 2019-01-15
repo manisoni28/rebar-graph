@@ -66,7 +66,7 @@ public class AwsGraphModule extends AbstractGraphModule {
 		public void run() {
 
 			try {
-				logger.info("should i scan {}", scanner);
+				
 
 				Optional<JsonNode> target = scanner.getGraphDB().getNeo4jDriver()
 						.cypher("match (a:RebarScannerTarget {type:{type},target:{target},region:{region}}) return a")
@@ -94,7 +94,7 @@ public class AwsGraphModule extends AbstractGraphModule {
 					return;
 				}
 				markFullScanStart();
-				Json.logger().info(target.get());
+				scanner.scan();
 				markFullScanEnd();
 			} catch (Exception e) {
 				logger.warn("unexpected exception", e);
