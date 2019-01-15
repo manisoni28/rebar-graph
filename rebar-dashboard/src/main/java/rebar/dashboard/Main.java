@@ -1,4 +1,4 @@
-package rebar.gizmo;
+package rebar.dashboard;
 
 
 import org.neo4j.driver.v1.Session;
@@ -14,9 +14,9 @@ import org.springframework.core.env.Environment;
 
 import com.samskivert.mustache.Mustache;
 
-import rebar.gizmo.mustache.CustomMustacheTemplateLoader;
-import rebar.gizmo.mustache.CustomMustacheViewResolver;
-import rebar.gizmo.mustache.JacksonMustacheSupport;
+import rebar.dashboard.mustache.CustomMustacheTemplateLoader;
+import rebar.dashboard.mustache.CustomMustacheViewResolver;
+import rebar.dashboard.mustache.JacksonMustacheSupport;
 
 
 @SpringBootApplication
@@ -56,8 +56,8 @@ public class Main {
 	}
 
 	@Bean
-	public Gizmo gizmo() {
-		return new Gizmo();
+	public Dashboard gizmo() {
+		return new Dashboard();
 	}
 	@Bean
 	public Mustache.Compiler mustacheCompiler( 

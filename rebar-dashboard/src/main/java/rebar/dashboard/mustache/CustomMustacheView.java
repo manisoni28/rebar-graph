@@ -1,4 +1,4 @@
-package rebar.gizmo.mustache;
+package rebar.dashboard.mustache;
 
 
 import java.io.File;
@@ -22,7 +22,7 @@ import org.springframework.web.servlet.view.AbstractTemplateView;
 import com.samskivert.mustache.Template;
 import com.samskivert.mustache.Mustache.Compiler;
 
-import rebar.gizmo.Gizmo;
+import rebar.dashboard.Dashboard;
 
 public class CustomMustacheView extends MustacheView {
 
@@ -56,7 +56,7 @@ public class CustomMustacheView extends MustacheView {
 		this.charset = charset;
 	}
 	CustomMustacheTemplateLoader getTridentMustacheTemplateLoader() {
-		return Gizmo.getApplicationContext().getBean(CustomMustacheTemplateLoader.class);
+		return Dashboard.getApplicationContext().getBean(CustomMustacheTemplateLoader.class);
 	}
 	Resource resolveResource(String url) {
 		return getTridentMustacheTemplateLoader().tridentResolveResource(url);

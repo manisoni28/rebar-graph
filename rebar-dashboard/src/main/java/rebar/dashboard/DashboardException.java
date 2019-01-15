@@ -1,25 +1,27 @@
-package rebar.gizmo;
+package rebar.dashboard;
 
-public class GizmoException extends RuntimeException {
+import rebar.util.RebarException;
+
+public class DashboardException extends RebarException {
 
 
 
-	public GizmoException(String message) {
+	public DashboardException(String message) {
 		super(message);
 		// TODO Auto-generated constructor stub
 	}
 
-	public GizmoException(Throwable cause) {
+	public DashboardException(Throwable cause) {
 		super(cause);
 		// TODO Auto-generated constructor stub
 	}
 
-	public GizmoException(String message, Throwable cause) {
+	public DashboardException(String message, Throwable cause) {
 		super(message, cause);
 		// TODO Auto-generated constructor stub
 	}
 
-	public GizmoException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+	public DashboardException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
 		super(message, cause, enableSuppression, writableStackTrace);
 		// TODO Auto-generated constructor stub
 	}

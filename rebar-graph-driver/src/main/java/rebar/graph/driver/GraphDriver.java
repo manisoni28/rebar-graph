@@ -70,7 +70,11 @@ public abstract class GraphDriver {
 		}
 		public GraphDriver build()  {
 			try {
-				Optional url = getEnv(GRAPH_URL);
+				Optional<String> url = getEnv(GRAPH_URL);
+				
+				if (!url.isPresent()) {
+					url = Optional.ofNullable("bolt://localhost:7687");
+				}
 				if (url.isPresent()) {
 				
 					Builder b = (Builder) Class.forName("rebar.graph.neo4j.Neo4jDriver$Builder").newInstance();

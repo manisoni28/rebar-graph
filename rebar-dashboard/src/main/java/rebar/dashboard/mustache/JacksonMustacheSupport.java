@@ -1,4 +1,4 @@
-package rebar.gizmo.mustache;
+package rebar.dashboard.mustache;
 
 import java.util.Iterator;
 import java.util.Map;

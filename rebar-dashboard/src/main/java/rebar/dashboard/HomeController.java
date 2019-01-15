@@ -1,12 +1,16 @@
-package rebar.gizmo;
+package rebar.dashboard;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.neo4j.driver.internal.value.NodeValue;
 import org.neo4j.driver.v1.Driver;
@@ -25,6 +29,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTCreator.Builder;
+import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -35,24 +42,21 @@ import com.google.common.collect.Maps;
 
 @Controller
 @Component
-public class UIController {
+public class HomeController {
 
-	Logger logger = LoggerFactory.getLogger(UIController.class);
+	Logger logger = LoggerFactory.getLogger(HomeController.class);
 	
 	@Autowired
-	Gizmo console;
+	Dashboard console;
 	
+
 	ObjectMapper mapper = new ObjectMapper();
 
 	@RequestMapping(value = "/", method = { RequestMethod.GET, RequestMethod.POST })
-	public ModelAndView home() {
-		return new ModelAndView("console");
+	public ModelAndView home(HttpServletRequest request) {
+
+		return new ModelAndView("reports");
 	}
 
 
-
-	@RequestMapping(value = "/logout", method = { RequestMethod.GET, RequestMethod.POST })
-	public ModelAndView logout() {
-		return new ModelAndView("redirect:/");
-	}
 }

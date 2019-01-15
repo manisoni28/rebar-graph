@@ -1,4 +1,4 @@
-package rebar.gizmo;
+package rebar.dashboard;
 
 import org.junit.Test;
 

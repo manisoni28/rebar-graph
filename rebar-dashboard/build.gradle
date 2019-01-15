@@ -38,14 +38,19 @@ buildImage.dependsOn build
 
 dependencies {
 	compile('org.springframework.boot:spring-boot-starter-web')
+	compile project(':rebar-graph-driver-neo4j')
+	implementation 'org.mindrot:jbcrypt:0.4'
+	implementation 'org.eclipse.jgit:org.eclipse.jgit:5.2.0.201812061821-r'
 	compile 'org.webjars:webjars-locator:0.34'
     compile 'com.google.guava:guava:26.0-jre'
 	compile 'org.opencypher.gremlin:cypher-gremlin-neo4j-driver:0.9.11'
 	compile 'com.amazonaws:aws-java-sdk-neptune:1.11.405'
 	compile 'org.springframework.boot:spring-boot-starter-mustache:2.0.4.RELEASE'
 	compile 'org.webjars.npm:gentelella:1.4.0'
+	compile 'com.auth0:java-jwt:3.4.1'
+	compile "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:${JACKSON_VERSION}"
 	testCompile('org.springframework.boot:spring-boot-starter-test')
-	    compile "org.assertj:assertj-core:${ASSERTJ_VERSION}"
+	compile "org.assertj:assertj-core:${ASSERTJ_VERSION}"
 	testImplementation("org.junit.jupiter:junit-jupiter-api:$JUNIT_VERSION")
     testCompile("org.junit.jupiter:junit-jupiter-params:$JUNIT_VERSION")
     testRuntime("org.junit.jupiter:junit-jupiter-engine:$JUNIT_VERSION")
