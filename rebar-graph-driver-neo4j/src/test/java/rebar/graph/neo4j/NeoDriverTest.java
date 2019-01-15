@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.assertj.core.api.Assertions;
@@ -28,11 +29,16 @@ import org.junit.jupiter.api.Test;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 import rebar.graph.driver.GraphDriver;
 import rebar.graph.driver.GraphTemplate.AttributeMode;
+import rebar.util.Json;
 
-public class NeoDriverTest extends Neo4jIntegrationTest {
+public class NeoDriverTest extends IntegrationTest {
 
 	static ObjectMapper mapper = new ObjectMapper();
 
@@ -80,45 +86,36 @@ public class NeoDriverTest extends Neo4jIntegrationTest {
 				.isEqualTo(0);
 	}
 
-	
 	private GraphDriver.Builder applyCredentials(GraphDriver.Builder b) {
 		if (getTestProperty(GraphDriver.GRAPH_USERNAME).isPresent()) {
-			b =b.withUsername(getTestProperty(GraphDriver.GRAPH_USERNAME).get());
+			b = b.withUsername(getTestProperty(GraphDriver.GRAPH_USERNAME).get());
 		}
 		if (getTestProperty(GraphDriver.GRAPH_PASSWORD).isPresent()) {
-			b =b.withPassword(getTestProperty(GraphDriver.GRAPH_PASSWORD).get());
+			b = b.withPassword(getTestProperty(GraphDriver.GRAPH_PASSWORD).get());
 		}
 		return b;
 	}
-	
-	
 
 	@Test
 	public void testGraphBuilder() {
 
-		
 		// We don't close the driver here because it is slow
-		Neo4jDriver driver = (Neo4jDriver) applyCredentials(new Neo4jDriver.Builder().withEnv("GRAPH_URL", getUrl())).build();
+		Neo4jDriver driver = (Neo4jDriver) applyCredentials(new Neo4jDriver.Builder().withEnv("GRAPH_URL", getUrl()))
+				.build();
 		driver.newTemplate().cypher("match (a:JUnitTest) return a limit 1").exec();
 
-	
-		
 		driver = (Neo4jDriver) applyCredentials(new GraphDriver.Builder().withUrl(getUrl())).build();
 		driver.newTemplate().cypher("match (a:JUnitTest) return a limit 1").exec();
 
-		
-		
-		driver = (Neo4jDriver) applyCredentials( new GraphDriver.Builder().withEnv("GRAPH_URL", getUrl())).build();
+		driver = (Neo4jDriver) applyCredentials(new GraphDriver.Builder().withEnv("GRAPH_URL", getUrl())).build();
 		driver.newTemplate().cypher("match (a:JUnitTest) return a limit 1").exec();
 
-	
-	
 	}
 
 	@Test
 	public void testMovie() {
 		createMovieGraph();
-		
+
 	}
 
 	@Test
@@ -144,4 +141,49 @@ public class NeoDriverTest extends Neo4jIntegrationTest {
 		});
 	}
 
+	@Test
+	public void testMap() {
+		String id = UUID.randomUUID().toString();
+		Map<String, Object> data = Maps.newHashMap();
+		data.put("foo", "bar");
+		data.put("fizz", "buzz");
+		data.put("abc", 123);
+		JsonNode result = getNeo4jDriver().cypher("merge (f:JUnit {id:{id}}) set f+={data} return f").param("id", id)
+				.param("data", data).findFirst().get();
+
+		Assertions.assertThat(result.path("id").asText()).isEqualTo(id);
+		Assertions.assertThat(result.path("foo").asText()).isEqualTo("bar");
+		Assertions.assertThat(result.path("fizz").asText()).isEqualTo("buzz");
+		Assertions.assertThat(result.path("abc").asInt()).isEqualTo(123);
+	}
+
+	@Test
+	public void testJsonArg() {
+		String id = UUID.randomUUID().toString();
+		ObjectNode data = Json.objectNode();
+		data.put("foo", "bar");
+		data.put("fizz", "buzz");
+		data.put("abc", 123);
+		JsonNode result = getNeo4jDriver().cypher("merge (f:JUnit {id:{id}}) set f+={data} return f").param("id", id)
+				.param("data", data).findFirst().get();
+
+		Assertions.assertThat(result.path("id").asText()).isEqualTo(id);
+		Assertions.assertThat(result.path("foo").asText()).isEqualTo("bar");
+		Assertions.assertThat(result.path("fizz").asText()).isEqualTo("buzz");
+		Assertions.assertThat(result.path("abc").asInt()).isEqualTo(123);
+	}
+
+	@Test
+	public void testList() {
+		String id = UUID.randomUUID().toString();
+
+		String[] arr = { "a", "b", "c" };
+		List<String> list = ImmutableList.of("x", "y", "z");
+		JsonNode result = getNeo4jDriver().cypher("merge (f:JUnit {id:{id}}) set f.list={list},f.array={array} return f")
+				.param("id", id).param("array", arr).param("list", list).findFirst().get();
+
+		Assertions.assertThat(Json.objectMapper().convertValue(result.path("array"),String[].class)).containsExactly("a","b","c");
+		
+		Assertions.assertThat(Json.objectMapper().convertValue(result.path("list"),Object[].class)).containsExactly("x","y","z");
+	}
 }

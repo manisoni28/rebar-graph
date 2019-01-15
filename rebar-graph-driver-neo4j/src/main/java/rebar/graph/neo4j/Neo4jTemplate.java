@@ -29,9 +29,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Maps;
 
 import rebar.graph.driver.GraphTemplate;
+import rebar.util.Json;
 
 public class Neo4jTemplate extends GraphTemplate  {
 
@@ -104,6 +106,9 @@ public class Neo4jTemplate extends GraphTemplate  {
 	 */
 	public Neo4jTemplate param(String key, Object val) {
 		Neo4jTemplate copy = copy();
+		if (val instanceof ObjectNode) {
+			val = Json.objectMapper().convertValue(val, Map.class);
+		}
 		copy.params.put(key, val);
 		return copy;
 	}

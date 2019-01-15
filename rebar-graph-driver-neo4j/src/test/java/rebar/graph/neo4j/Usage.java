@@ -27,7 +27,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-public class Usage extends Neo4jIntegrationTest {
+public class Usage extends IntegrationTest {
 
 	
 
