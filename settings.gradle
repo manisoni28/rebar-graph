@@ -7,7 +7,6 @@ include 'rebar-scanner-docker'
 include 'rebar-scanner-aws'
 include 'rebar-graph-driver'
 include 'rebar-graph-driver-neo4j'
-include 'rebar-graph-driver-gremlin'
 include 'rebar-graph-doc'
 include 'rebar-dashboard'
 

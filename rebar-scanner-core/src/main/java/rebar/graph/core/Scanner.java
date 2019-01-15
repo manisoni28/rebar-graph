@@ -20,7 +20,7 @@ import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
-import org.apache.tinkerpop.gremlin.structure.Vertex;
+
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -30,6 +30,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Stopwatch;
 
 import rebar.graph.driver.GraphException;
+import rebar.graph.neo4j.Neo4jDriver;
 
 public abstract class Scanner {
 
@@ -42,38 +43,7 @@ public abstract class Scanner {
 		this.scannerBuilder = builder;
 	}
 
-	public static ObjectNode toJson(Vertex v) {
-
-		ObjectNode n = mapper.createObjectNode();
-		n.put("_id", v.id().toString());
-		n.put("_label", v.label());
-		v.keys().forEach(it -> {
-			Object val = v.value(it);
-			if (val == null) {
-
-			} else if (val instanceof String) {
-				n.put(it, Objects.toString(val));
-			} else if (val instanceof Long) {
-				n.put(it, Long.class.cast(val));
-			} else if (val instanceof Integer) {
-				n.put(it, Integer.class.cast(val));
-			} else if (val instanceof Double) {
-				n.put(it, Double.class.cast(val));
-			} else if (val instanceof Float) {
-				n.put(it, Float.class.cast(val));
-			} else if (val instanceof Boolean) {
-				n.put(it, Boolean.class.cast(val));
-			}
-			else if (val instanceof List) {
-				n.set(it, mapper.convertValue(val, ArrayNode.class));
-			} else {
-				logger.warn("unsupported type: {}", val.getClass());
-			}
-		});
-		return n;
-	}
-
-
+	
 
 
 	private GraphOperation getOperation(Class<? extends GraphOperation> operationClass) {
@@ -91,10 +61,9 @@ public abstract class Scanner {
 	
 
 	public Stream<JsonNode> execGraphOperation(Class<? extends GraphOperation> operation, JsonNode arg) {
-		if (getRebarGraph().getGraphDB().getClass().getName().toLowerCase().contains("neo4j")) {
-			return getOperation(operation).exec(this,arg, Neo4jGraphDB.class.cast(getRebarGraph().getGraphDB()).getNeo4jDriver());
-		}
-		throw new UnsupportedOperationException("Gremlin not yet supported");
+
+			return getOperation(operation).exec(this,arg, getRebarGraph().getGraphDB().getNeo4jDriver());
+		
 	}
 	
 	public final void queueScan(String b, String c, String d) {}
@@ -135,9 +104,14 @@ public abstract class Scanner {
 		return scannerBuilder;
 	}
 	
-	public String getScannerName() {
+	public String getScannerType() {
 		return getClass().getPackage().getName().replace("rebar.graph.", "");
 	}
-	
+	public final Neo4jDriver getNeo4jDriver() {
+		return getGraphDB().getNeo4jDriver();
+	}
+	public final GraphDB getGraphDB() {
+		return getRebarGraph().getGraphDB();
+	}
 
 }

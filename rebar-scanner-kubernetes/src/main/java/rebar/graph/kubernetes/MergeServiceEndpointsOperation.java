@@ -18,22 +18,19 @@ package rebar.graph.kubernetes;
 import java.util.List;
 import java.util.stream.Stream;
 
-import org.apache.tinkerpop.gremlin.structure.Graph;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.collect.Lists;
 
+import rebar.graph.core.GraphDB;
 import rebar.graph.core.GraphOperation;
-import rebar.graph.core.Neo4jGraphDB;
 import rebar.graph.core.Scanner;
 import rebar.graph.neo4j.Neo4jDriver;
-import rebar.util.Json;
 
 public class MergeServiceEndpointsOperation implements GraphOperation {
 
 	@Override
 	public Stream<JsonNode> exec(Scanner scanner, JsonNode n,Neo4jDriver d) {
-		Neo4jGraphDB g = Neo4jGraphDB.class.cast(scanner.getRebarGraph().getGraphDB());
+		GraphDB g = scanner.getRebarGraph().getGraphDB();
 
 		long ts = scanner.getRebarGraph().getGraphDB().getTimestamp();
 
@@ -59,11 +56,6 @@ public class MergeServiceEndpointsOperation implements GraphOperation {
 				.param("podList", podList).exec();
 
 		return Stream.of();
-	}
-
-	@Override
-	public Stream<JsonNode> exec(Scanner ctx, JsonNode n, Graph g) {
-		throw new UnsupportedOperationException();
 	}
 
 }

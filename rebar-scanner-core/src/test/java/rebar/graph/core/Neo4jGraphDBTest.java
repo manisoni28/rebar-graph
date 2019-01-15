@@ -70,7 +70,7 @@ class Neo4jGraphDBTest extends Neo4jIntegrationTest {
 	public void testPattern() {
 
 		Assertions
-				.assertThat(Neo4jGraphDB.toPatternClause(ImmutableMap.of("name", "Rob", "occupation", "developer")))
+				.assertThat(GraphDB.toPatternClause(ImmutableMap.of("name", "Rob", "occupation", "developer")))
 				.contains("name:{name}").contains("occupation:{occupation}");
 	}
 }

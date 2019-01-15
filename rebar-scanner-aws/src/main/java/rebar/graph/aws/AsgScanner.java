@@ -17,10 +17,8 @@ package rebar.graph.aws;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.apache.tinkerpop.gremlin.structure.Graph;
 import org.slf4j.LoggerFactory;
 
 import com.amazonaws.services.autoscaling.AmazonAutoScalingClient;
@@ -28,7 +26,6 @@ import com.amazonaws.services.autoscaling.AmazonAutoScalingClientBuilder;
 import com.amazonaws.services.autoscaling.model.AutoScalingGroup;
 import com.amazonaws.services.autoscaling.model.DescribeAutoScalingGroupsRequest;
 import com.amazonaws.services.autoscaling.model.DescribeAutoScalingGroupsResult;
-import com.amazonaws.services.autoscaling.model.LaunchConfiguration;
 import com.amazonaws.services.autoscaling.model.LaunchTemplateSpecification;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -126,10 +123,7 @@ public class AsgScanner extends AbstractEntityScanner<AutoScalingGroup> {
 			return Stream.of();
 		}
 
-		@Override
-		public Stream<JsonNode> exec(Scanner ctx, JsonNode n, Graph g) {
-			return Stream.of();
-		}
+		
 
 	}
 

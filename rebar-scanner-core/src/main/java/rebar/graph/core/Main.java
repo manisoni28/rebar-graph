@@ -17,7 +17,6 @@ package rebar.graph.core;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.apache.commons.lang3.concurrent.AtomicInitializer;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.machinezoo.noexception.Exceptions;
@@ -41,8 +40,11 @@ public class Main  {
 
 			Exceptions.sneak().run(() -> {
 				AbstractGraphModule m = (AbstractGraphModule) Class.forName(it.getName()).newInstance();
+				
 				m.rebarGraph = g;
 
+				m.registerScanner(m.getScannerType());
+				
 				Thread thread = new ThreadFactoryBuilder().setNameFormat(it.getSimpleName() + "-%d").build()
 						.newThread(m);
 

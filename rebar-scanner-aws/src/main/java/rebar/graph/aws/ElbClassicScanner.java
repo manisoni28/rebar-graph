@@ -22,9 +22,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.apache.tinkerpop.gremlin.structure.Graph;
-
-import com.amazonaws.services.ec2.model.DescribeTagsResult;
 import com.amazonaws.services.elasticloadbalancing.AmazonElasticLoadBalancingClient;
 import com.amazonaws.services.elasticloadbalancing.AmazonElasticLoadBalancingClientBuilder;
 import com.amazonaws.services.elasticloadbalancing.model.DescribeLoadBalancersRequest;
@@ -41,12 +38,10 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
-import rebar.graph.core.GraphDB;
 import rebar.graph.core.GraphOperation;
 import rebar.graph.core.Scanner;
 import rebar.graph.neo4j.Neo4jDriver;
 import rebar.util.Json;
-import rebar.util.RebarException;
 
 public class ElbClassicScanner extends AbstractEntityScanner<LoadBalancerDescription> {
 
@@ -82,10 +77,7 @@ public class ElbClassicScanner extends AbstractEntityScanner<LoadBalancerDescrip
 
 		}
 
-		@Override
-		public Stream<JsonNode> exec(Scanner ctx, JsonNode n, Graph g) {
-			throw new UnsupportedOperationException();
-		}
+	
 
 	}
 

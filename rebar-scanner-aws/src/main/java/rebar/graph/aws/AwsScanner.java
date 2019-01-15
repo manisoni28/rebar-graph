@@ -28,14 +28,12 @@ import org.slf4j.LoggerFactory;
 
 import com.amazonaws.AmazonWebServiceClient;
 import com.amazonaws.SdkClientException;
-import com.amazonaws.auth.AWSCredentialsProvider;
 import com.amazonaws.client.builder.AwsClientBuilder;
-import com.amazonaws.regions.DefaultAwsRegionProviderChain;
 import com.amazonaws.regions.Regions;
-import com.amazonaws.services.ec2.AmazonEC2ClientBuilder;
 import com.amazonaws.services.securitytoken.AWSSecurityTokenServiceClientBuilder;
 import com.amazonaws.services.securitytoken.model.GetCallerIdentityRequest;
 import com.amazonaws.services.securitytoken.model.GetCallerIdentityResult;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.base.Suppliers;
@@ -124,9 +122,7 @@ public final class AwsScanner extends Scanner {
 		return region;
 	}
 
-	public GraphDB getGraphDB() {
-		return getRebarGraph().getGraphDB();
-	}
+
 
 	@SuppressWarnings("unchecked")
 	public <T extends AmazonWebServiceClient> T getClient(Class<? extends AwsClientBuilder> builderClass) {
@@ -223,7 +219,6 @@ public final class AwsScanner extends Scanner {
 			} else {
 				scanner.scan(id);
 			}
-
 		} catch (IllegalArgumentException e) {
 			logger.warn("unsupported entity type: {}", type);
 		}
@@ -231,5 +226,8 @@ public final class AwsScanner extends Scanner {
 	}
 
 
+	public String toString() {
+		return MoreObjects.toStringHelper(this).add("type", getScannerType()).add("account",getAccount()).add("region", getRegion().getName()).toString();
+	}
 
 }

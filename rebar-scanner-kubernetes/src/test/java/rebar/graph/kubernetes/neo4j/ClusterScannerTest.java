@@ -18,16 +18,12 @@ package rebar.graph.kubernetes.neo4j;
 import java.util.List;
 
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-import rebar.graph.core.GraphDB;
-import rebar.graph.core.Neo4jGraphDB;
 import rebar.graph.kubernetes.KubeScanner;
 import rebar.graph.kubernetes.KubernetesScannerBuilder;
-import rebar.util.Json;
 
 public class ClusterScannerTest extends Neo4jKubeIntegrationTest {
 

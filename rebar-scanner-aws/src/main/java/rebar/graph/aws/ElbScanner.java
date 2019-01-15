@@ -17,18 +17,15 @@ package rebar.graph.aws;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.apache.tinkerpop.gremlin.structure.Graph;
-
-import com.amazonaws.services.elasticloadbalancingv2.model.DescribeTagsRequest;
 import com.amazonaws.services.elasticloadbalancingv2.AmazonElasticLoadBalancingClient;
 import com.amazonaws.services.elasticloadbalancingv2.AmazonElasticLoadBalancingClientBuilder;
 import com.amazonaws.services.elasticloadbalancingv2.model.DescribeLoadBalancersRequest;
 import com.amazonaws.services.elasticloadbalancingv2.model.DescribeLoadBalancersResult;
+import com.amazonaws.services.elasticloadbalancingv2.model.DescribeTagsRequest;
 import com.amazonaws.services.elasticloadbalancingv2.model.LoadBalancer;
 import com.amazonaws.services.elasticloadbalancingv2.model.LoadBalancerNotFoundException;
 import com.amazonaws.services.elasticloadbalancingv2.model.TagDescription;
@@ -38,7 +35,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Maps;
 
 import rebar.graph.core.GraphOperation;
 import rebar.graph.core.Scanner;
@@ -66,10 +62,7 @@ public class ElbScanner extends AbstractEntityScanner<LoadBalancer> {
 			return Stream.of();
 		}
 
-		@Override
-		public Stream<JsonNode> exec(Scanner ctx, JsonNode n, Graph g) {
-			return Stream.of();
-		}
+	
 
 	}
 

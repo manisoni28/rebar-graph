@@ -27,7 +27,5 @@ public interface GraphModule extends Runnable {
 	
 	public RebarGraph getRebarGraph();
 
-	public long getFullScanInterval();
-	
-	public boolean isFullScanEnabled();
+	public String getScannerId();
 }

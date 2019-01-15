@@ -37,9 +37,9 @@ public class RebarGraphTest extends Neo4jIntegrationTest {
 		Assertions.assertThat(graph).isNotNull();
 		Assertions.assertThat(graph.getGraphDB()).isNotNull().isSameAs(graph.getGraphDB());
 
-		Neo4jDriver driver = ((Neo4jGraphDB) graph.getGraphDB()).getNeo4jDriver();
+		Neo4jDriver driver = ((GraphDB) graph.getGraphDB()).getNeo4jDriver();
 
-		Assertions.assertThat(driver).isSameAs(((Neo4jGraphDB) graph.getGraphDB()).getNeo4jDriver());
+		Assertions.assertThat(driver).isSameAs(((GraphDB) graph.getGraphDB()).getNeo4jDriver());
 
 		Assertions.assertThat(driver.getDriver()).isSameAs(driver.getDriver());
 

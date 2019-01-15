@@ -21,9 +21,9 @@ import static rebar.graph.driver.GraphDriver.GRAPH_USERNAME;
 
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.function.Supplier;
 
-import org.apache.tinkerpop.gremlin.structure.Graph;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Preconditions;
@@ -47,6 +47,8 @@ public class RebarGraph {
 
 	ScanQueue queue;
 
+	String scannerId = UUID.randomUUID().toString();
+	
 	private RebarGraph() {
 
 	}
@@ -57,8 +59,10 @@ public class RebarGraph {
 
 		EnvConfig env = new EnvConfig();
 
-		Graph g;
+	
 
+		String scannerId;
+		
 		public Builder withEnv(EnvConfig cfg) {
 			this.env = cfg.copy();
 			return this;
@@ -84,6 +88,10 @@ public class RebarGraph {
 			return (this);
 		}
 
+		public Builder withScannerId(String id) {
+			this.scannerId=id;
+			return this;
+		}
 		public Builder withInMemoryTinkerGraph() {
 			env = env.withEnv(GRAPH_URL, "memory");
 			return this;
@@ -101,11 +109,11 @@ public class RebarGraph {
 				rg.graphWriter = graphDb;
 				rg.env = env;
 
-				if (graphDb instanceof Neo4jGraphDB) {
-					Neo4jScanQueue queue = new Neo4jScanQueue(Neo4jGraphDB.class.cast(graphDb).getNeo4jDriver());
+				
+					Neo4jScanQueue queue = new Neo4jScanQueue(graphDb.getNeo4jDriver());
 					queue.start();
 					rg.queue = queue;
-				}
+				
 				return rg;
 			}
 
@@ -125,7 +133,7 @@ public class RebarGraph {
 				}
 				GraphDriver driver = b.build();
 				if (driver.getClass().getName().toLowerCase().contains("neo4j")) {
-					Neo4jGraphDB gw = new Neo4jGraphDB((Neo4jDriver) driver);
+					GraphDB gw = new GraphDB((Neo4jDriver) driver);
 					rg.graphWriter = gw;
 					rg.env = env;
 					Neo4jScanQueue queue = new Neo4jScanQueue((Neo4jDriver) driver);
@@ -176,10 +184,14 @@ public class RebarGraph {
 		}
 	}
 
+	
 	public GraphDB getGraphDB() {
-		return graphWriter;
+		return  graphWriter;
 	}
 
+	public String getScannerId() {
+		return scannerId;
+	}
 	public <T extends Scanner> void registerScanner(Class<T> scannerType, String name, Supplier<T> supplier) {
 		String key = scannerType.getName() + ":" + name;
 		if (supplierMap.containsKey(key)) {

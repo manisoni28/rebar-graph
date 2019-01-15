@@ -17,7 +17,6 @@ package rebar.graph.kubernetes;
 
 import java.util.stream.Stream;
 
-import org.apache.tinkerpop.gremlin.structure.Graph;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,9 +53,5 @@ public class MergePodParentRelationshipsOperation implements GraphOperation {
 		return Stream.of();
 	}
 
-	@Override
-	public Stream<JsonNode> exec(Scanner ctx, JsonNode n, Graph g) {
-		return Stream.of();
-	}
 
 }

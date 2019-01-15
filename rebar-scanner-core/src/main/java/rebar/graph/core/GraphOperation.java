@@ -17,8 +17,6 @@ package rebar.graph.core;
 
 import java.util.stream.Stream;
 
-import org.apache.tinkerpop.gremlin.structure.Graph;
-
 import com.fasterxml.jackson.databind.JsonNode;
 
 import rebar.graph.neo4j.Neo4jDriver;
@@ -27,7 +25,7 @@ public interface GraphOperation {
 
 	
 	public Stream<JsonNode> exec(Scanner ctx,  JsonNode n, Neo4jDriver neo4j);
-	public Stream<JsonNode> exec(Scanner ctx, JsonNode n, Graph g);
+
 	
 	
 }

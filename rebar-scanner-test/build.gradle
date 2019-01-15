@@ -3,7 +3,6 @@ apply plugin: 'java'
 
 dependencies {
     compile project(":rebar-scanner-core")
-    compile "org.apache.tinkerpop:tinkergraph-gremlin:${GREMLIN_VERSION}"
     compile "org.assertj:assertj-core:${ASSERTJ_VERSION}"
     compile "org.junit.jupiter:junit-jupiter-engine:${JUNIT_VERSION}"
     compile "ch.qos.logback:logback-classic:${LOGBACK_VERSION}"

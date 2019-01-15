@@ -91,7 +91,7 @@ class Neo4jIntegrationTest {
 				try (Session session = driver.getDriver().session()) {
 					session.run("match (a:RebarHealthCheck) return a limit 1").consume();
 					neo4jAvailable = true;
-					this.rebarGraph = new RebarGraph.Builder().withGraphDB(new Neo4jGraphDB(driver)).build();
+					this.rebarGraph = new RebarGraph.Builder().withGraphDB(new GraphDB(driver)).build();
 				}
 			} catch (Exception e) {
 				logger.info("neo4j not available", e);

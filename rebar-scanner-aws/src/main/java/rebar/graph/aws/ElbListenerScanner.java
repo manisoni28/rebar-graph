@@ -17,17 +17,12 @@ package rebar.graph.aws;
 
 import java.util.stream.Stream;
 
-import org.apache.tinkerpop.gremlin.structure.Graph;
-
 import com.amazonaws.services.elasticloadbalancingv2.AmazonElasticLoadBalancingClient;
 import com.amazonaws.services.elasticloadbalancingv2.AmazonElasticLoadBalancingClientBuilder;
 import com.amazonaws.services.elasticloadbalancingv2.model.DescribeListenersRequest;
 import com.amazonaws.services.elasticloadbalancingv2.model.DescribeListenersResult;
-import com.amazonaws.services.elasticloadbalancingv2.model.DescribeTargetGroupsRequest;
-import com.amazonaws.services.elasticloadbalancingv2.model.DescribeTargetGroupsResult;
 import com.amazonaws.services.elasticloadbalancingv2.model.Listener;
 import com.amazonaws.services.elasticloadbalancingv2.model.ListenerNotFoundException;
-import com.amazonaws.services.elasticloadbalancingv2.model.TargetGroup;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Strings;
@@ -56,10 +51,7 @@ public class ElbListenerScanner extends AbstractEntityScanner<Listener> {
 			return Stream.of();
 		}
 
-		@Override
-		public Stream<JsonNode> exec(Scanner ctx, JsonNode n, Graph g) {
-			return Stream.of();
-		}
+	
 
 	}
 

@@ -18,8 +18,6 @@ package rebar.graph.aws;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import org.apache.tinkerpop.gremlin.structure.Graph;
-
 import com.amazonaws.services.ec2.AmazonEC2;
 import com.amazonaws.services.ec2.AmazonEC2ClientBuilder;
 import com.amazonaws.services.ec2.model.AmazonEC2Exception;
@@ -68,10 +66,7 @@ public class Ec2InstanceScanner extends AbstractEntityScanner<Instance> {
 			return Stream.of();
 		}
 
-		@Override
-		public Stream<JsonNode> exec(Scanner ctx, JsonNode n, Graph g) {
-			return Stream.of();
-		}
+	
 		
 	}
 	public ObjectNode toJson(Instance instance, Reservation reservation) {

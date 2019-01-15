@@ -18,25 +18,25 @@ package rebar.graph.kubernetes.neo4j;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.BeforeEach;
 
-import rebar.graph.core.Neo4jGraphDB;
+import rebar.graph.core.GraphDB;
 import rebar.graph.kubernetes.KubeIntegrationTest;
 import rebar.graph.neo4j.Neo4jDriver;
 
 public class Neo4jKubeIntegrationTest extends KubeIntegrationTest {
 
 	
-	public Neo4jGraphDB getNeo4jDB() {
-		return Neo4jGraphDB.class.cast(getRebarGraph().getGraphDB());
+	public GraphDB getNeo4jDB() {
+		return GraphDB.class.cast(getRebarGraph().getGraphDB());
 	}
 	public Neo4jDriver getNeo4jDriver() {
-		return Neo4jGraphDB.class.cast(getRebarGraph().getGraphDB()).getNeo4jDriver();
+		return GraphDB.class.cast(getRebarGraph().getGraphDB()).getNeo4jDriver();
 	}
 	@BeforeEach
 	public void assumeNeo4j() {
 		Assumptions.assumeTrue(getRebarGraph().getGraphDB().getClass().getName().toLowerCase().contains("neo4j"));
 		
 		
-		Neo4jGraphDB neo4jDB = getNeo4jDB();
+		GraphDB neo4jDB = getNeo4jDB();
 		
 		neo4jDB.getNeo4jDriver().cypher("match (a:KubeCluster)  detach delete a").exec();
 		neo4jDB.getNeo4jDriver().cypher("match (a:KubePod)  detach delete a").exec();
