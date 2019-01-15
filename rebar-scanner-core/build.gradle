@@ -7,8 +7,8 @@ dependencies {
     compile project(':rebar-graph-driver-gremlin')
     compile "org.slf4j:slf4j-api:${SLF4J_VERSION}"
     compile "org.slf4j:jcl-over-slf4j:${SLF4J_VERSION}"
-    implementation 'io.github.classgraph:classgraph:4.6.10'
-    implementation "io.micrometer:micrometer-core:${MICROMETER_VERSION}"
+    compile 'io.github.classgraph:classgraph:4.6.10'
+    compile "io.micrometer:micrometer-core:${MICROMETER_VERSION}"
     compile "com.fasterxml.jackson.core:jackson-databind:${JACKSON_VERSION}"
     compile "com.fasterxml.jackson.dataformat:jackson-dataformat-cbor:${JACKSON_VERSION}"
 

@@ -48,7 +48,7 @@ public class AbstractGraphModuleTest {
 		Assertions.assertThat(m.getFullScanInterval(Optional.of(" 62 "))).isEqualTo(62);
 		
 		Assertions.assertThat(m.getFullScanInterval(Optional.of(" 30 "))).isEqualTo(60);
-		Assertions.assertThat(m.getFullScanInterval(Optional.of("diabled"))).isEqualTo(301L);
+		Assertions.assertThat(m.getFullScanInterval(Optional.of("diabled"))).isEqualTo(300L);
 	}
 
 }
