@@ -15,6 +15,7 @@
  */
 package rebar.graph.aws;
 
+import java.nio.channels.ScatteringByteChannel;
 import java.util.Optional;
 
 import com.amazonaws.services.ec2.AmazonEC2;
@@ -45,7 +46,7 @@ public class SecurityGroupScanner extends AbstractEntityScanner<SecurityGroup> {
 	@Override
 	public void scan(JsonNode entity) {
 		if (isEntityType(entity)) {
-			scanGroupId(entity.path("groupId").asText());
+			scanById(entity.path("groupId").asText());
 		}
 
 	}
@@ -53,7 +54,7 @@ public class SecurityGroupScanner extends AbstractEntityScanner<SecurityGroup> {
 		return Optional.ofNullable(String.format("arn:aws:ec2:%s:%s:security-group/%s", getRegionName(), getAccount(), sg.getGroupId()));
 	}
 
-	public void scanGroupId(String id) {
+	public void scanById(String id) {
 
 		try {
 			DescribeSecurityGroupsRequest request = new DescribeSecurityGroupsRequest();
@@ -76,7 +77,7 @@ public class SecurityGroupScanner extends AbstractEntityScanner<SecurityGroup> {
 
 	}
 
-	public void scanName(String name) {
+	/*public void scanByName(String name) {
 		try {
 			DescribeSecurityGroupsRequest request = new DescribeSecurityGroupsRequest();
 			request.withGroupNames(name);
@@ -88,7 +89,7 @@ public class SecurityGroupScanner extends AbstractEntityScanner<SecurityGroup> {
 			});
 		} catch (AmazonEC2Exception e) {
 			if (ImmutableSet.of("InvalidGroup.NotFound").contains(e.getErrorCode())) {
-
+				logger.info("removing security group: {}",name);
 				getGraphDB().nodes().label(AwsEntities.SECURITY_GROUP_TYPE).id("account", getAccount(), "region",
 						getRegion().getName(), "name", name).delete();
 
@@ -97,7 +98,7 @@ public class SecurityGroupScanner extends AbstractEntityScanner<SecurityGroup> {
 			}
 		}
 
-	}
+	}*/
 
 	private void scanSecurityGroups(AmazonEC2 ec2) {
 
@@ -147,6 +148,12 @@ public class SecurityGroupScanner extends AbstractEntityScanner<SecurityGroup> {
 		}
 
 	
+	}
+
+	@Override
+	public void scan(String id) {
+		scanById(id);
+		
 	}
 
 }

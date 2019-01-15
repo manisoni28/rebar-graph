@@ -144,8 +144,8 @@ public class ElbScanner extends AbstractEntityScanner<LoadBalancer> {
 
 		gc("AwsElb", ts);
 		scanTags();
-		getAwsScanner().getScanner(ElbTargetGroupScanner.class).scan();
-		getAwsScanner().getScanner(ElbListenerScanner.class).scan();
+		getAwsScanner().getEntityScanner(ElbTargetGroupScanner.class).scan();
+		getAwsScanner().getEntityScanner(ElbListenerScanner.class).scan();
 	}
 
 	public void scanLoadBalancerByName(String name) {
@@ -158,9 +158,9 @@ public class ElbScanner extends AbstractEntityScanner<LoadBalancer> {
 			DescribeLoadBalancersResult result = client.describeLoadBalancers(request);
 			result.getLoadBalancers().forEach(lb -> {
 				project(lb);
-				getAwsScanner().getScanner(ElbTargetGroupScanner.class)
+				getAwsScanner().getEntityScanner(ElbTargetGroupScanner.class)
 						.scanTargetGroupByLoadBalancerArn(lb.getLoadBalancerArn());
-				getAwsScanner().getScanner(ElbListenerScanner.class)
+				getAwsScanner().getEntityScanner(ElbListenerScanner.class)
 						.scanListenersByLoadBalancerArn(lb.getLoadBalancerArn());
 				scanTagsByLoadBalancerArns(lb.getLoadBalancerArn());
 			});
@@ -228,5 +228,11 @@ public class ElbScanner extends AbstractEntityScanner<LoadBalancer> {
 			project(it);
 		});
 
+	}
+
+	@Override
+	public void scan(String id) {
+		scanLoadBalancerByName(id);
+		
 	}
 }

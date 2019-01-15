@@ -143,4 +143,9 @@ public class ElbTargetGroupScanner extends AbstractEntityScanner<TargetGroup> {
 
 	}
 
+	@Override
+	public void scan(String id) {
+		scanTargetGroupByName(id);	
+	}
+
 }

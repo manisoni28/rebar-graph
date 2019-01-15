@@ -133,4 +133,10 @@ public class ElbListenerScanner extends AbstractEntityScanner<Listener> {
 
 	}
 
+	@Override
+	public void scan(String id) {
+		logger.warn("scanning elb listener not yet supported");
+		
+	}
+
 }

@@ -145,5 +145,9 @@ public class AmiScanner extends AbstractEntityScanner<Image> {
 		scanImageId(imageId);
 
 	}
+	
+	public void scan(String id) {
+		scanImageId(id);
+	}
 
 }

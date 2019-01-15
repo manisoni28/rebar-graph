@@ -260,4 +260,10 @@ public class ElbClassicScanner extends AbstractEntityScanner<LoadBalancerDescrip
 		return "AwsElb";
 	}
 
+	@Override
+	public void scan(String id) {
+		scanElbByName(id);
+		
+	}
+
 }

@@ -15,10 +15,14 @@
  */
 package rebar.graph.aws;
 
+import java.util.concurrent.TimeUnit;
+
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import com.amazonaws.services.ec2.AmazonEC2ClientBuilder;
+
+import rebar.util.Sleep;
 
 public class AwsScannerTest extends AwsIntegrationTest {
 
@@ -31,6 +35,26 @@ public class AwsScannerTest extends AwsIntegrationTest {
 		
 		Assertions.assertThat((Object) getAwsScanner().getClient(AmazonEC2ClientBuilder.class)).isSameAs(getAwsScanner().getClient(AmazonEC2ClientBuilder.class));
 		
+	}
+	
+	@Test
+	public void testX() {
+		
+		
+		getAwsScanner().scan("aws", getAwsScanner().getAccount(), getAwsScanner().getRegion().getName(), "ami", "aa");
+	}
+	
+	void assertScanner(String name, Class type) {
+		AbstractEntityScanner s = getAwsScanner().getEntityScannerForType(name);
+		Assertions.assertThat(s.getClass()).isSameAs(type);
+	}
+	@Test
+	public void testEntityScanners() {
+		assertScanner("securitygroup",SecurityGroupScanner.class);
+		assertScanner("vpc",VpcScanner.class);
+		assertScanner("ami",AmiScanner.class);
+		
+
 	}
 
 }

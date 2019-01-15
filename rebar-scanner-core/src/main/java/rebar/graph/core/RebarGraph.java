@@ -48,6 +48,8 @@ public class RebarGraph {
 
 	EnvConfig env = null;
 	
+	ScanQueue queue;
+	
 	private RebarGraph() {
 
 	}
@@ -125,6 +127,9 @@ public class RebarGraph {
 					Neo4jGraphDB gw = new Neo4jGraphDB((Neo4jDriver) driver);
 					rg.graphWriter = gw;
 					rg.env = env;
+					Neo4jScanQueue queue = new Neo4jScanQueue((Neo4jDriver) driver);
+					queue.start();
+					rg.queue = queue;
 					return rg;
 				} else {
 					throw new GraphException("GRAPH_URL " + graphUrl.get() + " not supported");
@@ -191,5 +196,9 @@ public class RebarGraph {
 			throw new RuntimeException("not found: " + name);
 		}
 		return (T) supplier.get();
+	}
+	
+	public ScanQueue getScanQueue() {
+		return queue;
 	}
 }

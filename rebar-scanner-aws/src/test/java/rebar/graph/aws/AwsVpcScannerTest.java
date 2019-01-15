@@ -28,7 +28,9 @@ public class AwsVpcScannerTest extends AwsIntegrationTest {
 	public void testIt() {
 
 		
-		Assertions.assertThat(getAwsScanner().getScanner(AsgScanner.class).getEntityType()).isEqualTo("AwsAsg");
+		
+		getAwsScanner().getEntityScannerForType("securityGroup").scan("sg-04e17cfd95e493f54");
+		
 		
 
 		 

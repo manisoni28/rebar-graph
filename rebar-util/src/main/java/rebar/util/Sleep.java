@@ -19,6 +19,15 @@ import java.util.concurrent.TimeUnit;
 
 public class Sleep {
 
+	
+	/**
+	 * Block forever.
+	 */
+	public static void forever() {
+		while (true==true) {
+			sleep(60,TimeUnit.MINUTES);
+		}
+	}
 	public static void sleep(int duration, TimeUnit unit) {
 		sleep(unit.toMillis(duration));
 	}

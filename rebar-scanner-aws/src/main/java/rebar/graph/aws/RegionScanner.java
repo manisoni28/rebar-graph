@@ -48,12 +48,18 @@ public class RegionScanner extends AbstractEntityScanner<Regions> {
 	}
 	@Override
 	public void scan(JsonNode entity) {
-		
+		// do nothing
 
 	}
 
 	protected Optional<String> toArn(Regions awsEntity) {
 		return Optional.empty();
+	}
+
+	@Override
+	public void scan(String id) {
+		// do nothing
+		
 	}
 
 }

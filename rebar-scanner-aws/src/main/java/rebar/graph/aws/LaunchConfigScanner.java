@@ -92,4 +92,10 @@ public class LaunchConfigScanner extends AbstractEntityScanner<LaunchConfigurati
 
 	}
 
+	@Override
+	public void scan(String id) {
+		scanLaunchConfigByName(id);
+		
+	}
+
 }

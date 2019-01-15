@@ -69,4 +69,10 @@ public class SerialScanner extends AbstractEntityScanner {
 
 	}
 
+	@Override
+	public void scan(String id) {
+		// do nothing
+		
+	}
+
 }

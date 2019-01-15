@@ -18,6 +18,7 @@ package rebar.graph.aws;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -36,12 +37,16 @@ import com.amazonaws.services.securitytoken.AWSSecurityTokenServiceClientBuilder
 import com.amazonaws.services.securitytoken.model.GetCallerIdentityRequest;
 import com.amazonaws.services.securitytoken.model.GetCallerIdentityResult;
 import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 import com.google.common.base.Suppliers;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
+import io.github.classgraph.ClassGraph;
+import io.github.classgraph.ScanResult;
 import rebar.graph.core.GraphDB;
 import rebar.graph.core.Scanner;
 import rebar.graph.core.ScannerBuilder;
@@ -49,7 +54,7 @@ import rebar.util.RebarException;
 
 public final class AwsScanner extends Scanner {
 
-	Logger logger = LoggerFactory.getLogger(AwsScanner.class);
+	static Logger logger = LoggerFactory.getLogger(AwsScanner.class);
 	List<Consumer<AwsClientBuilder<?, ?>>> configurers = Lists.newArrayList();
 
 	Supplier<String> accountSupplier = Suppliers.memoize(this::doGetAccount);
@@ -58,6 +63,12 @@ public final class AwsScanner extends Scanner {
 
 	Cache<String, AmazonWebServiceClient> clientCache = CacheBuilder.newBuilder().expireAfterAccess(1, TimeUnit.MINUTES)
 			.build();
+
+	static Map<String, Class<? extends AbstractEntityScanner>> typeMap = Maps.newHashMap();
+
+	static {
+		findEntityScanners();
+	}
 
 	protected AwsScanner(ScannerBuilder<? extends Scanner> builder) {
 		super(builder);
@@ -98,17 +109,16 @@ public final class AwsScanner extends Scanner {
 		}
 	}
 
-	public <T extends AbstractEntityScanner> T getScanner(Class<T> clazz) {
+	public <T extends AbstractEntityScanner> T getEntityScanner(Class<T> clazz) {
 		try {
 			Constructor<T> ctor = clazz.getConstructor(AwsScanner.class);
 			return (T) ctor.newInstance(this);
-		
-		}
-		catch (NoSuchMethodException | IllegalAccessException | InstantiationException| InvocationTargetException e) {
+
+		} catch (NoSuchMethodException | IllegalAccessException | InstantiationException
+				| InvocationTargetException e) {
 			throw new RebarException(e);
 		}
 	}
-
 
 	public Regions getRegion() {
 		return region;
@@ -118,7 +128,6 @@ public final class AwsScanner extends Scanner {
 		return getRebarGraph().getGraphDB();
 	}
 
-	
 	@SuppressWarnings("unchecked")
 	public <T extends AmazonWebServiceClient> T getClient(Class<? extends AwsClientBuilder> builderClass) {
 
@@ -128,31 +137,99 @@ public final class AwsScanner extends Scanner {
 		T client = (T) clientCache.getIfPresent(key);
 		if (client == null) {
 
-			logger.info("building new client for account={} region={} type={}",getAccount(),getRegion().getName(),builderClass.getName().replace("Builder", ""));
+			logger.info("building new client for account={} region={} type={}", getAccount(), getRegion().getName(),
+					builderClass.getName().replace("Builder", ""));
 			client = (T) newClientBuilder(builderClass).withRegion(getRegion()).build();
 			clientCache.put(key, client);
 		}
-		
+
 		return client;
 	}
 
-
 	@Override
 	public void doScan() {
-		getScanner(AllEntityScanner.class).scan();
+		getEntityScanner(AllEntityScanner.class).scan();
 	}
+
 	public void maybeThrow(Exception e) {
 		if (isFailOnError()) {
 			if (e instanceof RuntimeException) {
 				throw RuntimeException.class.cast(e);
+			} else {
+				throw new RebarException("problem", e);
 			}
-			else {
-				throw new RebarException("problem",e);
-			}
-		}
-		else {
-			logger.warn("problem",e);
+		} else {
+			logger.warn("problem", e);
 		}
 	}
+
+	<T extends AbstractEntityScanner> T getEntityScannerForType(final String type) {
+
+	
+		String t = Strings.nullToEmpty(type).toLowerCase().trim();
+		if (type.toLowerCase().startsWith("aws")) {
+			t = t.substring(3);
+		}
+	
+		
+		Class<? extends AbstractEntityScanner> es = typeMap.get(t);
+		if (es==null) {
+			throw new IllegalArgumentException("unsupported entity type: "+type);
+		}
+		return (T) getEntityScanner(es);
+		
+	
+	}
+
+	private static void findEntityScanners() {
+		ScanResult result = new ClassGraph().enableClassInfo().whitelistPackages("rebar.graph.aws").scan();
+
+		typeMap = Maps.newHashMap();
+		result.getAllClasses().forEach(it -> {
+			try {
+				if (it.extendsSuperclass(AbstractEntityScanner.class.getName())) {
+					String n = it.getName().replace(AwsScanner.class.getPackage().getName() + ".", "")
+							.replace("Scanner", "").toLowerCase();
+
+					Class<? extends AbstractEntityScanner> es = (Class<? extends AbstractEntityScanner>) Class
+							.forName(it.getName());
+					typeMap.put(n, es);
+				}
+			} catch (ClassNotFoundException e) {
+				logger.warn("problem", e);
+			}
+		});
+
+	}
+
+	@Override
+	public void scan(String scannerType, String account, String region, String type, String id) {
+		if (scannerType == null || (!scannerType.equals("aws"))) {
+			logger.info("do not handle scanner type: {}", scannerType);
+			return;
+		}
+		if (account == null || !account.equals(getAccount())) {
+			logger.info("do not handle account: {}", account);
+			return;
+		}
+		if (region == null || !region.equals(getRegion().getName())) {
+			logger.info("do not handle region: {}", region);
+			return;
+		}
+		try {
+			AbstractEntityScanner scanner = getEntityScannerForType(type);
+			if (Strings.isNullOrEmpty(id)) {
+				scanner.scan();
+			} else {
+				scanner.scan(id);
+			}
+
+		} catch (IllegalArgumentException e) {
+			logger.warn("unsupported entity type: {}", type);
+		}
+
+	}
+
+
 
 }

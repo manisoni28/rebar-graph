@@ -94,4 +94,10 @@ public class SubnetScanner extends AbstractEntityScanner<Subnet> {
 
 	}
 
+	@Override
+	public void scan(String id) {
+		scanById(id);
+		
+	}
+	
 }

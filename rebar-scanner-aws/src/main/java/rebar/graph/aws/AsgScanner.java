@@ -244,4 +244,11 @@ public class AsgScanner extends AbstractEntityScanner<AutoScalingGroup> {
 		});
 		return list;
 	}
+
+
+
+	@Override
+	public void scan(String id) {
+		scanByName(id);	
+	}
 }

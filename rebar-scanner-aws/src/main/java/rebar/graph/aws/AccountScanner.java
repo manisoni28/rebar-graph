@@ -38,11 +38,17 @@ public class AccountScanner extends AbstractEntityScanner {
 
 	@Override
 	public void scan(JsonNode entity) {
-		
+		scan();
 	}
 	
 	protected Optional<String> toArn(Object awsEntity) {
 		return Optional.empty();
+	}
+
+	@Override
+	public void scan(String id) {
+		scan();
+		
 	}
 
 }

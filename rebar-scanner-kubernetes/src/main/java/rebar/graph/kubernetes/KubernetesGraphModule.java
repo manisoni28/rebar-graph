@@ -15,6 +15,8 @@
  */
 package rebar.graph.kubernetes;
 
+import java.util.concurrent.TimeUnit;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.views.AbstractView;
@@ -23,32 +25,39 @@ import rebar.graph.core.AbstractGraphModule;
 import rebar.graph.core.Main;
 import rebar.graph.core.RebarGraph;
 
-
 public class KubernetesGraphModule extends AbstractGraphModule {
+
+	Logger logger = LoggerFactory.getLogger(KubernetesGraphModule.class);
+
+	KubeScanner scanner;
 
 	public static void main(String[] args) {
 		Main.main(args);
 	}
-	
-	public void run() {
-		// This is intended to be invoked from a pod inside the cluster.
-		// If it exits with an exception, it is ok.  Kubernetes should reschedule us.
-		Logger logger = LoggerFactory.getLogger(KubernetesGraphModule.class);
 
-	
-	
-	
-		KubeScanner scanner =getRebarGraph().createBuilder(KubernetesScannerBuilder.class).build();
-		scanner.applyConstraints();
-		while (true == true) {
+	private void scan() {
+		try {
 			
 			
 			scanner.scan();
+		} catch (Exception e) {
+			logger.warn("problem", e);
+		}
+	}
+
+	public void run() {
+
+		if (scanner == null) {
+			scanner = getRebarGraph().createBuilder(KubernetesScannerBuilder.class).build();
+			scanner.applyConstraints();
 			scanner.watchEvents(); // idempotent
-			try {
-				Thread.sleep(60000);
-			} catch (Exception e) {
-			}
+		}
+		
+		if (isFullScanEnabled()) {
+			getExecutor().scheduleWithFixedDelay(this::scan, 0, getFullScanInterval(), TimeUnit.SECONDS);
+		}
+		else {
+			getExecutor().execute(this::scan);
 		}
 
 	}

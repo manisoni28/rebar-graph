@@ -23,7 +23,7 @@ public class AsgScannerTest extends AwsIntegrationTest {
 	@Test
 	public void testIT() {
 	//	getAwsScanner().scan();
-		getAwsScanner().getScanner(AsgScanner.class).scan();
+		getAwsScanner().getEntityScanner(AsgScanner.class).scan();
 	}
 
 }

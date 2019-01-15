@@ -197,4 +197,12 @@ public class Ec2InstanceScanner extends AbstractEntityScanner<Instance> {
 		}
 	}
 
+
+
+	@Override
+	public void scan(String id) {
+		scanInstance(id);
+		
+	}
+
 }

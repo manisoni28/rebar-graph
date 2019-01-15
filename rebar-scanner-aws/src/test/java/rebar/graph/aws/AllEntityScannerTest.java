@@ -24,7 +24,7 @@ public class AllEntityScannerTest extends AwsIntegrationTest {
 	
 	@Test
 	public void testIt() {
-		getAwsScanner().getScanner(AllEntityScanner.class).doScan();
+		getAwsScanner().getEntityScanner(AllEntityScanner.class).doScan();
 	}
 
 }

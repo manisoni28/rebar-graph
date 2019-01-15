@@ -15,8 +15,19 @@
  */
 package rebar.graph.core;
 
+import java.util.Optional;
+
+import rebar.util.EnvConfig;
+
 public interface GraphModule extends Runnable {
 
+	public static final String FULL_SCAN_INTERVAL="FULL_SCAN_INTERVAL";
+	
+	public EnvConfig getConfig();
+	
 	public RebarGraph getRebarGraph();
 
+	public long getFullScanInterval();
+	
+	public boolean isFullScanEnabled();
 }

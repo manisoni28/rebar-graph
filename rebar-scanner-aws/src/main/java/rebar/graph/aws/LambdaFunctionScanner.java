@@ -82,7 +82,7 @@ public class LambdaFunctionScanner extends AbstractEntityScanner<FunctionConfigu
 
 			GetFunctionConfigurationResult result = c.getFunctionConfiguration(lfRequest);
 
-			System.out.println(result);
+			
 			FunctionConfiguration fc = new FunctionConfiguration();
 
 			fc.setCodeSize(result.getCodeSize());
@@ -141,6 +141,12 @@ public class LambdaFunctionScanner extends AbstractEntityScanner<FunctionConfigu
 	@Override
 	protected Optional<String> toArn(FunctionConfiguration awsObject) {
 		return Optional.ofNullable(awsObject.getFunctionArn());
+	}
+
+	@Override
+	public void scan(String id) {
+		scanByName(id);
+		
 	}
 
 }

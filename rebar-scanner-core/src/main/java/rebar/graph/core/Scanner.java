@@ -97,15 +97,18 @@ public abstract class Scanner {
 		throw new UnsupportedOperationException("Gremlin not yet supported");
 	}
 	
+	public final void queueScan(String b, String c, String d) {}
+	
+	public abstract void scan(String scannerType, String a, String b, String c, String d);
+	
 	public final void scan() {
 		Stopwatch sw = Stopwatch.createStarted();
 		logger.info("begin scan for {}",this);
 		doScan();
 		logger.info("end scan for {} ({}ms)",this,sw.elapsed(TimeUnit.MILLISECONDS));
 	}
+	
 	public abstract void doScan();
-
-
 
 	public void tryExecute(Runnable r) {
 		try {
@@ -131,4 +134,10 @@ public abstract class Scanner {
 	protected ScannerBuilder<? extends Scanner> getScannerBuilder() {
 		return scannerBuilder;
 	}
+	
+	public String getScannerName() {
+		return getClass().getPackage().getName().replace("rebar.graph.", "");
+	}
+	
+
 }

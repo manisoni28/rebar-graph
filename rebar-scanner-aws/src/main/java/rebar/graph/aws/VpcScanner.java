@@ -112,4 +112,11 @@ public class VpcScanner extends AbstractEntityScanner<Vpc> {
 		
 	}
 
+
+
+	@Override
+	public void scan(String id) {
+		scanVPC(id);
+	}
+
 }

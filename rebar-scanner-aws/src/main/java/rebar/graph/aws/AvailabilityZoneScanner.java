@@ -40,8 +40,7 @@ public class AvailabilityZoneScanner extends AbstractEntityScanner<AvailabilityZ
 
 	@Override
 	public void scan(JsonNode entity) {
-		// do nothing
-
+		scan();
 	}
 
 	protected Optional<String> toArn(AvailabilityZone awsEntity) {
@@ -59,6 +58,12 @@ public class AvailabilityZoneScanner extends AbstractEntityScanner<AvailabilityZ
 		});
 
 		getGraphDB().nodes("AwsRegion").relationship("HAS").on("region", "region").to("AwsAvailabilityZone").merge();
+	}
+
+	@Override
+	public void scan(String id) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

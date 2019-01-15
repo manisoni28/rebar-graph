@@ -80,6 +80,12 @@ public class AlibabaScanner extends Scanner {
 		
 		
 	}
+
+	@Override
+	public void scan(String scannerType, String a, String b, String c, String id) {
+		// TODO Auto-generated method stub
+		
+	}
 	
 	
 	

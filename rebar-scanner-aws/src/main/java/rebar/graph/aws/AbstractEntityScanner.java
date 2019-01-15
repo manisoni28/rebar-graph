@@ -110,7 +110,7 @@ public abstract class AbstractEntityScanner<A extends Object> {
 	protected abstract void doScan();
 	
 	public abstract void scan(JsonNode entity);
-	
+	public abstract void scan(String id);
 	public void tryExecute(Runnable r) {
 		scanner.tryExecute(r);
 	}

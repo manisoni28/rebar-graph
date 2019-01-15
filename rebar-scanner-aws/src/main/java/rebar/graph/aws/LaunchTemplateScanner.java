@@ -105,4 +105,10 @@ public class LaunchTemplateScanner extends AbstractEntityScanner<LaunchTemplate>
 
 		gc(AwsEntities.LAUNCH_TEMPLATE_TYPE, ts);
 	}
+
+	@Override
+	public void scan(String id) {
+		scanLaunchTemplateByName(id);
+		
+	}
 }
