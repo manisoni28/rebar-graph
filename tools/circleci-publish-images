@@ -1,17 +1,19 @@
 #!/bin/bash
 
 
-
+DOCKER_SRC_TAG=git-$CIRCLE_SHA1
 
 build_image() {
     docker build rebar-scanner-$1 \
-    -t rebar/$1-scanner \
+    -t rebar/$1-scanner \ 
+    -t rebar/$1-scanner:${DOCKER_SRC_TAG}
     --build-arg CI_BUILD_URL=${CIRCLE_BUILD_URL} \
     --build-arg GIT_COMMIT=${CIRCLE_SHA1} \
     --build-arg GIT_REPO=${CIRCLE_REPOSITORY_URL} || exit 99
 }
 push_image() {
     docker push rebar/$1-scanner || exit 99
+    docker push rebar/$1-scanner:${DOCKER_SRC_TAG} || exit 99
 }
 
 build_image docker
@@ -20,6 +22,7 @@ build_image aws
 build_image alibaba
 
 docker build rebar-dashboard -t rebar/rebar-dashboard \
+    -t rebar/rebar-dashboard:${DOCKER_SRC_TAG} \
     --build-arg CI_BUILD_URL=${CIRCLE_BUILD_URL} \
     --build-arg GIT_COMMIT=${CIRCLE_SHA1} \
     --build-arg GIT_REPO=${CIRCLE_REPOSITORY_URL} || exit 99
@@ -39,6 +42,7 @@ push_image kubernetes
 push_image aws
 push_image alibaba
 docker push rebar/rebar-dashboard || exit 99
+docker push rebar/rebar-dashboard:${DOCKER_SRC_TAG}
 
 docker logout 
 
