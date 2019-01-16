@@ -55,7 +55,7 @@ public class AmiScanner extends AbstractEntityScanner<Image> {
 	}
 
 	@Override
-	protected void gc(String type, long cutoff) {
+	protected void gc(String type, long cutoff, String...args) {
 		/**
 		 * We need a custom gc() implementation for AMIs because we don't filter by account
 		 */

@@ -93,8 +93,8 @@ public class ElbScanner extends AbstractEntityScanner<LoadBalancer> {
 
 	protected void project(LoadBalancer lb) {
 		ObjectNode n = toJson(lb);
-
-		getGraphDB().nodes("AwsElb").idKey("name", "region", "account").withTagPrefixes(TAG_PREFIXES).properties(n)
+		
+		getGraphDB().nodes("AwsElb").idKey("name", "region", "account","type").withTagPrefixes(TAG_PREFIXES).properties(n)
 				.merge();
 
 		getAwsScanner().execGraphOperation(RelationshipGraphOperation.class, n);
@@ -135,7 +135,8 @@ public class ElbScanner extends AbstractEntityScanner<LoadBalancer> {
 			request.setMarker(result.getNextMarker());
 		} while (!Strings.isNullOrEmpty(request.getMarker()));
 
-		gc("AwsElb", ts);
+		gc("AwsElb", ts,"type","network");
+		gc("AwsElb", ts,"type","application");
 		scanTags();
 		getAwsScanner().getEntityScanner(ElbTargetGroupScanner.class).scan();
 		getAwsScanner().getEntityScanner(ElbListenerScanner.class).scan();
@@ -158,9 +159,11 @@ public class ElbScanner extends AbstractEntityScanner<LoadBalancer> {
 				scanTagsByLoadBalancerArns(lb.getLoadBalancerArn());
 			});
 		} catch (LoadBalancerNotFoundException e) {
+			// important to NOT delete classic
 			getGraphDB().nodes("AwsLoadBalancer").id("name", name).id("region", getRegionName())
-					.id("account", getAccount()).delete();
-
+					.id("account", getAccount()).id("type","network").delete();
+			getGraphDB().nodes("AwsLoadBalancer").id("name", name).id("region", getRegionName())
+			.id("account", getAccount()).id("type","application").delete();
 		}
 	}
 

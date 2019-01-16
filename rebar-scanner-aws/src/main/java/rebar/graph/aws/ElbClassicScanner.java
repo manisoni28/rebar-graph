@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -33,11 +34,14 @@ import com.amazonaws.services.elasticloadbalancing.model.TagDescription;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.base.Stopwatch;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.machinezoo.noexception.Exceptions;
 
+import rebar.graph.core.GraphDB;
 import rebar.graph.core.GraphOperation;
 import rebar.graph.core.Scanner;
 import rebar.graph.neo4j.GraphDriver;
@@ -106,13 +110,15 @@ public class ElbClassicScanner extends AbstractEntityScanner<LoadBalancerDescrip
 
 		scanTags();
 
-		gc("AwsElb", ts);
+		// The extra qualification on GC is important
+		gc("AwsElb", ts,"type","classic");
 
 	}
 
 	protected Optional<String> toArn(LoadBalancerDescription elb) {
 
-		return Optional.of(String.format("arn:aws:elasticloadbalancing:%s:%s:loadbalancer/app/%s",
+		//https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html
+		return Optional.of(String.format("arn:aws:elasticloadbalancing:%s:%s:loadbalancer/%s",
 				getRegion().getName(), getAccount(), elb.getLoadBalancerName()));
 	}
 
@@ -183,7 +189,7 @@ public class ElbClassicScanner extends AbstractEntityScanner<LoadBalancerDescrip
 			data.put(TAG_PREFIX + it.getKey(), it.getValue());
 		});
 
-		getGraphDB().nodes("AwsElb").id("account", getAccount()).id("region", getRegion().getName()).id("name", td.getLoadBalancerName())
+		getGraphDB().nodes("AwsElb").id("type","classic").id("account", getAccount()).id("region", getRegion().getName()).id("name", td.getLoadBalancerName())
 				.withTagPrefixes(TAG_PREFIXES).properties(data).merge();
 
 	}
@@ -257,5 +263,6 @@ public class ElbClassicScanner extends AbstractEntityScanner<LoadBalancerDescrip
 		scanElbByName(id);
 		
 	}
+
 
 }

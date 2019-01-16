@@ -37,6 +37,7 @@ import com.google.common.collect.Lists;
 import com.machinezoo.noexception.Exceptions;
 
 import rebar.graph.core.GraphDB;
+import rebar.graph.core.GraphDB.NodeOperation;
 import rebar.util.Json;
 
 public abstract class AbstractEntityScanner<A extends Object> {
@@ -52,15 +53,27 @@ public abstract class AbstractEntityScanner<A extends Object> {
 
 	}
 
-	protected void gc(String type, long cutoff) {
-
+	protected final void gc(String type, long cutoff) {
+		gc(type,cutoff,null);
+	}
+	protected void gc(String type, long cutoff, String...attrs) {
+	
 		if (Strings.isNullOrEmpty(type)) {
 			return;
 		}
 		Stopwatch sw = Stopwatch.createStarted();
 	
-		getGraphDB().nodes().whereAttributeLessThan(GraphDB.UPDATE_TS, cutoff).label(type).id("region",
-				getRegion().getName(), "account", getAccount()).match().forEach(it -> {
+		NodeOperation op = getGraphDB().nodes().whereAttributeLessThan(GraphDB.UPDATE_TS, cutoff).label(type).id("region",
+				getRegion().getName(), "account", getAccount());
+		
+		// extra attributes are useful for some entities like Elb/Nlb/Alb
+		if (attrs!=null) {
+			for (int i=0; i<attrs.length; i+=2) {
+				op = op.id(attrs[i], attrs[i+1]);
+			}
+		}
+	
+		op.match().forEach(it -> {
 					Exceptions.log(logger).run(() -> {
 						logger.info("running gc on {}",it.path(GraphDB.ENTITY_TYPE).asText());
 						scan(it);					
