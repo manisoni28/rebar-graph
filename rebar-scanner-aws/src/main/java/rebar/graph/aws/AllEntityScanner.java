@@ -29,12 +29,7 @@ public class AllEntityScanner extends SerialScanner {
 
 	
 
-	public AllEntityScanner(AwsScanner scanner) {
-		super(scanner);
-
-		ScanResult result = new ClassGraph().enableClassInfo().whitelistPackages(getClass().getPackage().getName())
-				.scan();
-
+	public static List<Class<? extends AbstractEntityScanner>> getEntityScanners() {
 		List<Class<? extends AbstractEntityScanner>> classList = Lists.newArrayList();
 		classList.add(AccountScanner.class);
 		classList.add(RegionScanner.class);
@@ -49,33 +44,21 @@ public class AllEntityScanner extends SerialScanner {
 		classList.add(ElbClassicScanner.class);
 		classList.add(ElbScanner.class);
 		classList.add(ElbTargetGroupScanner.class);
-		classList.add(ElbListenerScanner.class);
+		
 		classList.add(AsgScanner.class);
 		classList.add(EksScanner.class);
 		classList.add(LambdaFunctionScanner.class);
 		
+		classList.add(RdsClusterScanner.class);
+		classList.add(RdsInstanceScanner.class);
+		return classList;
+	}
+	public AllEntityScanner(AwsScanner scanner) {
+		super(scanner);
+
+
 		
-		// Maybe we move this to a test.  Just want to prevent scanners from being forgotten.
-		result.getSubclasses(AbstractEntityScanner.class.getName()).stream()
-				.filter(p -> !p.isAbstract()) // filter out abstract classes
-				.filter(p -> !p.getName().equals(SerialScanner.class.getName()))
-				.filter(p -> !p.getName().equals(AllEntityScanner.class.getName())).flatMap(it -> {
-					try {
-
-						return Stream.of(Class.forName(it.getName()));
-					} catch (Exception e) {
-						logger.warn("could not instantiate {}",it.getName());
-					}
-					return Stream.empty();
-				})
-				.filter(p->!classList.contains(p))
-				
-				.forEach(it -> {
-					logger.warn("adding {} to list of scanners mechanically...consider making it explicit",it.getSimpleName());
-					classList.add((Class<? extends AbstractEntityScanner<?>>)it);
-				});
-
-		addScanners(classList);
+		addScanners(getEntityScanners());
 	}
 
 }

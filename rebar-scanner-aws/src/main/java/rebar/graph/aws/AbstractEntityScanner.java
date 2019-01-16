@@ -53,6 +53,27 @@ public abstract class AbstractEntityScanner<A extends Object> {
 
 	}
 
+	/**
+	 * Convenience for initializing a NodeOperation with common boilerplate.
+	 * @param labelType
+	 * @param attrName
+	 * @param attrVal
+	 * @return
+	 */
+	protected NodeOperation awsGraphNodes(String labelType) {
+		return getGraphDB().nodes(labelType).id("region",getRegionName()).id("account",getAccount());
+	}
+	/**
+	 * Convenience for initializing a NodeOperation with common boilerplate.
+	 * @param labelType
+	 * @param attrName
+	 * @param attrVal
+	 * @return
+	 */
+	protected NodeOperation awsGraphNodes(String labelType, String attrName, String attrVal) {
+		return awsGraphNodes(labelType).id(attrName,attrVal);
+	}
+	
 	protected final void gc(String type, long cutoff) {
 		gc(type,cutoff,null);
 	}
@@ -144,6 +165,8 @@ public abstract class AbstractEntityScanner<A extends Object> {
 		n.put(GraphDB.ENTITY_GROUP, "aws");
 		n.put("region", getRegionName());
 		n.put("account", getAccount());
+		
+		
 		toArn((A)awsObject).ifPresent(arn->n.put("arn", arn));
 		return n;
 	}

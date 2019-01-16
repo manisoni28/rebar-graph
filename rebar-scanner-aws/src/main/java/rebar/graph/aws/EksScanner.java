@@ -60,7 +60,7 @@ public class EksScanner extends AbstractEntityScanner<Cluster> {
 		JsonNode n = toJson(cluster);
 
 	
-		getGraphDB().nodes().label("AwsEksCluster").idKey("arn").properties(n).merge();
+		awsGraphNodes("AwsEksCluster").idKey("arn").properties(n).merge();
 
 		n.path("subnetIds").forEach(it -> {
 			// kinda lame to loop like this
@@ -92,8 +92,7 @@ public class EksScanner extends AbstractEntityScanner<Cluster> {
 
 			project(result.getCluster());
 		} catch (ResourceNotFoundException e) {
-			getGraphDB().nodes("AwsEksCluster").id("name", clusterName).id("account", getAccount())
-					.id("region", getRegionName()).delete();
+			awsGraphNodes("AwsEksCluster").id("name", clusterName).delete();
 		}
 
 	}
