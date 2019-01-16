@@ -28,7 +28,7 @@ import com.google.common.base.Strings;
 
 import rebar.graph.core.GraphOperation;
 import rebar.graph.core.Scanner;
-import rebar.graph.neo4j.Neo4jDriver;
+import rebar.graph.neo4j.GraphDriver;
 import rebar.util.Json;
 
 public class ElbTargetGroupScanner extends AbstractEntityScanner<TargetGroup> {
@@ -36,7 +36,7 @@ public class ElbTargetGroupScanner extends AbstractEntityScanner<TargetGroup> {
 	public static class TargetGroupGraphOperation implements GraphOperation {
 
 		@Override
-		public Stream<JsonNode> exec(Scanner ctx, JsonNode n, Neo4jDriver neo4j) {
+		public Stream<JsonNode> exec(Scanner ctx, JsonNode n, GraphDriver neo4j) {
 
 		//	String targetGroupArn = n.path("arn").asText();
 

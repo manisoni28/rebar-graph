@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-import rebar.graph.neo4j.Neo4jDriver;
+import rebar.graph.neo4j.GraphDriver;
 
 @Component
 public class InternalAuthManager {
@@ -20,7 +20,7 @@ public class InternalAuthManager {
 	Logger logger = LoggerFactory.getLogger(InternalAuthManager.class);
 	
 	@Autowired
-	Neo4jDriver driver;
+	GraphDriver driver;
 
 	public InternalAuthManager() {
 

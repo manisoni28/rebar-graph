@@ -38,7 +38,7 @@ import com.google.common.collect.ImmutableSet;
 
 import rebar.graph.core.GraphOperation;
 import rebar.graph.core.Scanner;
-import rebar.graph.neo4j.Neo4jDriver;
+import rebar.graph.neo4j.GraphDriver;
 import rebar.util.Json;
 
 public class ElbScanner extends AbstractEntityScanner<LoadBalancer> {
@@ -48,7 +48,7 @@ public class ElbScanner extends AbstractEntityScanner<LoadBalancer> {
 	public static class RelationshipGraphOperation implements GraphOperation {
 
 		@Override
-		public Stream<JsonNode> exec(Scanner ctx, JsonNode n, Neo4jDriver neo4j) {
+		public Stream<JsonNode> exec(Scanner ctx, JsonNode n, GraphDriver neo4j) {
 
 			String account = AwsScanner.class.cast(ctx).getAccount();
 			String region = AwsScanner.class.cast(ctx).getRegion().getName();

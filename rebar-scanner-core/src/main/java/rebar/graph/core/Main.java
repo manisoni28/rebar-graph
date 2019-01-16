@@ -36,17 +36,19 @@ public class Main  {
 		ScanResult result = new ClassGraph().enableClassInfo().whitelistPackages("rebar.graph").scan();
 
 		AtomicInteger count = new AtomicInteger(0);
-		result.getClassesImplementing(GraphModule.class.getName()).stream().filter(p -> !p.isAbstract()).forEach(it -> {
+		
+		
+		result.getSubclasses(ScannerModule.class.getName()).stream().filter(p -> !p.isAbstract()).forEach(it -> {
 
 			Exceptions.sneak().run(() -> {
-				AbstractGraphModule m = (AbstractGraphModule) Class.forName(it.getName()).newInstance();
+				ScannerModule m = (ScannerModule) Class.forName(it.getName()).newInstance();
 				
 				m.rebarGraph = g;
 
 				m.registerScanner(m.getScannerType());
 				
 				Thread thread = new ThreadFactoryBuilder().setNameFormat(it.getSimpleName() + "-%d").build()
-						.newThread(m);
+						.newThread(m::init);
 
 				thread.start();
 				count.incrementAndGet();

@@ -16,14 +16,11 @@
 package rebar.graph.doc;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import rebar.graph.neo4j.Neo4jDriver;
 
 public class MarkdownTest {
 

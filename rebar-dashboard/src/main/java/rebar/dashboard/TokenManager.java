@@ -10,12 +10,11 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTCreator.Builder;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.interfaces.Verification;
 import com.google.common.base.Strings;
 import com.google.common.hash.Hashing;
 import com.google.common.io.BaseEncoding;
 
-import rebar.graph.neo4j.Neo4jDriver;
+import rebar.graph.neo4j.GraphDriver;
 
 @Component
 public class TokenManager {
@@ -24,7 +23,7 @@ public class TokenManager {
 	String issuer = "rebar";
 	
 	@Autowired
-	Neo4jDriver neo4jDriver;
+	GraphDriver neo4jDriver;
 	
 	public TokenManager() {
 		// TODO Auto-generated constructor stub

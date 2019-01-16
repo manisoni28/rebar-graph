@@ -24,12 +24,12 @@ import com.google.common.collect.Lists;
 import rebar.graph.core.GraphDB;
 import rebar.graph.core.GraphOperation;
 import rebar.graph.core.Scanner;
-import rebar.graph.neo4j.Neo4jDriver;
+import rebar.graph.neo4j.GraphDriver;
 
 public class MergeServiceEndpointsOperation implements GraphOperation {
 
 	@Override
-	public Stream<JsonNode> exec(Scanner scanner, JsonNode n,Neo4jDriver d) {
+	public Stream<JsonNode> exec(Scanner scanner, JsonNode n,GraphDriver d) {
 		GraphDB g = scanner.getRebarGraph().getGraphDB();
 
 		long ts = scanner.getRebarGraph().getGraphDB().getTimestamp();

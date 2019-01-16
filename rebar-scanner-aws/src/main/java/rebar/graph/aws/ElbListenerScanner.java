@@ -29,7 +29,7 @@ import com.google.common.base.Strings;
 
 import rebar.graph.core.GraphOperation;
 import rebar.graph.core.Scanner;
-import rebar.graph.neo4j.Neo4jDriver;
+import rebar.graph.neo4j.GraphDriver;
 import rebar.util.Json;
 
 public class ElbListenerScanner extends AbstractEntityScanner<Listener> {
@@ -37,7 +37,7 @@ public class ElbListenerScanner extends AbstractEntityScanner<Listener> {
 	public static class RelationshipGraphOperation implements GraphOperation {
 
 		@Override
-		public Stream<JsonNode> exec(Scanner ctx, JsonNode n, Neo4jDriver neo4j) {
+		public Stream<JsonNode> exec(Scanner ctx, JsonNode n, GraphDriver neo4j) {
 
 			String loadBalancerArn = n.path("loadBalancerArn").asText().trim();
 			long ts = ctx.getRebarGraph().getGraphDB().getTimestamp();

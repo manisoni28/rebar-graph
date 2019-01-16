@@ -15,9 +15,9 @@
  */
 package rebar.graph.core;
 
-import static rebar.graph.driver.GraphDriver.GRAPH_PASSWORD;
-import static rebar.graph.driver.GraphDriver.GRAPH_URL;
-import static rebar.graph.driver.GraphDriver.GRAPH_USERNAME;
+import static rebar.graph.neo4j.GraphDriver.GRAPH_PASSWORD;
+import static rebar.graph.neo4j.GraphDriver.GRAPH_URL;
+import static rebar.graph.neo4j.GraphDriver.GRAPH_USERNAME;
 
 import java.util.Map;
 import java.util.Optional;
@@ -29,9 +29,8 @@ import org.slf4j.LoggerFactory;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 
-import rebar.graph.driver.GraphDriver;
-import rebar.graph.driver.GraphException;
-import rebar.graph.neo4j.Neo4jDriver;
+import rebar.graph.neo4j.GraphDriver;
+import rebar.graph.neo4j.GraphException;
 import rebar.util.EnvConfig;
 import rebar.util.RebarException;
 
@@ -133,10 +132,10 @@ public class RebarGraph {
 				}
 				GraphDriver driver = b.build();
 				if (driver.getClass().getName().toLowerCase().contains("neo4j")) {
-					GraphDB gw = new GraphDB((Neo4jDriver) driver);
+					GraphDB gw = new GraphDB((GraphDriver) driver);
 					rg.graphWriter = gw;
 					rg.env = env;
-					Neo4jScanQueue queue = new Neo4jScanQueue((Neo4jDriver) driver);
+					Neo4jScanQueue queue = new Neo4jScanQueue((GraphDriver) driver);
 					queue.start();
 					rg.queue = queue;
 					return rg;

@@ -40,15 +40,15 @@ import com.google.common.collect.MapDifference;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
-import rebar.graph.driver.GraphException;
-import rebar.graph.driver.GraphSchema;
-import rebar.graph.neo4j.Neo4jDriver;
+import rebar.graph.neo4j.GraphDriver;
+import rebar.graph.neo4j.GraphException;
+import rebar.graph.neo4j.GraphSchema;
 
 public class GraphDB {
 
 	
 	
-	Neo4jDriver neo4j;
+	GraphDriver neo4j;
 	Logger logger = org.slf4j.LoggerFactory.getLogger(GraphDB.class);
 	static ObjectMapper mapper = new ObjectMapper();
 
@@ -93,11 +93,11 @@ public class GraphDB {
 	public static final String ENTITY_GROUP="graphEntityGroup";
 	public static final String UPDATE_TS="graphUpdateTs";
 	
-	GraphDB(Neo4jDriver driver) {
+	GraphDB(GraphDriver driver) {
 		this.neo4j = driver;
 	}
 
-	public Neo4jDriver getNeo4jDriver() {
+	public GraphDriver getNeo4jDriver() {
 		return this.neo4j;
 	}
 	/**

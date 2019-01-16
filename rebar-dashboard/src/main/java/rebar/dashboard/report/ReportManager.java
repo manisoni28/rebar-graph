@@ -7,7 +7,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ObjectLoader;
 import org.eclipse.jgit.lib.Ref;
@@ -18,7 +17,6 @@ import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.treewalk.TreeWalk;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.yaml.snakeyaml.Yaml;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -30,8 +28,7 @@ import com.google.common.collect.Maps;
 
 import rebar.dashboard.GitManager;
 import rebar.dashboard.report.Report.Parameter;
-import rebar.graph.neo4j.Neo4jDriver;
-import rebar.util.RebarException;
+import rebar.graph.neo4j.GraphDriver;
 
 @Component
 public class ReportManager {
@@ -82,7 +79,7 @@ public class ReportManager {
 	}
 
 	@Autowired
-	Neo4jDriver driver;
+	GraphDriver driver;
 
 	@Autowired
 	GitManager gitManager;

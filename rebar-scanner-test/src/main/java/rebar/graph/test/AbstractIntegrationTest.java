@@ -20,9 +20,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 import rebar.graph.core.RebarGraph;
-import rebar.graph.neo4j.Neo4jDriver;
+import rebar.graph.neo4j.GraphDriver;
 import rebar.util.EnvConfig;
 
 
@@ -76,7 +75,7 @@ public abstract class AbstractIntegrationTest {
 	}
 
 	private void cleanupTestData() {
-		Neo4jDriver driver = getRebarGraph().getGraphDB().getNeo4jDriver();
+		GraphDriver driver = getRebarGraph().getGraphDB().getNeo4jDriver();
 		driver.newTemplate().cypher("match (a) where exists (a.testData) detach delete a").list();
 		driver.newTemplate().cypher("match (a) return distinct labels(a)[0] as label").stream()
 		.map(x -> x.path("label").asText()).distinct().filter(p -> p.toLowerCase().startsWith("junit") || p.toLowerCase().startsWith("test"))

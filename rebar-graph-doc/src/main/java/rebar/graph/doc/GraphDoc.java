@@ -18,18 +18,18 @@ package rebar.graph.doc;
 import java.io.File;
 import java.io.IOException;
 
-import rebar.graph.neo4j.Neo4jDriver;
+import rebar.graph.neo4j.GraphDriver;
 
 public class GraphDoc {
 
 	
 	
 	public static void main(String [] args) throws IOException {
-		DataModelMarkdown dm2 = new DataModelMarkdown().parse(new File("../rebar-scanner-aws/README.md")).withNeo4jDriver(new Neo4jDriver.Builder().build());
+		DataModelMarkdown dm2 = new DataModelMarkdown().parse(new File("../rebar-scanner-aws/README.md")).withNeo4jDriver(new GraphDriver.Builder().build());
 		dm2.mergeAll(p->p.startsWith("Aws")).write();
 	
 		
-		dm2 = new DataModelMarkdown().parse(new File("../rebar-scanner-kubernetes/README.md")).withNeo4jDriver(new Neo4jDriver.Builder().build());
+		dm2 = new DataModelMarkdown().parse(new File("../rebar-scanner-kubernetes/README.md")).withNeo4jDriver(new GraphDriver.Builder().build());
 		dm2.mergeAll(p->p.startsWith("Kube")).write();
 	
 	}

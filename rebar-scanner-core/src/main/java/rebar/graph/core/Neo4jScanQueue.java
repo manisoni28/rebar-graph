@@ -12,16 +12,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
-import rebar.graph.neo4j.Neo4jDriver;
-import rebar.graph.neo4j.Neo4jTemplate;
-import rebar.util.Json;
+import rebar.graph.neo4j.GraphDriver;
 
 public class Neo4jScanQueue implements ScanQueue {
 
@@ -30,7 +27,7 @@ public class Neo4jScanQueue implements ScanQueue {
 
 	ScheduledExecutorService exeutor = Executors.newSingleThreadScheduledExecutor(
 			new ThreadFactoryBuilder().setDaemon(true).setUncaughtExceptionHandler(this::handleException).build());
-	Neo4jDriver neo4j;
+	GraphDriver neo4j;
 
 	List<Subscription> subs = Lists.newCopyOnWriteArrayList();
 
@@ -76,7 +73,7 @@ public class Neo4jScanQueue implements ScanQueue {
 		}
 	}
 
-	public Neo4jScanQueue(Neo4jDriver driver) {
+	public Neo4jScanQueue(GraphDriver driver) {
 
 		this.neo4j = driver;
 

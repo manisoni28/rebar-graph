@@ -24,8 +24,7 @@ import org.neo4j.driver.v1.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import rebar.graph.driver.GraphDriver;
-import rebar.graph.neo4j.Neo4jDriver;
+import rebar.graph.neo4j.GraphDriver;
 
 class Neo4jIntegrationTest {
 
@@ -33,11 +32,11 @@ class Neo4jIntegrationTest {
 	static Logger logger = LoggerFactory.getLogger(Neo4jIntegrationTest.class);
 	static Boolean neo4jAvailable;
 
-	static Neo4jDriver driver;
+	static GraphDriver driver;
 
 	static RebarGraph rebarGraph;
 	
-	public Neo4jDriver getNeo4jDriver() {
+	public GraphDriver getNeo4jDriver() {
 		return driver;
 	}
 
@@ -87,7 +86,7 @@ class Neo4jIntegrationTest {
 				if (password.isPresent()) {
 					builder = builder.withPassword(password.get());
 				}
-				driver = (Neo4jDriver) builder.build();
+				driver =  builder.build();
 				try (Session session = driver.getDriver().session()) {
 					session.run("match (a:RebarHealthCheck) return a limit 1").consume();
 					neo4jAvailable = true;

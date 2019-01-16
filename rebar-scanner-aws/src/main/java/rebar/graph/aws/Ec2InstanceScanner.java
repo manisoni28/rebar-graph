@@ -34,7 +34,7 @@ import com.google.common.collect.ImmutableSet;
 import rebar.graph.core.GraphDB;
 import rebar.graph.core.GraphOperation;
 import rebar.graph.core.Scanner;
-import rebar.graph.neo4j.Neo4jDriver;
+import rebar.graph.neo4j.GraphDriver;
 import rebar.util.Json;
 import rebar.util.RebarException;
 
@@ -48,7 +48,7 @@ public class Ec2InstanceScanner extends AbstractEntityScanner<Instance> {
 	public static class InstanceGraphOperation implements GraphOperation {
 
 		@Override
-		public Stream<JsonNode> exec(Scanner ctx, JsonNode n, Neo4jDriver neo4j) {
+		public Stream<JsonNode> exec(Scanner ctx, JsonNode n, GraphDriver neo4j) {
 			
 			long ts = ctx.getRebarGraph().getGraphDB().getTimestamp();
 			String arn = n.path("arn").asText();

@@ -22,12 +22,12 @@ import com.google.common.base.Strings;
 
 import rebar.graph.core.GraphOperation;
 import rebar.graph.core.Scanner;
-import rebar.graph.neo4j.Neo4jDriver;
+import rebar.graph.neo4j.GraphDriver;
 
 public class RemoveStaleRelationshipsOperation implements GraphOperation {
 
 	@Override
-	public Stream<JsonNode> exec(Scanner scanner, JsonNode n,Neo4jDriver driver) {
+	public Stream<JsonNode> exec(Scanner scanner, JsonNode n,GraphDriver driver) {
 		
 		
 		String ownerType = n.path("ownerType").asText();

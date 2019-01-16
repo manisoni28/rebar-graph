@@ -21,7 +21,7 @@ import org.junit.jupiter.api.Test;
 
 import com.google.common.collect.ImmutableMap;
 
-import rebar.graph.driver.GraphException;
+import rebar.graph.neo4j.GraphException;
 import rebar.util.Json;
 
 class Neo4jGraphDBTest extends Neo4jIntegrationTest {

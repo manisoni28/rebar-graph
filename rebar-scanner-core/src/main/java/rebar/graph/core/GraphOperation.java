@@ -19,12 +19,12 @@ import java.util.stream.Stream;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-import rebar.graph.neo4j.Neo4jDriver;
+import rebar.graph.neo4j.GraphDriver;
 
 public interface GraphOperation {
 
 	
-	public Stream<JsonNode> exec(Scanner ctx,  JsonNode n, Neo4jDriver neo4j);
+	public Stream<JsonNode> exec(Scanner ctx,  JsonNode n, GraphDriver neo4j);
 
 	
 	

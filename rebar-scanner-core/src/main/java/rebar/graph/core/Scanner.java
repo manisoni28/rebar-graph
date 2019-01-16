@@ -15,22 +15,17 @@
  */
 package rebar.graph.core;
 
-import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
-
 
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Stopwatch;
 
-import rebar.graph.driver.GraphException;
-import rebar.graph.neo4j.Neo4jDriver;
+import rebar.graph.neo4j.GraphDriver;
+import rebar.graph.neo4j.GraphException;
 
 public abstract class Scanner {
 
@@ -107,7 +102,7 @@ public abstract class Scanner {
 	public String getScannerType() {
 		return getClass().getPackage().getName().replace("rebar.graph.", "");
 	}
-	public final Neo4jDriver getNeo4jDriver() {
+	public final GraphDriver getNeo4jDriver() {
 		return getGraphDB().getNeo4jDriver();
 	}
 	public final GraphDB getGraphDB() {

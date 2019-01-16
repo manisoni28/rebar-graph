@@ -93,7 +93,7 @@ public class KubeScanner extends Scanner {
 		return clusterId;
 	}
 
-	public KubeScanner(KubernetesScannerBuilder builder) {
+	public KubeScanner(KubeScannerBuilder builder) {
 		super(builder);
 
 	}

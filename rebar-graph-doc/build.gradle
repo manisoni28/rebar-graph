@@ -4,7 +4,7 @@ mainClassName="rebar.graph.doc.GraphDoc"
 dependencies {
 
     compile "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:${JACKSON_VERSION}"
-    compile project(':rebar-graph-driver-neo4j')
+    compile project(':rebar-neo4j-driver')
     compile "ch.qos.logback:logback-classic:${LOGBACK_VERSION}"
     compile "org.slf4j:jcl-over-slf4j:${SLF4J_VERSION}" 
     testCompile "org.junit.jupiter:junit-jupiter-engine:${JUNIT_VERSION}"

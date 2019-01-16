@@ -23,14 +23,14 @@ import org.junit.jupiter.api.Test;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import rebar.graph.kubernetes.KubeScanner;
-import rebar.graph.kubernetes.KubernetesScannerBuilder;
+import rebar.graph.kubernetes.KubeScannerBuilder;
 
 public class ClusterScannerTest extends Neo4jKubeIntegrationTest {
 
 	@Test
 	public void testX() {
 
-		KubeScanner scanner = getRebarGraph().createBuilder(KubernetesScannerBuilder.class)
+		KubeScanner scanner = getRebarGraph().createBuilder(KubeScannerBuilder.class)
 				.withKubernetesClient(getKubeScanner().getKubernetesClient()).register("foo");
 
 		Assertions.assertThat(scanner).isNotNull();

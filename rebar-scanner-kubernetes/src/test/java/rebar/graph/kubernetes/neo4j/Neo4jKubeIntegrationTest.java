@@ -20,7 +20,7 @@ import org.junit.jupiter.api.BeforeEach;
 
 import rebar.graph.core.GraphDB;
 import rebar.graph.kubernetes.KubeIntegrationTest;
-import rebar.graph.neo4j.Neo4jDriver;
+import rebar.graph.neo4j.GraphDriver;
 
 public class Neo4jKubeIntegrationTest extends KubeIntegrationTest {
 
@@ -28,7 +28,7 @@ public class Neo4jKubeIntegrationTest extends KubeIntegrationTest {
 	public GraphDB getNeo4jDB() {
 		return GraphDB.class.cast(getRebarGraph().getGraphDB());
 	}
-	public Neo4jDriver getNeo4jDriver() {
+	public GraphDriver getNeo4jDriver() {
 		return GraphDB.class.cast(getRebarGraph().getGraphDB()).getNeo4jDriver();
 	}
 	@BeforeEach

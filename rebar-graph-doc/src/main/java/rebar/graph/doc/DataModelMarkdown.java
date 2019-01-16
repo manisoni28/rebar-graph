@@ -16,7 +16,6 @@
 package rebar.graph.doc;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -24,17 +23,14 @@ import java.util.Optional;
 import java.util.function.Predicate;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 
-import rebar.graph.doc.Markdown.MarkdownSection;
-import rebar.graph.doc.Markdown.TableSection;
-import rebar.graph.neo4j.Neo4jDriver;
+import rebar.graph.neo4j.GraphDriver;
 
 public class DataModelMarkdown extends Markdown {
 
 
-	Neo4jDriver driver;
+	GraphDriver driver;
 	
 
 	public DataModelMarkdown merge(String type) {
@@ -62,7 +58,7 @@ public class DataModelMarkdown extends Markdown {
 		
 		return this;
 	}
-	public DataModelMarkdown withNeo4jDriver(Neo4jDriver driver) {
+	public DataModelMarkdown withNeo4jDriver(GraphDriver driver) {
 		this.driver = driver;
 		return this;
 	}

@@ -40,7 +40,7 @@ import com.google.common.collect.Maps;
 
 import rebar.graph.core.GraphOperation;
 import rebar.graph.core.Scanner;
-import rebar.graph.neo4j.Neo4jDriver;
+import rebar.graph.neo4j.GraphDriver;
 import rebar.util.Json;
 
 public class ElbClassicScanner extends AbstractEntityScanner<LoadBalancerDescription> {
@@ -53,7 +53,7 @@ public class ElbClassicScanner extends AbstractEntityScanner<LoadBalancerDescrip
 	public static class ElbRelationshipGraphOperation implements GraphOperation {
 
 		@Override
-		public Stream<JsonNode> exec(Scanner ctx, JsonNode n, Neo4jDriver neo4j) {
+		public Stream<JsonNode> exec(Scanner ctx, JsonNode n, GraphDriver neo4j) {
 
 			String arn = n.path("arn").asText();
 			String region = n.path("region").asText();

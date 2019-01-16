@@ -19,16 +19,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import com.google.common.base.CaseFormat;
-import com.google.common.collect.ImmutableMap;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 
 public class EnvConfig {
 
-	private Map<String,String> env = ImmutableMap.of();
-	
+	private Map<String, String> env = Maps.newConcurrentMap();
+
 	public EnvConfig() {
-		
+
 	}
 
 	public EnvConfig copy() {
@@ -36,34 +35,41 @@ public class EnvConfig {
 		copy.env = new HashMap<>(copy.env);
 		return copy;
 	}
+
+	public EnvConfig withEnv(Map<String, String> vals) {
+		Preconditions.checkNotNull(vals);
+		EnvConfig copy = copy();
+		return copy;
+	}
+
 	public EnvConfig withEnv(String key, String val) {
+
 		
-		Map<String,String> copy = new HashMap<>(env);
-		copy.put(key, val);
-		
-		EnvConfig cfg = new EnvConfig();
-		cfg.env = ImmutableMap.copyOf(copy);
+
+		EnvConfig cfg = copy();
+		cfg.env.put(key, val);
 		return cfg;
 	}
+
 	public Optional<String> get(String key) {
-		
+
 		if (key == null) {
 			return Optional.empty();
 		}
 		key = key.trim();
 		String val = env.get(key);
-		if (val!=null &&  (!val.trim().isEmpty())) {
+		if (val != null && (!val.trim().isEmpty())) {
 			return Optional.ofNullable(val);
 		}
-		
+
 		val = System.getenv(key);
-		if (val!=null &&  (!val.trim().isEmpty())) {
+		if (val != null && (!val.trim().isEmpty())) {
 			return Optional.ofNullable(val);
 		}
 		String lowerKey = key.toLowerCase().replace("_", ".");
-		
+
 		val = System.getProperty(lowerKey);
-		if (val!=null && (!val.trim().isEmpty())) {
+		if (val != null && (!val.trim().isEmpty())) {
 			return Optional.ofNullable(val);
 		}
 		return Optional.empty();

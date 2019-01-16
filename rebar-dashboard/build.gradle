@@ -38,7 +38,7 @@ buildImage.dependsOn build
 
 dependencies {
 	compile('org.springframework.boot:spring-boot-starter-web')
-	compile project(':rebar-graph-driver-neo4j')
+	compile project(':rebar-neo4j-driver')
 	implementation 'org.mindrot:jbcrypt:0.4'
 	implementation 'org.eclipse.jgit:org.eclipse.jgit:5.2.0.201812061821-r'
 	compile 'org.webjars:webjars-locator:0.34'

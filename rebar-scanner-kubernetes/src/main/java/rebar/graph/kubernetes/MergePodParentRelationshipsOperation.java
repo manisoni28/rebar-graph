@@ -27,14 +27,14 @@ import io.fabric8.kubernetes.api.model.apps.Deployment;
 import io.fabric8.kubernetes.api.model.apps.ReplicaSet;
 import rebar.graph.core.GraphOperation;
 import rebar.graph.core.Scanner;
-import rebar.graph.neo4j.Neo4jDriver;
+import rebar.graph.neo4j.GraphDriver;
 
 public class MergePodParentRelationshipsOperation implements GraphOperation {
 
 	Logger logger = LoggerFactory.getLogger(MergePodParentRelationshipsOperation.class);
 
 	@Override
-	public Stream<JsonNode> exec(Scanner ctx, JsonNode n, Neo4jDriver neo4j) {
+	public Stream<JsonNode> exec(Scanner ctx, JsonNode n, GraphDriver neo4j) {
 		
 		
 		KubeScanner scanner = (KubeScanner) ctx;

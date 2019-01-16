@@ -24,7 +24,7 @@ import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-import rebar.graph.neo4j.Neo4jDriver;
+import rebar.graph.neo4j.GraphDriver;
 import rebar.util.Json;
 
 public class RebarGraphTest extends Neo4jIntegrationTest {
@@ -37,7 +37,7 @@ public class RebarGraphTest extends Neo4jIntegrationTest {
 		Assertions.assertThat(graph).isNotNull();
 		Assertions.assertThat(graph.getGraphDB()).isNotNull().isSameAs(graph.getGraphDB());
 
-		Neo4jDriver driver = ((GraphDB) graph.getGraphDB()).getNeo4jDriver();
+		GraphDriver driver = ((GraphDB) graph.getGraphDB()).getNeo4jDriver();
 
 		Assertions.assertThat(driver).isSameAs(((GraphDB) graph.getGraphDB()).getNeo4jDriver());
 

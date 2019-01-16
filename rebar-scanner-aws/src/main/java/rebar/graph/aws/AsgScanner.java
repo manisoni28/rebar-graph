@@ -38,7 +38,7 @@ import com.google.common.collect.Lists;
 import rebar.graph.core.GraphDB;
 import rebar.graph.core.GraphOperation;
 import rebar.graph.core.Scanner;
-import rebar.graph.neo4j.Neo4jDriver;
+import rebar.graph.neo4j.GraphDriver;
 import rebar.util.Json;
 import rebar.util.RebarException;
 
@@ -54,7 +54,7 @@ public class AsgScanner extends AbstractEntityScanner<AutoScalingGroup> {
 	public static class AsgRelationshipGraphOperation implements GraphOperation {
 
 		@Override
-		public Stream<JsonNode> exec(Scanner ctx, JsonNode n, Neo4jDriver neo4j) {
+		public Stream<JsonNode> exec(Scanner ctx, JsonNode n, GraphDriver neo4j) {
 
 			long ts = ctx.getRebarGraph().getGraphDB().getTimestamp();
 			

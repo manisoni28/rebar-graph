@@ -6,17 +6,16 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import rebar.graph.driver.GraphDriver;
-import rebar.graph.neo4j.Neo4jDriver;
+import rebar.graph.neo4j.GraphDriver;
 
 @Configuration
 public class DashboardConfig {
 
 	
 	@Bean
-	public Neo4jDriver neo4jDriver() {
+	public GraphDriver neo4jDriver() {
 		// Not really interested in supporting gremlin
-		return (Neo4jDriver) new GraphDriver.Builder().build();
+		return (GraphDriver) new GraphDriver.Builder().build();
 	}
 	
 	@Bean
