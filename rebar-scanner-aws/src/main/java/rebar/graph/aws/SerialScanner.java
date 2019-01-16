@@ -37,6 +37,11 @@ public class SerialScanner extends AbstractEntityScanner {
 		scanners.remove(scanner);
 		return this;
 	}
+	
+	public SerialScanner addScanners(List<Class<? extends AbstractEntityScanner>> scanners) {
+		this.scanners.addAll(scanners);
+		return this;
+	}
 	public SerialScanner addScanners(Class<? extends AbstractEntityScanner>... scanners) {
 		if (scanners != null) {
 			this.scanners.addAll(Arrays.asList(scanners));
