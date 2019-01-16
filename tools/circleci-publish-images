@@ -5,7 +5,7 @@ DOCKER_SRC_TAG=src-${CIRCLE_SHA1}
 
 build_image() {
     docker build rebar-scanner-$1 \
-    -t rebar/$1-scanner \ 
+    -t rebar/$1-scanner \
     -t rebar/$1-scanner:${DOCKER_SRC_TAG} \
     --build-arg CI_BUILD_URL=${CIRCLE_BUILD_URL} \
     --build-arg GIT_COMMIT=${CIRCLE_SHA1} \
