@@ -67,6 +67,8 @@ public class GraphDB {
 				.params(map).stream();
 	}
 
+	
+
 	static String toRemoveClause(Collection<String> ra) {
 		StringBuffer sb = new StringBuffer();
 		if (!ra.isEmpty()) {
@@ -84,11 +86,7 @@ public class GraphDB {
 		return sb.toString();
 	}
 
-//	@SuppressWarnings("unchecked")
-//	public <T extends NodeOperation> T nodes() {
-//
-//		return (T) new Neo4jNodeOperation();
-//	}
+
 
 
 	public static final String ENTITY_TYPE="graphEntityType";
@@ -173,11 +171,7 @@ public class GraphDB {
 					nodes(label).properties(update).idKey(identifyingAttributes.keySet().toArray(new String[0]))
 							.merge();
 				}
-				if (!toBeAdded.entriesOnlyOnRight().isEmpty()) {
-
-					// removeAttributes().label(label),identifyingAttributes).attributes(toBeAdded.entriesOnlyOnRight().keySet()).update();
-
-				}
+			
 
 			});
 		}
