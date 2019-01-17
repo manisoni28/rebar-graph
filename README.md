@@ -15,4 +15,3 @@ To get started have a look at the following modules:
 | AWS | [rebar-scanner-aws](https://github.com/rebar-cloud/rebar-graph/blob/master/rebar-scanner-aws/README.md)|
 | Kubernetes | [rebar-scanner-kubernetes](https://github.com/rebar-cloud/rebar-graph/blob/master/rebar-scanner-kubernetes/README.md)|
 
-
