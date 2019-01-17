@@ -21,6 +21,7 @@ import java.net.URI;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -36,6 +37,15 @@ import com.amazonaws.auth.AWS4Signer;
 import com.amazonaws.auth.AWSCredentialsProvider;
 import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
 import com.amazonaws.http.HttpMethodName;
+import com.amazonaws.services.eks.AmazonEKS;
+import com.amazonaws.services.eks.AmazonEKSClient;
+import com.amazonaws.services.eks.AmazonEKSClientBuilder;
+import com.amazonaws.services.eks.model.Cluster;
+import com.amazonaws.services.eks.model.DescribeClusterRequest;
+import com.amazonaws.services.eks.model.DescribeClusterResult;
+import com.amazonaws.services.eks.model.ListClustersRequest;
+import com.amazonaws.services.eks.model.ListClustersResult;
+
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.io.BaseEncoding;
@@ -90,11 +100,77 @@ public class EKS {
 			return this;
 		}
 
+		public Optional<String> lookupName(String clusterUrl) {
+			try {
+			AmazonEKS eks = getEKSClient();
+			ListClustersRequest request = new ListClustersRequest();
+			String urlCompare = clusterUrl.trim();
+			while (urlCompare.endsWith("/")) {
+				urlCompare = urlCompare.substring(0, urlCompare.length() - 1);
+			}
+			do {
+
+				ListClustersResult result = eks.listClusters(request);
+				request.setNextToken(result.getNextToken());
+				for (String clusterName : result.getClusters()) {
+
+					DescribeClusterResult describeResult = eks
+							.describeCluster(new DescribeClusterRequest().withName(clusterName));
+
+					String endpoint = describeResult.getCluster().getEndpoint().toLowerCase();
+					while (endpoint.endsWith("/")) {
+						endpoint = endpoint.substring(0, endpoint.length() - 1);
+					}
+					if (urlCompare.equalsIgnoreCase(endpoint)) {
+						String name = describeResult.getCluster().getName();
+						logger.info("cluster name for {} is: {}", url, name);
+						return Optional.of(name);
+
+					}
+				}
+
+			} while (!Strings.isNullOrEmpty(request.getNextToken()));
+			return java.util.Optional.empty();
+			}
+			catch (Exception e) {
+				logger.warn("could not find name of cluster with url: " + url + "", e);
+			}
+			return Optional.empty();
+		}
+
+		public Optional<String> lookupUrl(String name) {
+			try {
+				logger.info("looking up endpoint for EKS cluster '{}'....", name);
+				AmazonEKS eks = getEKSClient();
+
+				DescribeClusterResult describeResult = eks
+						.describeCluster(new DescribeClusterRequest().withName(clusterName));
+
+				String url = describeResult.getCluster().getEndpoint();
+				logger.info("URL for '{}' cluster: {}", name, url);
+				return Optional.of(url);
+			} catch (RuntimeException e) {
+				logger.warn("could not find url for cluster '" + name + "'", e);
+			}
+			return Optional.empty();
+
+		}
+
 		public KubernetesClient build() {
 
-			Preconditions.checkArgument(!Strings.isNullOrEmpty(url), "url must be set");
-			Preconditions.checkArgument(!Strings.isNullOrEmpty(clusterName), "clusterName must be set");
 			Preconditions.checkArgument(this.provider != null, "credentials provider must be set");
+
+			if (Strings.isNullOrEmpty(url) && !Strings.isNullOrEmpty(clusterName)) {
+				this.url = lookupUrl(clusterName).orElse(null);
+			}
+			Preconditions.checkArgument(!Strings.isNullOrEmpty(url), "url must be set");
+
+			if (clusterName == null || clusterName.isEmpty()) {
+				
+				clusterName=lookupName(url).orElse(null);
+
+			}
+			Preconditions.checkArgument(!Strings.isNullOrEmpty(clusterName), "clusterName must be set");
 			String initialToken = generateToken(clusterName);
 			DefaultKubernetesClient client = new DefaultKubernetesClient(
 					configBuilder.withMasterUrl(url).withOauthToken(initialToken).build());
@@ -109,6 +185,10 @@ public class EKS {
 			executor.scheduleWithFixedDelay(entry::refresh, 0, entry.refreshSecs, TimeUnit.SECONDS);
 
 			return client;
+		}
+
+		protected AmazonEKSClient getEKSClient() {
+			return (AmazonEKSClient) AmazonEKSClientBuilder.standard().build();
 		}
 
 		public ClientBuilder withCredentialsProvider(AWSCredentialsProvider provider) {
@@ -162,10 +242,4 @@ public class EKS {
 		return val;
 	}
 
-	void foo() {
-		KubernetesClient client = EKS.newClientBuilder()
-		.withUrl("https://mycluster-api.amazonaws.com")
-		.withClusterName("mycluster").build();
-
-	}
 }

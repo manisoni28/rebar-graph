@@ -31,59 +31,62 @@ import rebar.graph.test.AbstractIntegrationTest;
 
 public abstract class KubeIntegrationTest extends AbstractIntegrationTest {
 
-	static Optional<KubernetesClient> kubernetesClient;
-
+	static boolean integrationTestDisabled = false;
 	static KubeScanner kubeScanner = null;
 
 	static Logger logger = LoggerFactory.getLogger(KubeIntegrationTest.class);
-	
+
 	@BeforeEach
 	protected void setupKube() {
-		try {
-			if (kubernetesClient == null) {
-				kubernetesClient = Optional.of(new DefaultKubernetesClient());
-				kubernetesClient.get().getVersion().getBuildDate();
-			}
-		} catch (Exception e) {
-			logger.warn("Kubernetes integration tests will be skipped: "+e.toString());
-			kubernetesClient = Optional.empty();
+		if (kubeScanner != null) {
+			return;
+		}
+		if (integrationTestDisabled) {
+			Assumptions.assumeFalse(integrationTestDisabled, "kube not available");
+			return;
 		}
 
-		Assumptions.assumeTrue(kubernetesClient != null && kubernetesClient.isPresent());
+		try {
+			KubeScanner s = getRebarGraph().createBuilder(KubeScannerBuilder.class).build();
+			s.getKubernetesClient().getVersion().getBuildDate();
+			kubeScanner = s;
+
+		} catch (Exception e) {
+			logger.warn("Kubernetes integration tests will be skipped: " + e.toString());
+			integrationTestDisabled = true;
+		}
+
+		Assumptions.assumeTrue(!integrationTestDisabled);
+		Assumptions.assumeTrue(kubeScanner!=null);
 	}
 
 	public boolean isKubernetesAvailable() {
-		return kubernetesClient != null && kubernetesClient.isPresent();
+		return kubeScanner!=null;
 	}
 
 	public KubernetesClient getKubernetesClient() {
-		return kubernetesClient.orElse(null);
+		return kubeScanner.getKubernetesClient();
 	}
 
 	public KubeScanner getKubeScanner() {
 
-		if (kubeScanner!=null) {
-			return kubeScanner;
-		}
-		KubeScanner ks = getRebarGraph().createBuilder(KubeScannerBuilder.class)
-				.withKubernetesClient(kubernetesClient.get()).build();
-		this.kubeScanner = ks;
-		return ks;
+		return kubeScanner;
 	}
+
 	public GraphDB getNeo4jDB() {
 		return GraphDB.class.cast(getRebarGraph().getGraphDB());
 	}
+
 	public GraphDriver getNeo4jDriver() {
 		return GraphDB.class.cast(getRebarGraph().getGraphDB()).getNeo4jDriver();
 	}
+
 	@BeforeEach
 	public void assumeNeo4j() {
-			
-		
+
 		GraphDB neo4jDB = getNeo4jDB();
 		logger.info("deleting all Kube ndoes before test");
 		neo4jDB.getNeo4jDriver().cypher("match (a) where labels(a)[0]=~'Kube.*'  detach delete a").exec();
-		
-		
+
 	}
 }

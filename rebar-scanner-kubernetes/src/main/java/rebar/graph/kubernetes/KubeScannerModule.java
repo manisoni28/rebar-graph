@@ -24,6 +24,8 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import io.fabric8.kubernetes.client.DefaultKubernetesClient;
+import io.fabric8.kubernetes.client.KubernetesClient;
 import rebar.graph.core.ScannerModule;
 import rebar.graph.core.Main;
 
@@ -118,6 +120,9 @@ public class KubeScannerModule extends ScannerModule {
 	public void init() {
 
 		if (scanner == null) {
+			
+		
+			
 			scanner = getRebarGraph().createBuilder(KubeScannerBuilder.class).build();
 			scanner.applyConstraints();
 			scanner.watchEvents(); // idempotent

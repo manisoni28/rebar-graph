@@ -846,6 +846,7 @@ public class KubeScanner extends Scanner {
 
 		});
 		ensurePodNodeRelationships();
+		ensureEc2Relationships();
 		gc(Node.class, ts);
 	}
 
@@ -1057,4 +1058,7 @@ public class KubeScanner extends Scanner {
 	}
 
 
+	private void ensureEc2Relationships() {
+		getGraphDB().nodes("KubeNode").relationship("PROVIDED_BY").on("label_kubernetes.io/hostname", "privateDnsName").to("AwsEc2Instance").merge();
+	}
 }

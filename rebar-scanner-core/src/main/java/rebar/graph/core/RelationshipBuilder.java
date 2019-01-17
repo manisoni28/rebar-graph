@@ -139,7 +139,7 @@ public class RelationshipBuilder {
 
 		String whereClause = "";
 		if (!Strings.isNullOrEmpty(aJoinAttribute)) {
-			whereClause = String.format(" b.%s in a.%s ", bJoinAttributeName, aJoinAttribute);
+			whereClause = String.format(" b.%s in a.%s ", CypherUtil.escapePropertyName(bJoinAttributeName), CypherUtil.escapePropertyName(aJoinAttribute));
 
 		}
 		if (!whereClause.trim().isEmpty()) {

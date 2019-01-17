@@ -147,6 +147,16 @@ public class KubeScannerBuilder extends ScannerBuilder<KubeScanner> {
 		} else {
 			Config config = Config.autoConfigure(contextName);
 			ks.client = new DefaultKubernetesClient(config);
+			
+			if (ks.client.getMasterUrl().toExternalForm().toLowerCase().contains(".eks.amazonaws.com")) {
+				
+				// We need to know the AMAZON cluster name for auth to work...need to enhance EKS to go find it.
+				
+				ks.client = EKS.newClientBuilder().withUrl(ks.client.getMasterUrl().toExternalForm()).build();
+				
+			}
+			
+			
 			ks.clusterId = discoverClusterId(ks.client, this.clusterId, this.contextName);
 		}
 		logger.info("using clusterId: {}",ks.getClusterId());
