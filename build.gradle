@@ -20,7 +20,7 @@ subprojects {
     apply plugin: 'maven'
     apply plugin: 'eclipse'
     apply plugin: 'jacoco'
-  
+    apply plugin: 'checkstyle'
     configurations {
         all*.exclude group: 'commons-logging'
     }
@@ -33,8 +33,10 @@ subprojects {
         jcenter()
         
     }
-
-   
+    checkstyle {
+        configFile = file("${project.rootDir}/checkstyle.xml")
+        configProperties = [ "suppressionFile" : file("${project.rootDir}/checkstyle-suppressions.xml")]
+    }
     jacocoTestReport {
     reports {
         xml.enabled true

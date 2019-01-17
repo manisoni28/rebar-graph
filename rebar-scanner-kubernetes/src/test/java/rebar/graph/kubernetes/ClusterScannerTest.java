@@ -29,12 +29,12 @@ public class ClusterScannerTest extends KubeIntegrationTest {
 
 	
 	@Test
-	public void testScan() {
+	public void testScanNamespaces() {
 		getKubeScanner().scan();
-		Assertions.assertThat(getRebarGraph().getGraphDB().getNeo4jDriver().cypher("match (a:KubeNamespace) return a").stream().count()).isGreaterThan(0);
+		Assertions.assertThat(getRebarGraph().getGraphDB().getNeo4jDriver().cypher("match (c:KubeCluster)-[r]->(a:KubeNamespace) return a").stream().count()).isGreaterThan(0);
 		getRebarGraph().getGraphDB().getNeo4jDriver().cypher("match (a:KubeNamespace) return a").forEach(it->{
 			Assertions.assertThat(it.path("kind").asText()).isEqualTo("Namespace");
-	
+			System.out.println(it);
 		});
 	}
 	
@@ -89,7 +89,8 @@ public class ClusterScannerTest extends KubeIntegrationTest {
 	public void testEntityAttributes() {
 		getNeo4jDriver().cypher("match (a) where labels(a)[0] =~ 'Kube.*' return labels(a)[0] as label,a").stream()
 		.forEach(it -> {
-
+		
+			Assertions.assertThat(it.path("a").path("clusterId").asText()).isEqualTo(getKubeScanner().getClusterId());
 			Assertions.assertThat(it.path("a").path("graphEntityType").asText()).startsWith("Kube");
 			Assertions.assertThat(it.path("a").path("graphEntityGroup").asText()).isEqualTo("kubernetes");
 		});

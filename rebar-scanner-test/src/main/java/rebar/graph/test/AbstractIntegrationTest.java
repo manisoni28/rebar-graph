@@ -57,7 +57,7 @@ public abstract class AbstractIntegrationTest {
 			RebarGraph graph = b.build();
 			
 			graph.getGraphDB().nodes("JUnitTest").match().forEach(it->{
-			//	System.out.println(">> "+it);
+			
 			});
 
 	

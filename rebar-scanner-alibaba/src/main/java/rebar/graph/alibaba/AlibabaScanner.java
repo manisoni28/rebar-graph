@@ -68,7 +68,7 @@ public class AlibabaScanner extends Scanner {
 		DescribeInstancesResponse response = (DescribeInstancesResponse) client.getAcsResponse(request);
 		
 		response.getInstances().forEach(it->{
-			System.out.println(it);
+			
 			JsonNode n = Json.objectMapper().valueToTree(it);
 			Json.logger().info(n);
 		});
