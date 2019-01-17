@@ -11,5 +11,5 @@ To get started have a look at the following modules:
 | Infrastructure | Documentation | Code |
 |----|----|----|
 | AWS |[Docs](https://rebar.cloud/aws) | [Source Code](https://github.com/rebar-cloud/rebar-graph/blob/master/rebar-scanner-aws)|
-| Kubernetes | [docs](https://rebar.cloud/kubernetes)| [Source Code](https://github.com/rebar-cloud/rebar-graph/blob/master/rebar-scanner-kubernetes/)|
+| Kubernetes | [Docs](https://rebar.cloud/kubernetes)| [Source Code](https://github.com/rebar-cloud/rebar-graph/blob/master/rebar-scanner-kubernetes/)|
 
