@@ -13,13 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package rebar.graph.kubernetes.neo4j;
+package rebar.graph.kubernetes;
 
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.BeforeEach;
 
 import rebar.graph.core.GraphDB;
-import rebar.graph.kubernetes.KubeIntegrationTest;
 import rebar.graph.neo4j.GraphDriver;
 
 public class Neo4jKubeIntegrationTest extends KubeIntegrationTest {

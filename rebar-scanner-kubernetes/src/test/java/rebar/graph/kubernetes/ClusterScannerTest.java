@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package rebar.graph.kubernetes.neo4j;
+package rebar.graph.kubernetes;
 
 import java.util.List;
 

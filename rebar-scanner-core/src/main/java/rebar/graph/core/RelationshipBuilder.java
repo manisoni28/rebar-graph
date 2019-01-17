@@ -189,7 +189,12 @@ public class RelationshipBuilder {
 			template = template.param("b_"+entry.getKey(), entry.getValue());
 		}
 		long count = template.findFirst().get().path("count").asLong();
-		logger.info("deleted relationships: {}",count);
+		if (count>0) {
+			logger.info("deleted relationships: {}",count);
+		}
+		else {
+			logger.debug("deleted relationships: {}",count);
+		}
 	}
 
 	protected String toMatchPattern(Map<String, Object> attrs, String prefix) {

@@ -83,7 +83,13 @@ public class KubeScannerModule extends ScannerModule {
 				if (!target.isPresent()) {
 					// we lost the entry, so re-register it
 					registerScannerTarget(scanner.getClusterId(), "undefined");
-					return;
+					target = scanner.getGraphDB().getNeo4jDriver()
+							.cypher("match (a:RebarScannerTarget {type:{type},target:{target},region:{region}}) return a")
+							.param("type", getScannerType())
+							.param("target", scanner.getClusterId())
+							.param("region", "undefined")
+							.findFirst();
+				
 				}
 
 				long lastFullScanStartTs = target.get().path("fullScanStartTs").asLong(0);
