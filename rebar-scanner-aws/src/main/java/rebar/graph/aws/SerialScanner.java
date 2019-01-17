@@ -28,10 +28,7 @@ public class SerialScanner extends AbstractEntityScanner {
 
 	List<Class<? extends AbstractEntityScanner>> scanners = Lists.newArrayList();
 
-	public SerialScanner(AwsScanner scanner) {
-		super(scanner);
-
-	}
+	
 
 	public SerialScanner removeScanner(Class<? extends AbstractEntityScanner> scanner) {
 		scanners.remove(scanner);
@@ -57,8 +54,9 @@ public class SerialScanner extends AbstractEntityScanner {
 
 		scanners.forEach(scanner -> {
 			try {
-				Constructor ctor = scanner.getConstructor(AwsScanner.class);
-				AbstractEntityScanner s = (AbstractEntityScanner) ctor.newInstance(getAwsScanner());
+				Constructor ctor = scanner.getConstructor();
+				AbstractEntityScanner s = (AbstractEntityScanner) ctor.newInstance();
+				s.init(getAwsScanner());
 				s.scan();
 			}
 			catch (IllegalAccessException | InstantiationException | InvocationTargetException | NoSuchMethodException e) {

@@ -42,9 +42,7 @@ import rebar.util.Json;
 
 public class AmiScanner extends AbstractEntityScanner<Image> {
 
-	public AmiScanner(AwsScanner scanner) {
-		super(scanner);
-	}
+	
 
 	protected void project(Image image) {
 		ObjectNode n = toJson(image);
@@ -64,7 +62,7 @@ public class AmiScanner extends AbstractEntityScanner<Image> {
 		}
 		Stopwatch sw = Stopwatch.createStarted();
 
-		getGraphDB().nodes().whereAttributeLessThan(GraphDB.UPDATE_TS, cutoff).label(type)
+		getGraphDB().nodes(type).whereAttributeLessThan(GraphDB.UPDATE_TS, cutoff)
 				.id("region", getRegion().getName()).match().forEach(it -> {
 					Exceptions.log(logger).run(() -> {
 						logger.info("running gc on {}", it.path(GraphDB.ENTITY_TYPE).asText());
@@ -103,10 +101,13 @@ public class AmiScanner extends AbstractEntityScanner<Image> {
 				project(image);
 			});
 		}
-
+		
+		gc("AwsAmi", ts);
+		
+		// We do NOT use awsRelationships() here because it will restrict AwsAmi by account and we don't necessarily own the AMI!
 		getGraphDB().nodes("AwsEc2Instance").id("region", getRegion().getName()).id("account", getAccount())
 				.relationship("USES").on("imageId", "imageId").to("AwsAmi").id("region", getRegionName()).merge();
-		gc("AwsAmi", ts);
+		
 	}
 
 	@Override

@@ -28,10 +28,7 @@ import com.google.common.base.Strings;
 
 public class LaunchConfigScanner extends AbstractEntityScanner<LaunchConfiguration> {
 
-	public LaunchConfigScanner(AwsScanner scanner) {
-		super(scanner);
-		// TODO Auto-generated constructor stub
-	}
+	
 
 	@Override
 	public void doScan() {
@@ -75,7 +72,7 @@ public class LaunchConfigScanner extends AbstractEntityScanner<LaunchConfigurati
 		request.withLaunchConfigurationNames(name);
 		DescribeLaunchConfigurationsResult result = client.describeLaunchConfigurations(request);
 		if (result.getLaunchConfigurations().isEmpty()) {
-			getGraphDB().nodes().label(AwsEntities.LAUNCH_CONFIG_TYPE)
+			getGraphDB().nodes(AwsEntities.LAUNCH_CONFIG_TYPE)
 			.id("name", name, "region", getRegionName(), "account", getAccount()).delete();
 		} else {
 			result.getLaunchConfigurations().forEach(lc -> {

@@ -18,9 +18,7 @@ import rebar.util.Json;
 
 public class RdsClusterScanner extends AbstractEntityScanner<DBCluster> {
 
-	public RdsClusterScanner(AwsScanner scanner) {
-		super(scanner);
-	}
+	
 
 	static void fixBrokenNames(ObjectNode n) {
 		List<String> brokenNames = Lists.newArrayList();

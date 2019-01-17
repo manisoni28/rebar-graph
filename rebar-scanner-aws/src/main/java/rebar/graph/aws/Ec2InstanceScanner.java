@@ -40,10 +40,7 @@ import rebar.util.RebarException;
 
 public class Ec2InstanceScanner extends AbstractEntityScanner<Instance> {
 
-	public Ec2InstanceScanner(AwsScanner scanner) {
-		super(scanner);
 
-	}
 
 	public static class InstanceGraphOperation implements GraphOperation {
 
@@ -113,13 +110,15 @@ public class Ec2InstanceScanner extends AbstractEntityScanner<Instance> {
 
 		ObjectNode n = toJson(instance, r);
 
-		getGraphDB().nodes().label("AwsEc2Instance").idKey("arn").withTagPrefixes(TAG_PREFIXES).properties(n).merge();
+		getGraphDB().nodes("AwsEc2Instance").idKey("arn").withTagPrefixes(TAG_PREFIXES).properties(n).merge();
 
 		String subnetId = instance.getSubnetId();
 		if (!Strings.isNullOrEmpty(subnetId)) {
+			mergeSubnetRelationships();//"arn",n.get("arn").asText());
 			getGraphDB().nodes("AwsEc2Instance").id("arn", n.get("arn").asText()).relationship("RESIDES_IN")
 					.to("AwsSubnet")
-					.id("subnetId", instance.getSubnetId(), "region", getRegionName(), "account", getAccount()).merge();
+					.id("subnetId", instance.getSubnetId())
+					.id("region", getRegionName()).id( "account", getAccount()).merge();
 		}
 		
 		getAwsScanner().execGraphOperation(InstanceGraphOperation.class, n);
@@ -148,7 +147,7 @@ public class Ec2InstanceScanner extends AbstractEntityScanner<Instance> {
 		} catch (AmazonEC2Exception e) {
 			if (ImmutableSet.of("InvalidInstanceID.Malformed", "InvalidInstanceID.NotFound")
 					.contains(e.getErrorCode())) {
-				getGraphDB().nodes().label("AwsEc2Instance").id("instanceId", instanceId, "account", getAccount())
+				getGraphDB().nodes("AwsEc2Instance").id("instanceId", instanceId, "account", getAccount())
 						.delete();
 			} else {
 				throw e;

@@ -109,11 +109,12 @@ public final class AwsScanner extends Scanner {
 
 	public <T extends AbstractEntityScanner> T getEntityScanner(Class<T> clazz) {
 		try {
-			Constructor<T> ctor = clazz.getConstructor(AwsScanner.class);
-			return (T) ctor.newInstance(this);
+			T t = clazz.newInstance();
+			t.init(this);
+			return t;
 
-		} catch (NoSuchMethodException | IllegalAccessException | InstantiationException
-				| InvocationTargetException e) {
+		} catch (  IllegalAccessException | InstantiationException
+				 e) {
 			throw new RebarException(e);
 		}
 	}

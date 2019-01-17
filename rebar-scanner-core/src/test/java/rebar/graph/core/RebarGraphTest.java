@@ -43,11 +43,11 @@ public class RebarGraphTest extends Neo4jIntegrationTest {
 
 		Assertions.assertThat(driver.getDriver()).isSameAs(driver.getDriver());
 
-		graph.getGraphDB().nodes().label("JUnitPerson").idKey("name").property("name", "Rob")
+		graph.getGraphDB().nodes("JUnitPerson").idKey("name").property("name", "Rob")
 				.property("occupation", "developer").merge();
 		
 	
-		graph.getGraphDB().nodes().label("JUnitPerson").idKey("name").property("name", "Rob")
+		graph.getGraphDB().nodes("JUnitPerson").idKey("name").property("name", "Rob")
 		.property("occupation", "developer").merge().forEach(it->{
 			System.out.println(it);
 		});
@@ -59,14 +59,14 @@ public class RebarGraphTest extends Neo4jIntegrationTest {
 		RebarGraph graph = getRebarGraph();
 		GraphDB db = graph.getGraphDB();
 		
-		db.nodes().label("TestFrom").property("name", "a").idKey("name").merge();
-		db.nodes().label("TestFrom").property("name", "b").idKey("name").merge();
+		db.nodes("TestFrom").property("name", "a").idKey("name").merge();
+		db.nodes("TestFrom").property("name", "b").idKey("name").merge();
 		
-		db.nodes().label("TestTo").property("name", "x").idKey("name").merge();
-		db.nodes().label("TestTo").property("name", "y").idKey("name").merge();
-		db.nodes().label("TestFrom").match().forEach(Json.logger()::info);
+		db.nodes("TestTo").property("name", "x").idKey("name").merge();
+		db.nodes("TestTo").property("name", "y").idKey("name").merge();
+		db.nodes("TestFrom").match().forEach(Json.logger()::info);
 		
-		db.nodes("TestFrom").id( "name","a").relationship("HAS").to("TestTo").id( "name","y").merge().forEach(Json.logger("test")::info);
+		db.nodes("TestFrom").id( "name","a").relationship("HAS").to("TestTo").id( "name","y").merge();
 		
 		
 		getNeo4jDriver().cypher("match (a:TestFrom)--(b:TestTo) return a,b").stream().forEach(Json.logger()::info);
@@ -76,14 +76,14 @@ public class RebarGraphTest extends Neo4jIntegrationTest {
 
 	@Test
 	public void testIt4() {
-		getRebarGraph().getGraphDB().nodes().label("TestFoo").property("foo", "bar").property("fizz", "buzz")
+		getRebarGraph().getGraphDB().nodes("TestFoo").property("foo", "bar").property("fizz", "buzz")
 				.idKey("foo").merge().forEach(it -> {
 					Assertions.assertThat(it.path(GraphDB.UPDATE_TS).asLong()).isCloseTo(System.currentTimeMillis(),
 							Offset.offset(1000L));
 					Assertions.assertThat(it.path("foo").asText()).isEqualTo("bar");
 					Assertions.assertThat(it.path("fizz").asText()).isEqualTo("buzz");
 				});
-		getRebarGraph().getGraphDB().nodes().label("TestFoo").property("foo", "bar").property("fizz", "buzzbuzz")
+		getRebarGraph().getGraphDB().nodes("TestFoo").property("foo", "bar").property("fizz", "buzzbuzz")
 				.idKey("foo").merge().forEach(it -> {
 					Assertions.assertThat(it.path(GraphDB.UPDATE_TS).asLong()).isCloseTo(System.currentTimeMillis(),
 							Offset.offset(1000L));
@@ -91,31 +91,31 @@ public class RebarGraphTest extends Neo4jIntegrationTest {
 					Assertions.assertThat(it.path("fizz").asText()).isEqualTo("buzzbuzz");
 				});
 
-		Assertions.assertThat(getRebarGraph().getGraphDB().nodes().label("TestFoo").property("foo", "bar")
+		Assertions.assertThat(getRebarGraph().getGraphDB().nodes("TestFoo").property("foo", "bar")
 				.property("fizz", "buzzbuzz").idKey("foo").removeProperties("abba", "zabba").match()
 				.count()).isEqualTo(1);
 	}
 
 	@Test
 	public void testIt3() {
-		getRebarGraph().getGraphDB().nodes().label("TestBar").property("foo", "bar").property("fizz", "buzz")
+		getRebarGraph().getGraphDB().nodes("TestBar").property("foo", "bar").property("fizz", "buzz")
 				.idKey("foo").merge();
-		getRebarGraph().getGraphDB().nodes().label("TestBar").property("foo", "bop").property("fizz", "fuzz")
+		getRebarGraph().getGraphDB().nodes("TestBar").property("foo", "bop").property("fizz", "fuzz")
 				.idKey("foo").merge();
 
-		Assertions.assertThat(getRebarGraph().getGraphDB().nodes().label("TestBar").match().count()).isEqualTo(2);
+		Assertions.assertThat(getRebarGraph().getGraphDB().nodes("TestBar").match().count()).isEqualTo(2);
 
-		Assertions.assertThat(getRebarGraph().getGraphDB().nodes().label("TestBar").id("foo", "bop")
+		Assertions.assertThat(getRebarGraph().getGraphDB().nodes("TestBar").id("foo", "bop")
 				.match().findFirst().get().path("fizz").asText()).isEqualTo("fuzz");
 		
-		Assertions.assertThat(getRebarGraph().getGraphDB().nodes().label("TestBar").id("nope", "nope")
+		Assertions.assertThat(getRebarGraph().getGraphDB().nodes("TestBar").id("nope", "nope")
 				.match().findFirst().isPresent()).isFalse();
 	}
 
 	@Test
 	public void testIt2() {
 
-		getRebarGraph().getGraphDB().nodes().label("TestFoo").property("foo", "bar").property("fizz", "buzz")
+		getRebarGraph().getGraphDB().nodes("TestFoo").property("foo", "bar").property("fizz", "buzz")
 				.idKey("foo").merge().forEach(it -> {
 					Assertions.assertThat(it.path(GraphDB.UPDATE_TS).asLong()).isCloseTo(System.currentTimeMillis(),
 							Offset.offset(1000L));
@@ -123,11 +123,11 @@ public class RebarGraphTest extends Neo4jIntegrationTest {
 					Assertions.assertThat(it.path("fizz").asText()).isEqualTo("buzz");
 				});
 
-		Assertions.assertThat(getRebarGraph().getGraphDB().nodes().label("TestFoo").match().count()).isEqualTo(1);
+		Assertions.assertThat(getRebarGraph().getGraphDB().nodes("TestFoo").match().count()).isEqualTo(1);
 
-		getRebarGraph().getGraphDB().nodes().label("TestFoo").delete();
+		getRebarGraph().getGraphDB().nodes("TestFoo").delete();
 
-		Assertions.assertThat(getRebarGraph().getGraphDB().nodes().label("TestFoo").match().count()).isEqualTo(0);
+		Assertions.assertThat(getRebarGraph().getGraphDB().nodes("TestFoo").match().count()).isEqualTo(0);
 
 	}
 	
@@ -150,14 +150,7 @@ public class RebarGraphTest extends Neo4jIntegrationTest {
 		
 	//	Assertions.assertThat(getNeo4jDriver().cypher("match (a:TestFoo)-[r:HAS]->(b:TestBar) detach delete r return r").stream().count()).isEqualTo(2);
 		
-		long count = getRebarGraph().getGraphDB().nodes("TestFoo").id("name", "b").relationship("HAS").to("TestBar").id("name", "y").delete().count();
-		
-		System.out.println("COUNT: "+count);
-		Assertions.assertThat(getNeo4jDriver().cypher("match (a:TestFoo)--(b:TestBar) return a,b").stream().count()).isEqualTo(1);
-		
-		List<JsonNode> nn = getRebarGraph().getGraphDB().nodes("TestFoo").relationship("HAS").to("TestBar").delete().collect(Collectors.toList());
-		
-		System.out.println(nn);
+	
 		
 	//	Assertions.assertThat(getRebarGraph().getGraphDB().nodes("TestFoo").match().count()).isEqualTo(2);
 		

@@ -66,10 +66,7 @@ public class ElbScanner extends AbstractEntityScanner<LoadBalancer> {
 
 	}
 
-	public ElbScanner(AwsScanner scanner) {
-		super(scanner);
-
-	}
+	
 
 	protected ObjectNode toJson(LoadBalancer lb) {
 		ObjectNode n = super.toJson(lb);

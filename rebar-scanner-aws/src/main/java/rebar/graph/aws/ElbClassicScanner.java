@@ -50,9 +50,7 @@ import rebar.util.Json;
 public class ElbClassicScanner extends AbstractEntityScanner<LoadBalancerDescription> {
 
 	public static final int TAG_BATCH_SIZE=20;
-	public ElbClassicScanner(AwsScanner scanner) {
-		super(scanner);
-	}
+	
 
 	public static class ElbRelationshipGraphOperation implements GraphOperation {
 

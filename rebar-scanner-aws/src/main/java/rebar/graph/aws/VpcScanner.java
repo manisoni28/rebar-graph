@@ -33,9 +33,7 @@ public class VpcScanner extends AbstractEntityScanner<Vpc> {
 
 	static final String VPC_ID_PROPERTY = "vpcId";
 
-	public VpcScanner(AwsScanner scanner) {
-		super(scanner);
-	}
+
 
 	
 
@@ -50,7 +48,7 @@ public class VpcScanner extends AbstractEntityScanner<Vpc> {
 		} catch (AmazonEC2Exception e) {
 			if (Strings.nullToEmpty(e.getErrorCode()).equals("InvalidVpcID.NotFound")) {
 
-				getGraphDB().nodes().label(getEntityType()).id( "account", getAccount(), "vpcId", vpcId).delete();
+				getGraphDB().nodes(getEntityType()).id( "account", getAccount(), "vpcId", vpcId).delete();
 			} else {
 				throw e;
 			}

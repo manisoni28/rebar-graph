@@ -70,9 +70,6 @@ public class ElbTargetGroupScanner extends AbstractEntityScanner<TargetGroup> {
 
 	}
 
-	public ElbTargetGroupScanner(AwsScanner scanner) {
-		super(scanner);
-	}
 
 	@Override
 	protected void doScan() {

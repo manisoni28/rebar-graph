@@ -46,10 +46,7 @@ public class AsgScanner extends AbstractEntityScanner<AutoScalingGroup> {
 
 	org.slf4j.Logger logger = LoggerFactory.getLogger(AsgScanner.class);
 
-	public AsgScanner(AwsScanner scanner) {
-		super(scanner);
-
-	}
+	
 
 	public static class AsgRelationshipGraphOperation implements GraphOperation {
 
@@ -180,7 +177,7 @@ public class AsgScanner extends AbstractEntityScanner<AutoScalingGroup> {
 		DescribeAutoScalingGroupsResult result = client.describeAutoScalingGroups(r);
 
 		if (result.getAutoScalingGroups().isEmpty()) {
-			getGraphDB().nodes().label(AwsEntities.ASG_TYPE)
+			getGraphDB().nodes(AwsEntities.ASG_TYPE)
 					.id("name", name, "region", getRegionName(), "account", getAccount()).delete();
 		} else {
 			result.getAutoScalingGroups().forEach(it -> {

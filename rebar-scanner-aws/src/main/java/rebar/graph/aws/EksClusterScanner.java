@@ -18,11 +18,9 @@ import com.google.common.base.Strings;
 
 import rebar.util.Json;
 
-public class EksScanner extends AbstractEntityScanner<Cluster> {
+public class EksClusterScanner extends AbstractEntityScanner<Cluster> {
 
-	public EksScanner(AwsScanner scanner) {
-		super(scanner);
-	}
+	
 
 	@Override
 	protected void doScan() {
@@ -39,42 +37,32 @@ public class EksScanner extends AbstractEntityScanner<Cluster> {
 			request.setNextToken(result.getNextToken());
 		} while (!Strings.isNullOrEmpty(request.getNextToken()));
 
+
 		gc("AwsEksCluster", ts);
+		mergeSecurityGroupRelationships();
+		mergeSubnetRelationships();
 
 	}
 
 	@Override
 	protected ObjectNode toJson(Cluster awsObject) {
 		ObjectNode n = super.toJson(awsObject);
-
-		n.path("resourcesVpcConfig").fields().forEachRemaining(it -> {
-			n.set(it.getKey(), it.getValue());
-		});
+		
+		
+		n.set("subnets", n.path("resourcesVpcConfig").path("subnetIds"));
+		n.set("securityGroups", n.path("resourcesVpcConfig").path("securityGroupIds"));
+		n.set("vpcId", n.path("resourcesVpcConfig").path("vpcId"));
 		n.remove("resourcesVpcConfig");
 		n.set("certificateAuthorityData", n.path("certificateAuthority").path("data"));
 		n.remove("certificateAuthority");
+	
 		return n;
 	}
 
 	protected void project(Cluster cluster) {
 		JsonNode n = toJson(cluster);
 
-	
 		awsGraphNodes("AwsEksCluster").idKey("arn").properties(n).merge();
-
-		n.path("subnetIds").forEach(it -> {
-			// kinda lame to loop like this
-			getGraphDB().nodes("AwsEksCluster").id("arn", n.get("arn").asText()).relationship("RESIDES_IN")
-					.to("AwsSubnet").id("subnetId", it.asText(), "region", getRegionName(), "account", getAccount())
-					.merge();
-		});
-
-		n.path("securityGroupIds").forEach(it -> {
-			// kinda lame to loop like this
-			getGraphDB().nodes("AwsEksCluster").id("arn", n.get("arn").asText()).relationship("USES")
-					.to("AwsSecurityGroup")
-					.id("groupId", it.asText(), "region", getRegionName(), "account", getAccount()).merge();
-		});
 
 	}
 
@@ -83,6 +71,8 @@ public class EksScanner extends AbstractEntityScanner<Cluster> {
 		scan(entity.path("name").asText());
 	}
 
+
+	
 	@Override
 	public void scan(String clusterName) {
 		try {
@@ -91,6 +81,11 @@ public class EksScanner extends AbstractEntityScanner<Cluster> {
 			DescribeClusterResult result = eks.describeCluster(new DescribeClusterRequest().withName(clusterName));
 
 			project(result.getCluster());
+			
+			mergeSecurityGroupRelationships();
+			mergeSubnetRelationships();
+			
+
 		} catch (ResourceNotFoundException e) {
 			awsGraphNodes("AwsEksCluster").id("name", clusterName).delete();
 		}

@@ -27,10 +27,7 @@ import rebar.util.Json;
 
 public class AvailabilityZoneScanner extends AbstractEntityScanner<AvailabilityZone> {
 
-	public AvailabilityZoneScanner(AwsScanner scanner) {
-		super(scanner);
-
-	}
+	
 
 	@Override
 	public void doScan() {
@@ -51,7 +48,7 @@ public class AvailabilityZoneScanner extends AbstractEntityScanner<AvailabilityZ
 		ec2.describeAvailabilityZones().getAvailabilityZones().forEach(it -> {
 
 			getGraphDB()
-					.nodes().label("AwsAvailabilityZone").properties(Json.objectNode().put("region", it.getRegionName())
+					.nodes("AwsAvailabilityZone").properties(Json.objectNode().put("region", it.getRegionName())
 							.put("name", it.getZoneName()).put(GraphDB.ENTITY_TYPE, "AwsAvailabilityZone").put(GraphDB.ENTITY_GROUP, "aws"))
 					.idKey("name").merge();
 

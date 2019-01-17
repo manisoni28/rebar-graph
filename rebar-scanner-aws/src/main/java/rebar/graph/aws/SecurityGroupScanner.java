@@ -33,10 +33,7 @@ import rebar.util.Json;
 
 public class SecurityGroupScanner extends AbstractEntityScanner<SecurityGroup> {
 
-	public SecurityGroupScanner(AwsScanner scanner) {
-		super(scanner);
-		// TODO Auto-generated constructor stub
-	}
+	
 
 	@Override
 	public void doScan() {
@@ -67,7 +64,7 @@ public class SecurityGroupScanner extends AbstractEntityScanner<SecurityGroup> {
 			});
 		} catch (AmazonEC2Exception e) {
 			if (ImmutableSet.of("InvalidGroup.NotFound").contains(e.getErrorCode())) {
-				getGraphDB().nodes().label(AwsEntities.SECURITY_GROUP_TYPE).id("region", getRegion().getName(), "account",
+				getGraphDB().nodes(AwsEntities.SECURITY_GROUP_TYPE).id("region", getRegion().getName(), "account",
 						getAccount(), "groupId", id).delete();
 
 			} else {
@@ -140,10 +137,10 @@ public class SecurityGroupScanner extends AbstractEntityScanner<SecurityGroup> {
 		ObjectNode n = toJson(sg);
 		n.set("name", n.path("groupName"));
 
-		getGraphDB().nodes().label("AwsSecurityGroup").withTagPrefixes(TAG_PREFIXES).idKey("arn").properties(n).merge();
+		getGraphDB().nodes("AwsSecurityGroup").withTagPrefixes(TAG_PREFIXES).idKey("arn").properties(n).merge();
 
 		if (!Strings.isNullOrEmpty(sg.getVpcId())) {
-			getGraphDB().nodes("AwsVpc").id("vpcId", sg.getVpcId()).relationship("HAS")
+			getGraphDB().nodes("AwsVpc").id("vpcId", sg.getVpcId()).relationship("HAS").on("vpcId","vpcId")
 					.to("AwsSecurityGroup").id("arn", n.path("arn").asText()).merge();
 		}
 

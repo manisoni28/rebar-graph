@@ -29,10 +29,7 @@ import com.google.common.base.Strings;
 
 public class LaunchTemplateScanner extends AbstractEntityScanner<LaunchTemplate> {
 
-	public LaunchTemplateScanner(AwsScanner scanner) {
-		super(scanner);
 	
-	}
 
 	@Override
 	public void doScan() {
@@ -62,7 +59,7 @@ public class LaunchTemplateScanner extends AbstractEntityScanner<LaunchTemplate>
 
 		ObjectNode n = toJson(t);
 		
-		getGraphDB().nodes().label(AwsEntities.LAUNCH_TEMPLATE_TYPE).idKey("arn").properties(n)
+		getGraphDB().nodes(AwsEntities.LAUNCH_TEMPLATE_TYPE).idKey("arn").properties(n)
 				.merge();
 	}
 	
@@ -79,7 +76,7 @@ public class LaunchTemplateScanner extends AbstractEntityScanner<LaunchTemplate>
 			});
 		} catch (AmazonEC2Exception e) {
 			if (e.getErrorCode().contains("InvalidLaunchTemplate")) {
-				getGraphDB().nodes().label(AwsEntities.LAUNCH_TEMPLATE_TYPE)
+				getGraphDB().nodes(AwsEntities.LAUNCH_TEMPLATE_TYPE)
 						.id("name", name, "region", getRegionName(), "account", getAccount()).delete();
 			} else {
 				throw e;

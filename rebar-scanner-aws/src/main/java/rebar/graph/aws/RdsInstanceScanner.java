@@ -21,9 +21,7 @@ import rebar.util.Json;
 
 public class RdsInstanceScanner extends AbstractEntityScanner<DBInstance> {
 
-	public RdsInstanceScanner(AwsScanner scanner) {
-		super(scanner);
-	}
+	
 
 	@Override
 	protected Optional<String> toArn(DBInstance awsObject) {

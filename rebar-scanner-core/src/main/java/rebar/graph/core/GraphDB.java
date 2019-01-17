@@ -19,6 +19,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -40,6 +41,7 @@ import com.google.common.collect.MapDifference;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
+import rebar.graph.core.RelationshipBuilder.FromNode;
 import rebar.graph.neo4j.GraphDriver;
 import rebar.graph.neo4j.GraphException;
 import rebar.graph.neo4j.GraphSchema;
@@ -82,11 +84,11 @@ public class GraphDB {
 		return sb.toString();
 	}
 
-	@SuppressWarnings("unchecked")
-	public <T extends NodeOperation> T nodes() {
-
-		return (T) new Neo4jNodeOperation();
-	}
+//	@SuppressWarnings("unchecked")
+//	public <T extends NodeOperation> T nodes() {
+//
+//		return (T) new Neo4jNodeOperation();
+//	}
 
 
 	public static final String ENTITY_TYPE="graphEntityType";
@@ -107,7 +109,8 @@ public class GraphDB {
 	 * @return
 	 */
 	public <T extends NodeOperation> T nodes(String label) {
-		return nodes().label(label);
+		return new NodeOperation().label(label);
+	
 	}
 	static String directedMatchClause(String abbrev, String label, Map<String, Object> attrs) {
 		StringBuffer sb = new StringBuffer();
@@ -131,247 +134,15 @@ public class GraphDB {
 		sb.append("}) ");
 		return sb.toString();
 	}
-	public abstract class RelationshipTargetNodeOperation extends NodeOperation {
-
-	}
-
-	public abstract class RelationshipOperation {
-
-		protected Map<String, String> joinAttributes = Maps.newHashMap();
-
-		public abstract RelationshipTargetNodeOperation to(String label);
-
-		@SuppressWarnings("unchecked")
-		public <T extends RelationshipOperation> T on(String fromProperty, String toProperty) {
-
-			Preconditions.checkArgument(!Strings.isNullOrEmpty(fromProperty),
-					"LHS of join property cannot be null or empty");
-			Preconditions.checkArgument(!Strings.isNullOrEmpty(toProperty),
-					"RHS of join property cannot be null or empty");
-			joinAttributes.put(fromProperty, toProperty);
-			return (T) this;
-		}
-
-	}
-	public class Neo4jNodeOperation extends NodeOperation {
-
-		@Override
-		public Stream<JsonNode> delete() {
-			String whereClause = "";
-			if (!Strings.isNullOrEmpty(attributeLessThanName)) {
-
-				if (!Strings.isNullOrEmpty(attributeLessThanName)) {
-					whereClause = " where a." + attributeLessThanName + " < " + attributeLessThanValue + " ";
-				}
-			}
-			if (this.dataAttributes != null && !dataAttributes.isEmpty()) {
-				throw new GraphException("attributes cannot be set during delete");
-			}
-			return neo4j.newTemplate().cypher("match (a:" + label + " " + toPatternClause(idAttributes) + " ) "
-					+ whereClause + " detach delete a").params(idAttributes).stream();
-		}
-
-		@Override
-		public Stream<JsonNode> match() {
-			if (Strings.isNullOrEmpty(label)) {
-				throw new GraphException("label not set");
-			}
-
-			populateMatchValues();
-
-			String whereClause = "";
-			if (!Strings.isNullOrEmpty(attributeLessThanName)) {
-				whereClause = " where a." + attributeLessThanName + " < " + attributeLessThanValue + " ";
-			}
-			String setClause = dataAttributes.isEmpty() ? "" : " set a+= {__params}, a.graphUpdateTs=timestamp() ";
-
-			String cypher = "match (a:" + label + " " + toPatternClause(idAttributes) + ") "
-					+ toRemoveClause(removeAttributes) + setClause + " " + whereClause + " return a";
-
-			Map<String, Object> combined = new HashMap<>();
-			if (dataAttributes != null) {
-				combined.putAll(dataAttributes);
-			}
-			if (idAttributes != null) {
-				combined.putAll(idAttributes);
-			}
-			return neo4j.newTemplate().cypher(cypher).params(combined).stream();
-		}
-
-		@Override
-		public Stream<JsonNode> merge() {
-			populateMatchValues();
-			if (Strings.isNullOrEmpty(label)) {
-				throw new GraphException("label not set");
-			}
-			String whereClause = "";
-			if (!Strings.isNullOrEmpty(attributeLessThanName)) {
-				whereClause = " where a." + attributeLessThanName + " < " + attributeLessThanValue + " ";
-			}
-
-			Map<String, Object> combined = new HashMap<>();
-			if (dataAttributes != null) {
-				combined.putAll(dataAttributes);
-			}
-			if (idAttributes != null) {
-				combined.putAll(idAttributes);
-			}
-
-			String patternClause = toPatternClause(idAttributes);
-			if (patternClause.trim().isEmpty()) {
-				throw new GraphException("match pattern not set");
-			}
-			String cypher = "merge (a:" + label + " " + toPatternClause(idAttributes) + " ) "
-					+ toRemoveClause(removeAttributes) + " set a+={__params}, a.graphUpdateTs=timestamp() "
-					+ whereClause + " return a";
-
-			List<JsonNode> results = neo4j.newTemplate().cypher(cypher).params(combined).stream()
-					.collect(Collectors.toList());
-
 	
-			
-			// look through the results and remove specific attributes that are gone.
-			Set<String> attributesToBeRemoved = Sets.newHashSet();
-			shadowAttributePrefixes.forEach(prefix -> {
-				results.forEach(it -> {
-					it.fieldNames().forEachRemaining(attr -> {
-						if (attr.startsWith(prefix) && (!combined.containsKey(attr))) {
-							attributesToBeRemoved.add(attr);
-						}
-					});
-				});
-			});
 
-			if (!attributesToBeRemoved.isEmpty())  {
-				logger.info("removing shadow attributes: {}",attributesToBeRemoved);
-				cypher = "merge (a:" + label + " " + toPatternClause(idAttributes) + " ) "
-						+ toRemoveClause(attributesToBeRemoved);
-				
-				neo4j.newTemplate().cypher(cypher).params(combined).exec();
-			}
-			
-			return results.stream();
-		}
-
-		@SuppressWarnings("unchecked")
-		public <T extends RelationshipOperation> T relationship(String name) {
-			Neo4jRelationshipOperation ro = new Neo4jRelationshipOperation(this, name);
-
-			return (T) ro;
-		}
-	}
-
-	public class Neo4jRelationshipTargetNodeOperation extends RelationshipTargetNodeOperation {
-
-		Neo4jRelationshipOperation relOp;
-
-		public Neo4jRelationshipTargetNodeOperation(Neo4jRelationshipOperation relOp) {
-			this.relOp = relOp;
-		}
-
-		String fromClause() {
-			return directedMatchClause("from", relOp.from.getLabel(), relOp.from.getMatchProperties());
-		}
-
-		String toClause() {
-			return directedMatchClause("to", getLabel(), getMatchProperties());
-		}
-
-		String whereClause() {
-			StringBuffer sb = new StringBuffer();
-			if (!relOp.joinAttributes.isEmpty()) {
-				sb.append(" where ");
-			}
-			AtomicInteger count = new AtomicInteger(0);
-			relOp.joinAttributes.forEach((a, b) -> {
-				if (count.getAndIncrement() > 0) {
-					sb.append(" and ");
-				}
-				sb.append(" from.`");
-				sb.append(a);
-				sb.append("` = to.`");
-				sb.append(b);
-				sb.append("` ");
-			});
-
-			return sb.toString();
-		}
-
-		public Stream<JsonNode> merge() {
-
-			String cypher = "match " + fromClause() + "," + toClause() + whereClause() + " merge (from)-[r:"
-					+ this.relOp.relationshipType + "]->(to) set r.graphUpdateTs=timestamp() return r";
-
-			Map<String, Object> combined = Maps.newHashMap();
-
-			relOp.from.getMatchProperties().forEach((k, v) -> {
-				combined.put("from_" + k, v);
-			});
-			getMatchProperties().forEach((k, v) -> {
-				combined.put("to_" + k, v);
-			});
-
-			return getNeo4jDriver().newTemplate().cypher(cypher).params(combined).stream();
-
-		}
-
-		@Override
-		public <T extends RelationshipOperation> T relationship(String name) {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		public Stream<JsonNode> delete() {
-			String cypher = "match " + fromClause() + "-[r:" + this.relOp.relationshipType + "]->" + toClause()
-					+ "  detach delete r return r";
-
-			Map<String, Object> combined = Maps.newHashMap();
-
-			relOp.from.getMatchProperties().forEach((k, v) -> {
-				combined.put("from_" + k, v);
-			});
-			getMatchProperties().forEach((k, v) -> {
-				combined.put("to_" + k, v);
-			});
-			if (!relOp.joinAttributes.isEmpty()) {
-				throw new GraphException("join attributes not supported for deleting relationships");
-			}
-			return getNeo4jDriver().newTemplate().cypher(cypher).params(combined).stream();
-		}
-
-		@Override
-		public Stream<JsonNode> match() {
-			throw new UnsupportedOperationException();
-		}
-
-	}
-
-	public class Neo4jRelationshipOperation extends RelationshipOperation {
-
-		NodeOperation from;
-		String relationshipType;
-
-		Neo4jRelationshipOperation(NodeOperation from, String relationshipType) {
-			this.from = from;
-			this.relationshipType = relationshipType;
-		}
-
-		@Override
-		public RelationshipTargetNodeOperation to(String label) {
-			RelationshipTargetNodeOperation target = new Neo4jRelationshipTargetNodeOperation(this).label(label);
-
-			return target;
-		}
-
-	}
-	
 	public class Neo4jTagUpdate extends TagOperation {
 
 		@Override
 		public void update() {
 
 			Preconditions.checkArgument(!Strings.isNullOrEmpty(label), "label not set");
-			nodes().label(label).id(identifyingAttributes).merge().forEach(it -> {
+			nodes(label).id(identifyingAttributes).merge().forEach(it -> {
 
 				Map<String, String> desired = Maps.newHashMap();
 				tags.forEach((k, v) -> {
@@ -399,7 +170,7 @@ public class GraphDB {
 						update.put(k, v);
 					});
 
-					nodes().label(label).properties(update).idKey(identifyingAttributes.keySet().toArray(new String[0]))
+					nodes(label).properties(update).idKey(identifyingAttributes.keySet().toArray(new String[0]))
 							.merge();
 				}
 				if (!toBeAdded.entriesOnlyOnRight().isEmpty()) {
@@ -413,7 +184,7 @@ public class GraphDB {
 
 	}
 	
-	public abstract class NodeOperation {
+	public class NodeOperation {
 		protected String label;
 		protected Map<String, Object> idAttributes = Maps.newHashMap();
 
@@ -425,12 +196,11 @@ public class GraphDB {
 
 		protected Collection<String> shadowAttributePrefixes = ImmutableSet.of();
 		
-		protected RelationshipOperation relOp;
+		
 		protected String attributeLessThanName;
 		protected long attributeLessThanValue = 0;
 
-		public abstract <T extends RelationshipOperation> T relationship(String name);
-
+	
 		
 		@SuppressWarnings("unchecked")
 		public <T extends NodeOperation> T removeProperties(String... properties) {
@@ -516,11 +286,117 @@ public class GraphDB {
 			});
 		}
 
-		public abstract Stream<JsonNode> merge();
+	
+		public Stream<JsonNode> delete() {
+			String whereClause = "";
+			if (!Strings.isNullOrEmpty(attributeLessThanName)) {
 
-		public abstract Stream<JsonNode> delete();
+				if (!Strings.isNullOrEmpty(attributeLessThanName)) {
+					whereClause = " where a." + attributeLessThanName + " < " + attributeLessThanValue + " ";
+				}
+			}
+			if (this.dataAttributes != null && !dataAttributes.isEmpty()) {
+				throw new GraphException("attributes cannot be set during delete");
+			}
+			return neo4j.newTemplate().cypher("match (a:" + label + " " + toPatternClause(idAttributes) + " ) "
+					+ whereClause + " detach delete a").params(idAttributes).stream();
+		}
 
-		public abstract Stream<JsonNode> match();
+	
+		public Stream<JsonNode> match() {
+			if (Strings.isNullOrEmpty(label)) {
+				throw new GraphException("label not set");
+			}
+
+			populateMatchValues();
+
+			String whereClause = "";
+			if (!Strings.isNullOrEmpty(attributeLessThanName)) {
+				whereClause = " where a." + attributeLessThanName + " < " + attributeLessThanValue + " ";
+			}
+			String setClause = dataAttributes.isEmpty() ? "" : " set a+= {__params}, a.graphUpdateTs=timestamp() ";
+
+			String cypher = "match (a:" + label + " " + toPatternClause(idAttributes) + ") "
+					+ toRemoveClause(removeAttributes) + setClause + " " + whereClause + " return a";
+
+			Map<String, Object> combined = new HashMap<>();
+			if (dataAttributes != null) {
+				combined.putAll(dataAttributes);
+			}
+			if (idAttributes != null) {
+				combined.putAll(idAttributes);
+			}
+			return neo4j.newTemplate().cypher(cypher).params(combined).stream();
+		}
+
+	
+		public Stream<JsonNode> merge() {
+			populateMatchValues();
+			if (Strings.isNullOrEmpty(label)) {
+				throw new GraphException("label not set");
+			}
+			String whereClause = "";
+			if (!Strings.isNullOrEmpty(attributeLessThanName)) {
+				whereClause = " where a." + attributeLessThanName + " < " + attributeLessThanValue + " ";
+			}
+
+			Map<String, Object> combined = new HashMap<>();
+			if (dataAttributes != null) {
+				combined.putAll(dataAttributes);
+			}
+			if (idAttributes != null) {
+				combined.putAll(idAttributes);
+			}
+
+			String patternClause = toPatternClause(idAttributes);
+			if (patternClause.trim().isEmpty()) {
+				throw new GraphException("match pattern not set");
+			}
+			String cypher = "merge (a:" + label + " " + toPatternClause(idAttributes) + " ) "
+					+ toRemoveClause(removeAttributes) + " set a+={__params}, a.graphUpdateTs=timestamp() "
+					+ whereClause + " return a";
+
+			List<JsonNode> results = neo4j.newTemplate().cypher(cypher).params(combined).stream()
+					.collect(Collectors.toList());
+
+	
+			
+			// look through the results and remove specific attributes that are gone.
+			Set<String> attributesToBeRemoved = Sets.newHashSet();
+			shadowAttributePrefixes.forEach(prefix -> {
+				results.forEach(it -> {
+					it.fieldNames().forEachRemaining(attr -> {
+						if (attr.startsWith(prefix) && (!combined.containsKey(attr))) {
+							attributesToBeRemoved.add(attr);
+						}
+					});
+				});
+			});
+
+			if (!attributesToBeRemoved.isEmpty())  {
+				logger.info("removing shadow attributes: {}",attributesToBeRemoved);
+				cypher = "merge (a:" + label + " " + toPatternClause(idAttributes) + " ) "
+						+ toRemoveClause(attributesToBeRemoved);
+				
+				neo4j.newTemplate().cypher(cypher).params(combined).exec();
+			}
+			
+			return results.stream();
+		}
+
+		@SuppressWarnings("unchecked")
+		public RelationshipBuilder.Relationship relationship(String name) {
+			FromNode n = new RelationshipBuilder().driver(getNeo4jDriver()).from(this.label);
+			
+			for (String it: idAttributeNames) {
+				n = n.id(it, dataAttributes.get(it));
+			}
+			for (Entry<String,Object> e: idAttributes.entrySet()) {
+				n = n.id(e.getKey(),e.getValue());
+			}
+			return n.relationship(name);
+			
+		}
 
 		/**
 		 * This is a rebar-graph specific condition for graphUpdateTs. No real interest in

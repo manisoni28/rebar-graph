@@ -30,20 +30,18 @@ import com.google.common.base.Strings;
 
 public class SubnetScanner extends AbstractEntityScanner<Subnet> {
 
-	public SubnetScanner(AwsScanner scanner) {
-		super(scanner);
-	}
+	
 
 	private void projectSubnet(Subnet it) {
 
 		ObjectNode n = toJson(it);
 
-		getGraphDB().nodes().label(AwsEntities.SUBNET_TYPE).idKey("arn").properties(n).merge();
+		getGraphDB().nodes(AwsEntities.SUBNET_TYPE).idKey("arn").properties(n).merge();
 
 		getGraphDB().nodes(AwsEntities.VPC_TYPE).id(VpcScanner.VPC_ID_PROPERTY, it.getVpcId()).relationship("HAS")
 				.to("AwsSubnet").id("subnetId", it.getSubnetId()).merge();
 
-		getGraphDB().nodes().label("AwsSubnet").id("arn",n.path("arn").asText()).relationship("RESIDES_IN").on("availabilityZone","name").to("AwsAvailabilityZone").merge();
+		getGraphDB().nodes("AwsSubnet").id("arn",n.path("arn").asText()).relationship("RESIDES_IN").on("availabilityZone","name").to("AwsAvailabilityZone").merge();
 	}
 
 	protected Optional<String> toArn(Subnet subnet) {
@@ -63,7 +61,7 @@ public class SubnetScanner extends AbstractEntityScanner<Subnet> {
 		} catch (AmazonEC2Exception e) {
 			if (Strings.nullToEmpty(e.getErrorCode()).equals("InvalidSubnetID.NotFound")) {
 
-				getGraphDB().nodes().label("AwsSubnet").id("account", getAccount(), "subnetId", subnetId).delete();
+				getGraphDB().nodes("AwsSubnet").id("account", getAccount(), "subnetId", subnetId).delete();
 
 			} else {
 				throw e;

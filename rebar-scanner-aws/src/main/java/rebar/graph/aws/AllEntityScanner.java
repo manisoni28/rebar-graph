@@ -46,15 +46,15 @@ public class AllEntityScanner extends SerialScanner {
 		classList.add(ElbTargetGroupScanner.class);
 		
 		classList.add(AsgScanner.class);
-		classList.add(EksScanner.class);
+		classList.add(EksClusterScanner.class);
 		classList.add(LambdaFunctionScanner.class);
 		
 		classList.add(RdsClusterScanner.class);
 		classList.add(RdsInstanceScanner.class);
 		return classList;
 	}
-	public AllEntityScanner(AwsScanner scanner) {
-		super(scanner);
+	public AllEntityScanner() {
+		super();
 
 
 		

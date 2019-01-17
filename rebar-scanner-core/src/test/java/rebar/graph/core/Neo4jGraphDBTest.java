@@ -31,7 +31,7 @@ class Neo4jGraphDBTest extends Neo4jIntegrationTest {
 
 		Assertions.assertThat(getRebarGraph()).isNotNull();
 
-		getRebarGraph().getGraphDB().nodes().label("JUnitFoo")
+		getRebarGraph().getGraphDB().nodes("JUnitFoo")
 				.properties(Json.objectNode().put("name", "rob " + System.currentTimeMillis()).put("fizz", 123)).idKey("name").merge()
 				.forEach(it -> {
 					System.out.println(">>> " + it);
@@ -49,7 +49,7 @@ class Neo4jGraphDBTest extends Neo4jIntegrationTest {
 		Assertions.assertThat(getRebarGraph()).isNotNull();
 
 		try {
-			getRebarGraph().getGraphDB().nodes().label("JUnitFoo")
+			getRebarGraph().getGraphDB().nodes("JUnitFoo")
 					.properties(Json.objectNode().put("name", "rob " + System.currentTimeMillis())).idKey("NOTFOUND")
 					.merge().forEach(it -> {
 

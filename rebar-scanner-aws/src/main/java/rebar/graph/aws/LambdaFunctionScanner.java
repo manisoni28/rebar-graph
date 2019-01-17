@@ -36,10 +36,7 @@ import rebar.util.Json;
 
 public class LambdaFunctionScanner extends AbstractEntityScanner<FunctionConfiguration> {
 
-	public LambdaFunctionScanner(AwsScanner scanner) {
-		super(scanner);
-
-	}
+	
 
 	void project(FunctionConfiguration f) {
 		ObjectNode n = toJson(f);
@@ -65,7 +62,7 @@ public class LambdaFunctionScanner extends AbstractEntityScanner<FunctionConfigu
 
 		gc("AwsLambdaFunction", ts);
 		
-		mergeResidesInRegionRelationship("AwsLambdaFunction");
+		mergeResidesInRegionRelationship();
 		
 		
 		getGraphDB().nodes("AwsLambdaFunction").id("region",getRegionName()).id("account",getAccount()).relationship("RESIDES_IN").on("vpcId", "vpcId").to("AwsVpc").id("region",getRegionName()).merge();

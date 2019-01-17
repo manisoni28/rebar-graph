@@ -55,9 +55,7 @@ public class ElbListenerScanner extends AbstractEntityScanner<Listener> {
 
 	}
 
-	public ElbListenerScanner(AwsScanner scanner) {
-		super(scanner);
-	}
+	
 
 	@Override
 	protected void doScan() {
