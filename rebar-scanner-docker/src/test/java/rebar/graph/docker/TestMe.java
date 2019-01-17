@@ -1,7 +1,7 @@
 package rebar.graph.docker;
 import org.junit.jupiter.api.Disabled;
 /**
- * Copyright 2018 Rob Schoening
+ * Copyright 2018-2019 Rob Schoening
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
