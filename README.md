@@ -8,8 +8,8 @@ Builds and maintains a graph model of your infrastructure.
 
 To get started have a look at the following modules:
 
-| Infrastructure | Module |
-|----|----|
-| AWS |[Documentation](https://rebar.cloud/aws) | [Source Code](https://github.com/rebar-cloud/rebar-graph/blob/master/rebar-scanner-aws)|
-| Kubernetes [Documentation](https://rebar.cloud/kubernetes)| [Source Code](https://github.com/rebar-cloud/rebar-graph/blob/master/rebar-scanner-kubernetes/)|
+| Infrastructure | Documentation | Code |
+|----|----|----|
+| AWS |[Docs](https://rebar.cloud/aws) | [Source Code](https://github.com/rebar-cloud/rebar-graph/blob/master/rebar-scanner-aws)|
+| Kubernetes | [docs](https://rebar.cloud/kubernetes)| [Source Code](https://github.com/rebar-cloud/rebar-graph/blob/master/rebar-scanner-kubernetes/)|
 
