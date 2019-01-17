@@ -286,9 +286,20 @@ public class KubeScanner extends Scanner {
 	}
 
 	abstract class GenericWatcher<T> implements Watcher<T> {
+		void fixThreadName() {
+			// The thread name is really annoying
+			Thread t = Thread.currentThread();
+			String threadName = t.getName();
+			
+			if (threadName.startsWith("OkHttp")) {
+				
+				t.setName("evt-"+getClusterId()+"-"+t.getId());
+			}
+		}
 		@Override
 		public void eventReceived(Action action, T resource) {
 
+			fixThreadName();
 			HasMetadata md = (HasMetadata) resource;
 			logger.info("event {} {}", action, KubeScanner.toString(md));
 
@@ -473,7 +484,7 @@ public class KubeScanner extends Scanner {
 		}
 
 		ObjectNode nx = toJson(n);
-
+		
 		nx.set("finalizers", nx.path("spec").path("finalizers"));
 		nx.remove("spec");
 		nx.set("phase", nx.path("status").path("phase"));

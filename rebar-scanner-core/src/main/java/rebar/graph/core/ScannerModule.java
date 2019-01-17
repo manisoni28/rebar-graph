@@ -96,7 +96,8 @@ public abstract class ScannerModule {
 			}
 
 		};
-		executor.scheduleWithFixedDelay(r, 0, 30, TimeUnit.SECONDS);
+		r.run(); // make sure we have one synchronous execution
+		executor.scheduleWithFixedDelay(r,30, 30, TimeUnit.SECONDS);
 		
 	}
 	protected void registerScanner(String type) {

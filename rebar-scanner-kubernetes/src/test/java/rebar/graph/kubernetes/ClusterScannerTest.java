@@ -25,8 +25,44 @@ import com.fasterxml.jackson.databind.JsonNode;
 import rebar.graph.kubernetes.KubeScanner;
 import rebar.graph.kubernetes.KubeScannerBuilder;
 
-public class ClusterScannerTest extends Neo4jKubeIntegrationTest {
+public class ClusterScannerTest extends KubeIntegrationTest {
 
+	
+	@Test
+	public void testScan() {
+		getKubeScanner().scan();
+		Assertions.assertThat(getRebarGraph().getGraphDB().getNeo4jDriver().cypher("match (a:KubeNamespace) return a").stream().count()).isGreaterThan(0);
+		getRebarGraph().getGraphDB().getNeo4jDriver().cypher("match (a:KubeNamespace) return a").forEach(it->{
+			Assertions.assertThat(it.path("kind").asText()).isEqualTo("Namespace");
+	
+		});
+	}
+	
+	@Test
+	public void testScanCluster() {
+		getKubeScanner().scanCluster();
+		Assertions.assertThat(getRebarGraph().getGraphDB().getNeo4jDriver().cypher("match (a:KubeCluster) return a").stream().count()).isGreaterThan(0);
+		getRebarGraph().getGraphDB().getNeo4jDriver().cypher("match (a:KubeCluster) return a").forEach(it->{
+		//	Assertions.assertThat(it.path("kind").asText()).isEqualTo("Namespace");
+			Assertions.assertThat(it.path("graphEntityGroup").asText()).isEqualTo("kubernetes");
+		});
+	}
+	
+	@Test
+	public void testIt1() {
+		getKubeScanner().scanNamespaces();
+		
+		
+		Assertions.assertThat(getRebarGraph().getGraphDB().getNeo4jDriver().cypher("match (a:KubeNamespace) return a").stream().count()).isGreaterThan(0);
+		getRebarGraph().getGraphDB().getNeo4jDriver().cypher("match (a:KubeNamespace) return a").forEach(it->{
+			Assertions.assertThat(it.path("kind").asText()).isEqualTo("Namespace");
+		});
+		
+		getNeo4jDriver().cypher("match (a:KubeCluster)-[r]-(n:KubeNamespace) return a,r,n").forEach(it->{
+			System.out.println(it);
+		});
+		
+	}
 	@Test
 	public void testX() {
 

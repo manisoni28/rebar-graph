@@ -25,6 +25,8 @@ import org.slf4j.LoggerFactory;
 
 import io.fabric8.kubernetes.client.DefaultKubernetesClient;
 import io.fabric8.kubernetes.client.KubernetesClient;
+import rebar.graph.core.GraphDB;
+import rebar.graph.neo4j.GraphDriver;
 import rebar.graph.test.AbstractIntegrationTest;
 
 public abstract class KubeIntegrationTest extends AbstractIntegrationTest {
@@ -68,5 +70,20 @@ public abstract class KubeIntegrationTest extends AbstractIntegrationTest {
 		this.kubeScanner = ks;
 		return ks;
 	}
-
+	public GraphDB getNeo4jDB() {
+		return GraphDB.class.cast(getRebarGraph().getGraphDB());
+	}
+	public GraphDriver getNeo4jDriver() {
+		return GraphDB.class.cast(getRebarGraph().getGraphDB()).getNeo4jDriver();
+	}
+	@BeforeEach
+	public void assumeNeo4j() {
+			
+		
+		GraphDB neo4jDB = getNeo4jDB();
+		logger.info("deleting all Kube ndoes before test");
+		neo4jDB.getNeo4jDriver().cypher("match (a) where labels(a)[0]=~'Kube.*'  detach delete a").exec();
+		
+		
+	}
 }
