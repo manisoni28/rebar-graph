@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,14 +51,16 @@ public abstract class AwsEntityScanner<A extends Object> {
 	public static final String TAG_PREFIX = "tag_";
 	protected static final Set<String> TAG_PREFIXES = ImmutableSet.of(TAG_PREFIX);
 	private AwsEntityType entityType;
-	
+
 	public AwsEntityScanner() {
-		
+
 	}
+
 	protected void init(AwsScanner scanner) {
 		this.scanner = scanner;
-		
+
 	}
+
 	/**
 	 * Convenience for initializing a NodeOperation with common boilerplate.
 	 * 
@@ -83,7 +86,7 @@ public abstract class AwsEntityScanner<A extends Object> {
 	}
 
 	protected final void gc(String type, long cutoff) {
-		gc(type, cutoff, null);
+		gc(type, cutoff, new String[0]);
 	}
 
 	protected void gc(String type, long cutoff, String... attrs) {
@@ -102,15 +105,18 @@ public abstract class AwsEntityScanner<A extends Object> {
 				op = op.id(attrs[i], attrs[i + 1]);
 			}
 		}
-
+		AtomicInteger count = new AtomicInteger(0);
 		op.match().forEach(it -> {
 			Exceptions.log(logger).run(() -> {
+				count.incrementAndGet();
 				logger.info("running gc on {}", it.path(GraphDB.ENTITY_TYPE).asText());
 				scan(it);
 			});
 		});
 
-		logger.info("gc for {} took {}ms", type, sw.elapsed(TimeUnit.MILLISECONDS));
+		if (count.get() > 0 || sw.elapsed(TimeUnit.MILLISECONDS)>500L) {
+			logger.info("gc for {} {} nodes took {}ms", count.get(), type, sw.elapsed(TimeUnit.MILLISECONDS));
+		}
 
 	}
 
@@ -147,8 +153,8 @@ public abstract class AwsEntityScanner<A extends Object> {
 
 	public final void scan() {
 		Stopwatch sw = Stopwatch.createStarted();
-		String type = getEntityType()!=AwsEntityType.UNKNOWN ? getEntityTypeName() : getClass().getSimpleName();
-		logger.info("begin scan: {}",type);
+		String type = getEntityType() != AwsEntityType.UNKNOWN ? getEntityTypeName() : getClass().getSimpleName();
+		logger.info("begin scan: {}", type);
 		doScan();
 		logger.info("end scan {} ({} ms)", type, sw.elapsed(TimeUnit.MILLISECONDS));
 	}
@@ -201,7 +207,7 @@ public abstract class AwsEntityScanner<A extends Object> {
 	}
 
 	public abstract AwsEntityType getEntityType();
-	
+
 	public String getEntityTypeName() {
 		return getEntityType().name();
 	}
@@ -218,31 +224,31 @@ public abstract class AwsEntityScanner<A extends Object> {
 		n.relationship("RESIDES_IN").on("subnets", "subnetId").to("AwsSubnet").merge();
 	}
 
-	protected void mergeSecurityGroupRelationships(String ...args) {
+	protected void mergeSecurityGroupRelationships(String... args) {
 		FromNode n = awsRelationships();
-		
-		if (args!=null) {
-			for (int i=0; i<args.length; i+=2) {
-				n = n.id(args[i], args[i+1]);
+
+		if (args != null) {
+			for (int i = 0; i < args.length; i += 2) {
+				n = n.id(args[i], args[i + 1]);
 			}
 		}
-		n.relationship("USES").on("securityGroups","groupId").to("AwsSecurityGroup").merge();
+		n.relationship("USES").on("securityGroups", "groupId").to("AwsSecurityGroup").merge();
 	}
 
 	public FromNode awsRelationships() {
-	
-		return new RelationshipBuilder()
-				.sourceIdAttribute("region",getRegionName()).sourceIdAttribute("account",getAccount())
-				.targetIdAttribute("region",getRegionName()).targetIdAttribute("account",getAccount())
-				.driver(getGraphDB().getNeo4jDriver()).from(getEntityTypeName());
+
+		return new RelationshipBuilder().sourceIdAttribute("region", getRegionName())
+				.sourceIdAttribute("account", getAccount()).targetIdAttribute("region", getRegionName())
+				.targetIdAttribute("account", getAccount()).driver(getGraphDB().getNeo4jDriver())
+				.from(getEntityTypeName());
 	}
 
-	protected void mergeResidesInRegionRelationship(String ...args) {
+	protected void mergeResidesInRegionRelationship(String... args) {
 		FromNode n = awsRelationships();
-		
-		if (args!=null) {
-			for (int i=0; i<args.length; i+=2) {
-				n = n.id(args[i], args[i+1]);
+
+		if (args != null) {
+			for (int i = 0; i < args.length; i += 2) {
+				n = n.id(args[i], args[i + 1]);
 			}
 		}
 		n.relationship("RESIDES_IN").on("region", "region").to("AwsRegion").merge();
