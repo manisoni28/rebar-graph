@@ -9,7 +9,8 @@ chmod +x /bin/kubectl &&  \
 	apk -Uuv add groff less python py-pip && \
 	pip install awscli && \
 	apk --purge -v del py-pip && \
-	rm /var/cache/apk/*
+	rm /var/cache/apk/* && \
+	adduser -D -h /rebar rebar 
 
 
 
@@ -25,7 +26,8 @@ LABEL GIT_COMMIT=$GIT_COMMIT
 LABEL GIT_REPO=$GIT_REPO
 LABEL CI_BUILD_URL=$CI_BUILD_URL
 
+
 RUN chmod +x /app/docker-init
 
-
+USER rebar
 CMD ["/app/docker-init"]
