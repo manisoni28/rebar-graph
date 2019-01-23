@@ -21,14 +21,15 @@ public class RelationshipBuilder {
 	private GraphDriver driver;
 
 	private String aLabel;
-	private String aJoinAttribute;
 
 	private String bLabel;
-	private String bJoinAttributeName;
+
 	private String relationshipName;
 
 	private Map<String, Object> sourceIdAttributes = Maps.newHashMap();
 	private Map<String, Object> targetIdAttributes = Maps.newHashMap();
+
+	private Map<String, String> joinAttributes = Maps.newHashMap();
 
 	Logger logger = LoggerFactory.getLogger(RelationshipBuilder.class);
 
@@ -53,8 +54,7 @@ public class RelationshipBuilder {
 	public class Relationship {
 
 		public Relationship on(String fromAttribute, String toAttribute) {
-			sourceJoinAttribute(fromAttribute);
-			targetJoinAttribute(toAttribute);
+			joinAttributes.put(fromAttribute, toAttribute);
 			return this;
 		}
 
@@ -62,6 +62,7 @@ public class RelationshipBuilder {
 			targetNodeType(name);
 			return new ToNode();
 		}
+
 	}
 
 	public class ToNode {
@@ -96,19 +97,8 @@ public class RelationshipBuilder {
 		return new FromNode();
 	}
 
-	private <T extends RelationshipBuilder> T sourceJoinAttribute(String name) {
-		this.aJoinAttribute = name;
-		return (T) this;
-	}
-
 	private <T extends RelationshipBuilder> T sourceNodeType(String name) {
 		this.aLabel = name;
-		return (T) this;
-	}
-
-	private <T extends RelationshipBuilder> T targetJoinAttribute(String name) {
-
-		this.bJoinAttributeName = name;
 		return (T) this;
 	}
 
@@ -127,6 +117,21 @@ public class RelationshipBuilder {
 		deleteStaleRelationships();
 	}
 
+	protected String joinClause() {
+		StringBuffer sb = new StringBuffer();
+		int c = 0;
+		if (joinAttributes.isEmpty()) {
+			return sb.toString();
+		} else {
+			for (Map.Entry<String, String> entry : joinAttributes.entrySet()) {
+				
+				sb.append(String.format(" %s b.%s in a.%s ", (c++ > 0)? " AND " : "", CypherUtil.escapePropertyName(entry.getValue()), CypherUtil.escapePropertyName(entry.getKey())));
+			}
+		}
+
+		return sb.toString();
+	}
+
 	private void mergeRelationships() {
 
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(aLabel), "source node label not set");
@@ -137,11 +142,8 @@ public class RelationshipBuilder {
 
 				toMatchPattern(targetIdAttributes, "b_"));
 
-		String whereClause = "";
-		if (!Strings.isNullOrEmpty(aJoinAttribute)) {
-			whereClause = String.format(" b.%s in a.%s ", CypherUtil.escapePropertyName(bJoinAttributeName), CypherUtil.escapePropertyName(aJoinAttribute));
+		String whereClause = joinClause();
 
-		}
 		if (!whereClause.trim().isEmpty()) {
 			whereClause = " where " + whereClause;
 		}
@@ -166,34 +168,34 @@ public class RelationshipBuilder {
 
 	}
 
+	
+
 	private void deleteStaleRelationships() {
-		
-		if (Strings.isNullOrEmpty(aJoinAttribute)) {
+
+		if (joinAttributes.isEmpty()) {
 			return;
 		}
-		String cypher = String.format("match (a:%s %s)-[r:%s]->(b:%s %s)", aLabel,toMatchPattern(sourceIdAttributes,"a_"),relationshipName, bLabel,toMatchPattern(targetIdAttributes,"b_"));
-		
-		cypher = cypher + String.format(" where NOT (b.%s in a.%s) delete r return count(r) as count",CypherUtil.escapePropertyName(bJoinAttributeName),CypherUtil.escapePropertyName(aJoinAttribute));
-		
-		
-	
-		logger.debug("delete stale relationships: {}",cypher);
+		String cypher = String.format("match (a:%s %s)-[r:%s]->(b:%s %s)", aLabel,
+				toMatchPattern(sourceIdAttributes, "a_"), relationshipName, bLabel,
+				toMatchPattern(targetIdAttributes, "b_"));
+
+		cypher = cypher + String.format(" where NOT (%s) delete r return count(r) as count",joinClause());
+
+		logger.debug("delete stale relationships: {}", cypher);
 		CypherTemplate template = driver.cypher(cypher);
-		
-		for (Entry<String,Object> entry: sourceIdAttributes.entrySet()) {
-			template = template.param("a_"+entry.getKey(), entry.getValue());
+
+		for (Entry<String, Object> entry : sourceIdAttributes.entrySet()) {
+			template = template.param("a_" + entry.getKey(), entry.getValue());
 		}
-		
-		
-		for (Entry<String,Object> entry: targetIdAttributes.entrySet()) {
-			template = template.param("b_"+entry.getKey(), entry.getValue());
+
+		for (Entry<String, Object> entry : targetIdAttributes.entrySet()) {
+			template = template.param("b_" + entry.getKey(), entry.getValue());
 		}
 		long count = template.findFirst().get().path("count").asLong();
-		if (count>0) {
-			logger.info("deleted relationships: {}",count);
-		}
-		else {
-			logger.debug("deleted relationships: {}",count);
+		if (count > 0) {
+			logger.info("deleted relationships: {}", count);
+		} else {
+			logger.debug("deleted relationships: {}", count);
 		}
 	}
 

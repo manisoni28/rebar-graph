@@ -141,6 +141,7 @@ public class AsgScanner extends AbstractEntityScanner<AutoScalingGroup> {
 			instanceIdList.add(instance.getInstanceId());
 		});
 		n.set("instances", instanceIdList);
+
 		LaunchTemplateSpecification lt = asg.getLaunchTemplate();
 		if (lt != null) {
 			n.put("launchTemplateId", lt.getLaunchTemplateId()).put("launchTemplateName", lt.getLaunchTemplateName())
@@ -208,7 +209,7 @@ public class AsgScanner extends AbstractEntityScanner<AutoScalingGroup> {
 
 		// connect AwsAsg->AwsEc2Instance
 		getGraphDB().nodes("AwsAsg").id("region", getRegionName()).id("account", getAccount()).relationship("HAS")
-				.on("autoScalingGroupName", "autoScalingGroupName").on("account", "account").on("region", "region")
+				.on("instances", "instanceId").on("account", "account").on("region", "region")
 				.to("AwsEc2Instance").id("region", getRegionName()).id("account", getAccount()).merge();
 
 	}
