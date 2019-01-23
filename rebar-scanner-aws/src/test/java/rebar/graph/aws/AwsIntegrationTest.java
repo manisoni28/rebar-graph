@@ -22,11 +22,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.amazonaws.regions.Regions;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.google.common.base.Stopwatch;
 
 import rebar.graph.test.AbstractIntegrationTest;
 
 /**
  * Peform live integration tests against AWS.
+ * 
  * @author rob
  *
  */
@@ -35,40 +38,56 @@ public abstract class AwsIntegrationTest extends AbstractIntegrationTest {
 	static Logger logger = LoggerFactory.getLogger(AwsIntegrationTest.class);
 	static Boolean awsAvailable = null;
 	static AwsScanner awsScanner;
+
 	@BeforeEach
 	public void setupAws() {
-		
+
 		try {
-			
+
 			if (awsAvailable == null) {
-				AwsScanner scanner = getRebarGraph().createBuilder(AwsScannerBuilder.class).withRegion(Regions.US_WEST_2).withConfig(c -> {
-				
-				}).build();
+				AwsScanner scanner = getRebarGraph().createBuilder(AwsScannerBuilder.class)
+						.withRegion(Regions.US_WEST_2).withConfig(c -> {
+
+						}).build();
 
 				String account = scanner.getAccount();
-	
-				if (account!=null) {
-					logger.info("integration tests using AWS account: {}",account);
-					awsAvailable=true;
+
+				if (account != null) {
+					logger.info("integration tests using AWS account: {}", account);
+					awsAvailable = true;
 					awsScanner = scanner;
-				}
-				else {
+				} else {
 					awsAvailable = false;
 				}
 			}
 		} catch (Exception e) {
-			logger.warn("AWS integration tests will be skipped - "+e.toString());
-			
+			logger.warn("AWS integration tests will be skipped - " + e.toString());
+
 			awsAvailable = false;
 		}
-		if (awsAvailable==null) {
+		if (awsAvailable == null) {
 			awsAvailable = false;
 		}
 		Assumptions.assumeTrue(awsAvailable);
 	}
-	
+
+	@BeforeEach
+	public void deleteAllAwsEntities() {
+
+		logger.info("deleting Aws entities before test...");
+		getRebarGraph().getGraphDB().getNeo4jDriver().cypher("match (a) where labels(a)[0]=~'Aws.*' detach delete a")
+				.exec();
+		
+
+	}
+
 	protected AwsScanner getAwsScanner() {
 		return awsScanner;
 	}
-	
+
+	protected void assertSameAccountRegion(JsonNode a, JsonNode b) {
+		Assertions.assertThat(a.path("account").asText()).isEqualTo(b.path("account").asText());
+		Assertions.assertThat(a.path("region").asText()).isEqualTo(b.path("region").asText());
+		
+	}
 }

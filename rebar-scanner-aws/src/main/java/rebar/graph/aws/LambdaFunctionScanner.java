@@ -34,13 +34,13 @@ import com.google.common.base.Strings;
 
 import rebar.util.Json;
 
-public class LambdaFunctionScanner extends AbstractEntityScanner<FunctionConfiguration> {
+public class LambdaFunctionScanner extends AwsEntityScanner<FunctionConfiguration> {
 
 	
 
 	void project(FunctionConfiguration f) {
 		ObjectNode n = toJson(f);
-		getGraphDB().nodes(getEntityType()).id("arn", n.path("arn").asText()).properties(n).merge();
+		getGraphDB().nodes(getEntityTypeName()).id("arn", n.path("arn").asText()).properties(n).merge();
 	}
 
 	@Override
@@ -144,6 +144,11 @@ public class LambdaFunctionScanner extends AbstractEntityScanner<FunctionConfigu
 	public void scan(String id) {
 		scanByName(id);
 		
+	}
+	
+	@Override
+	public AwsEntityType getEntityType() {
+		return AwsEntityType.AwsLambdaFunction;
 	}
 
 }

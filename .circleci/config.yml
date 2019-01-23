@@ -39,7 +39,7 @@ jobs:
       # run tests!
       - run: 
           name: Build and Test
-          command: ./gradlew --no-daemon clean build
+          command: ./gradlew -P NEO4J_REQUIRED=true clean build
 
       - save_cache:
           paths:

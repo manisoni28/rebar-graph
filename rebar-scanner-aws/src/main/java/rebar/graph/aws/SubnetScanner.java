@@ -28,7 +28,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Strings;
 
-public class SubnetScanner extends AbstractEntityScanner<Subnet> {
+public class SubnetScanner extends AwsEntityScanner<Subnet> {
 
 	
 
@@ -36,10 +36,10 @@ public class SubnetScanner extends AbstractEntityScanner<Subnet> {
 
 		ObjectNode n = toJson(it);
 
-		getGraphDB().nodes(AwsEntities.SUBNET_TYPE).idKey("arn").properties(n).merge();
+		getGraphDB().nodes(getEntityTypeName()).idKey("arn").properties(n).merge();
 
-		getGraphDB().nodes(AwsEntities.VPC_TYPE).id(VpcScanner.VPC_ID_PROPERTY, it.getVpcId()).relationship("HAS")
-				.to("AwsSubnet").id("subnetId", it.getSubnetId()).merge();
+		getGraphDB().nodes(AwsEntityType.AwsVpc.name()).id(VpcScanner.VPC_ID_PROPERTY, it.getVpcId()).relationship("HAS")
+				.to(AwsEntityType.AwsSubnet.name()).id("subnetId", it.getSubnetId()).merge();
 
 		getGraphDB().nodes("AwsSubnet").id("arn",n.path("arn").asText()).relationship("RESIDES_IN").on("availabilityZone","name").to("AwsAvailabilityZone").merge();
 	}
@@ -81,7 +81,7 @@ public class SubnetScanner extends AbstractEntityScanner<Subnet> {
 
 		});
 
-		gc(getEntityType(), ts);
+		gc(getEntityTypeName(), ts);
 	}
 
 	@Override
@@ -97,5 +97,8 @@ public class SubnetScanner extends AbstractEntityScanner<Subnet> {
 		scanById(id);
 		
 	}
-	
+	@Override
+	public AwsEntityType getEntityType() {
+		return AwsEntityType.AwsSubnet;
+	}
 }

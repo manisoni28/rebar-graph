@@ -31,7 +31,7 @@ import rebar.graph.core.Scanner;
 import rebar.graph.neo4j.GraphDriver;
 import rebar.util.Json;
 
-public class ElbTargetGroupScanner extends AbstractEntityScanner<TargetGroup> {
+public class ElbTargetGroupScanner extends AwsEntityScanner<TargetGroup> {
 
 	public static class TargetGroupGraphOperation implements GraphOperation {
 
@@ -136,6 +136,11 @@ public class ElbTargetGroupScanner extends AbstractEntityScanner<TargetGroup> {
 	@Override
 	public void scan(String id) {
 		scanTargetGroupByName(id);	
+	}
+	
+	@Override
+	public AwsEntityType getEntityType() {
+		return AwsEntityType.AwsElbTargetGroup;
 	}
 
 }

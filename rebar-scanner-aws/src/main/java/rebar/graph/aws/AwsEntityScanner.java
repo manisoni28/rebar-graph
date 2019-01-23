@@ -42,19 +42,21 @@ import rebar.graph.core.RelationshipBuilder;
 import rebar.graph.core.RelationshipBuilder.FromNode;
 import rebar.util.Json;
 
-public abstract class AbstractEntityScanner<A extends Object> {
+public abstract class AwsEntityScanner<A extends Object> {
 
 	Logger logger = LoggerFactory.getLogger(getClass());
 	AwsScanner scanner;
 
 	public static final String TAG_PREFIX = "tag_";
 	protected static final Set<String> TAG_PREFIXES = ImmutableSet.of(TAG_PREFIX);
-
-	public AbstractEntityScanner() {
+	private AwsEntityType entityType;
+	
+	public AwsEntityScanner() {
 		
 	}
 	protected void init(AwsScanner scanner) {
 		this.scanner = scanner;
+		
 	}
 	/**
 	 * Convenience for initializing a NodeOperation with common boilerplate.
@@ -145,9 +147,9 @@ public abstract class AbstractEntityScanner<A extends Object> {
 
 	public final void scan() {
 		Stopwatch sw = Stopwatch.createStarted();
-		logger.info("begin scan: " + getEntityType());
+		logger.info("begin scan: " + getEntityTypeName());
 		doScan();
-		logger.info("end scan {} ({} ms)", getEntityType(), sw.elapsed(TimeUnit.MILLISECONDS));
+		logger.info("end scan {} ({} ms)", getEntityTypeName(), sw.elapsed(TimeUnit.MILLISECONDS));
 	}
 
 	protected abstract void doScan();
@@ -173,7 +175,7 @@ public abstract class AbstractEntityScanner<A extends Object> {
 
 		Preconditions.checkNotNull(awsObject);
 		ObjectNode n = Json.objectMapper().valueToTree(awsObject);
-		n.put(GraphDB.ENTITY_TYPE, getEntityType());
+		n.put(GraphDB.ENTITY_TYPE, getEntityTypeName());
 		n.put(GraphDB.ENTITY_GROUP, "aws");
 		n.put("region", getRegionName());
 		n.put("account", getAccount());
@@ -183,7 +185,7 @@ public abstract class AbstractEntityScanner<A extends Object> {
 	}
 
 	protected boolean isEntityType(JsonNode n) {
-		return isEntityType(n, getEntityType());
+		return isEntityType(n, getEntityTypeName());
 	}
 
 	protected boolean isEntityType(JsonNode n, String type) {
@@ -197,16 +199,10 @@ public abstract class AbstractEntityScanner<A extends Object> {
 		return String.format("arn:aws:%s:%s:%s:%s/%s", serviceType, getRegionName(), getAccount(), entity, id);
 	}
 
-	public String getEntityType() {
-		List<String> list = Splitter.on(".").splitToList(getClass().getName());
-
-		String n = list.get(list.size() - 1);
-
-		if (!n.startsWith("Aws")) {
-			n = "Aws" + n;
-		}
-		n = n.replace("Scanner", "");
-		return n;
+	public abstract AwsEntityType getEntityType();
+	
+	public String getEntityTypeName() {
+		return getEntityType().name();
 	}
 
 	protected void mergeSubnetRelationships(String... args) {
@@ -237,7 +233,7 @@ public abstract class AbstractEntityScanner<A extends Object> {
 		return new RelationshipBuilder()
 				.sourceIdAttribute("region",getRegionName()).sourceIdAttribute("account",getAccount())
 				.targetIdAttribute("region",getRegionName()).targetIdAttribute("account",getAccount())
-				.driver(getGraphDB().getNeo4jDriver()).from(getEntityType());
+				.driver(getGraphDB().getNeo4jDriver()).from(getEntityTypeName());
 	}
 
 	protected void mergeResidesInRegionRelationship(String ...args) {

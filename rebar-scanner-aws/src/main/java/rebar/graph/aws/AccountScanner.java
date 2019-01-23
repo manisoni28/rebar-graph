@@ -22,7 +22,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import rebar.graph.core.GraphDB;
 import rebar.util.Json;
 
-public class AccountScanner extends AbstractEntityScanner {
+public class AccountScanner extends AwsEntityScanner {
 
 
 
@@ -44,8 +44,14 @@ public class AccountScanner extends AbstractEntityScanner {
 
 	@Override
 	public void scan(String id) {
-		scan();
-		
+		scan();	
 	}
+
+	@Override
+	public AwsEntityType getEntityType() {
+		return AwsEntityType.AwsAccount;
+	}
+	
+	
 
 }

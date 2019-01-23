@@ -42,7 +42,7 @@ import rebar.graph.neo4j.GraphDriver;
 import rebar.util.Json;
 import rebar.util.RebarException;
 
-public class AsgScanner extends AbstractEntityScanner<AutoScalingGroup> {
+public class AsgScanner extends AwsEntityScanner<AutoScalingGroup> {
 
 	org.slf4j.Logger logger = LoggerFactory.getLogger(AsgScanner.class);
 
@@ -156,7 +156,7 @@ public class AsgScanner extends AbstractEntityScanner<AutoScalingGroup> {
 		});
 		n.remove("tags");
 		
-		getGraphDB().nodes(AwsEntities.ASG_TYPE).withTagPrefixes(TAG_PREFIXES).idKey("arn").properties(n).merge();
+		getGraphDB().nodes(getEntityType().name()).withTagPrefixes(TAG_PREFIXES).idKey("arn").properties(n).merge();
 
 		
 	
@@ -178,7 +178,7 @@ public class AsgScanner extends AbstractEntityScanner<AutoScalingGroup> {
 		DescribeAutoScalingGroupsResult result = client.describeAutoScalingGroups(r);
 
 		if (result.getAutoScalingGroups().isEmpty()) {
-			getGraphDB().nodes(AwsEntities.ASG_TYPE)
+			getGraphDB().nodes(getEntityTypeName())
 					.id("name", name, "region", getRegionName(), "account", getAccount()).delete();
 		} else {
 			result.getAutoScalingGroups().forEach(it -> {
@@ -205,7 +205,7 @@ public class AsgScanner extends AbstractEntityScanner<AutoScalingGroup> {
 			r.setNextToken(result.getNextToken());
 
 		} while (!Strings.isNullOrEmpty(r.getNextToken()));
-		gc(AwsEntities.ASG_TYPE, ts);
+		gc(getEntityTypeName(), ts);
 
 		// connect AwsAsg->AwsEc2Instance
 		getGraphDB().nodes("AwsAsg").id("region", getRegionName()).id("account", getAccount()).relationship("HAS")
@@ -218,7 +218,7 @@ public class AsgScanner extends AbstractEntityScanner<AutoScalingGroup> {
 	public void scan(JsonNode entity) {
 		assertEntityOwner(entity);
 
-		if (isEntityType(entity, AwsEntities.ASG_TYPE)) {
+		if (isEntityType(entity, getEntityTypeName())) {
 			scanByName(entity.path("name").asText());
 		} else {
 			throw new RebarException("cannot handle entityType: " + entity.path(GraphDB.ENTITY_TYPE).asText());
@@ -242,5 +242,10 @@ public class AsgScanner extends AbstractEntityScanner<AutoScalingGroup> {
 	@Override
 	public void scan(String id) {
 		scanByName(id);	
+	}
+	
+	@Override
+	public AwsEntityType getEntityType() {
+		return AwsEntityType.AwsAsg;
 	}
 }

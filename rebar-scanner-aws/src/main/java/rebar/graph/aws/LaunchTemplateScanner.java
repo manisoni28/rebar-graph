@@ -27,7 +27,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Strings;
 
-public class LaunchTemplateScanner extends AbstractEntityScanner<LaunchTemplate> {
+public class LaunchTemplateScanner extends AwsEntityScanner<LaunchTemplate> {
 
 	
 
@@ -59,7 +59,7 @@ public class LaunchTemplateScanner extends AbstractEntityScanner<LaunchTemplate>
 
 		ObjectNode n = toJson(t);
 		
-		getGraphDB().nodes(AwsEntities.LAUNCH_TEMPLATE_TYPE).idKey("arn").properties(n)
+		getGraphDB().nodes(getEntityTypeName()).idKey("arn").properties(n)
 				.merge();
 	}
 	
@@ -76,7 +76,7 @@ public class LaunchTemplateScanner extends AbstractEntityScanner<LaunchTemplate>
 			});
 		} catch (AmazonEC2Exception e) {
 			if (e.getErrorCode().contains("InvalidLaunchTemplate")) {
-				getGraphDB().nodes(AwsEntities.LAUNCH_TEMPLATE_TYPE)
+				getGraphDB().nodes(getEntityTypeName())
 						.id("name", name, "region", getRegionName(), "account", getAccount()).delete();
 			} else {
 				throw e;
@@ -100,12 +100,17 @@ public class LaunchTemplateScanner extends AbstractEntityScanner<LaunchTemplate>
 			request.setNextToken(result.getNextToken());
 		} while (!Strings.isNullOrEmpty(request.getNextToken()));
 
-		gc(AwsEntities.LAUNCH_TEMPLATE_TYPE, ts);
+		gc(getEntityTypeName(), ts);
 	}
 
 	@Override
 	public void scan(String id) {
 		scanLaunchTemplateByName(id);
 		
+	}
+	
+	@Override
+	public AwsEntityType getEntityType() {
+		return AwsEntityType.AwsLaunchTemplate;
 	}
 }

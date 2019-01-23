@@ -40,7 +40,7 @@ import com.machinezoo.noexception.Exceptions;
 import rebar.graph.core.GraphDB;
 import rebar.util.Json;
 
-public class AmiScanner extends AbstractEntityScanner<Image> {
+public class AmiScanner extends AwsEntityScanner<Image> {
 
 	
 
@@ -149,6 +149,11 @@ public class AmiScanner extends AbstractEntityScanner<Image> {
 	
 	public void scan(String id) {
 		scanImageId(id);
+	}
+
+	@Override
+	public AwsEntityType getEntityType() {
+		return AwsEntityType.AwsAmi;
 	}
 
 }

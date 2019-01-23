@@ -19,7 +19,7 @@ import com.machinezoo.noexception.Exceptions;
 
 import rebar.util.Json;
 
-public class RdsInstanceScanner extends AbstractEntityScanner<DBInstance> {
+public class RdsInstanceScanner extends AwsEntityScanner<DBInstance> {
 
 	
 
@@ -98,5 +98,8 @@ public class RdsInstanceScanner extends AbstractEntityScanner<DBInstance> {
 		}
 
 	}
-
+	@Override
+	public AwsEntityType getEntityType() {
+		return AwsEntityType.AwsRdsInstance;
+	}
 }

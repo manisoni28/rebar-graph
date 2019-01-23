@@ -45,7 +45,7 @@ public class AwsScannerTest extends AwsIntegrationTest {
 	}
 	
 	void assertScanner(String name, Class type) {
-		AbstractEntityScanner s = getAwsScanner().getEntityScannerForType(name);
+		AwsEntityScanner s = getAwsScanner().getEntityScannerForType(name);
 		Assertions.assertThat(s.getClass()).isSameAs(type);
 	}
 	@Test

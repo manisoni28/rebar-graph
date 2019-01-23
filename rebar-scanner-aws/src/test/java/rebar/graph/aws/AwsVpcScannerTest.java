@@ -29,7 +29,7 @@ public class AwsVpcScannerTest extends AwsIntegrationTest {
 
 		
 		
-		getAwsScanner().getEntityScannerForType("securityGroup").scan("sg-04e17cfd95e493f54");
+		getAwsScanner().getEntityScannerForType("Vpc");
 		
 		
 

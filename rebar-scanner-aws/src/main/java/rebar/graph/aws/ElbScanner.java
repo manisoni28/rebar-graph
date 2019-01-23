@@ -41,7 +41,7 @@ import rebar.graph.core.Scanner;
 import rebar.graph.neo4j.GraphDriver;
 import rebar.util.Json;
 
-public class ElbScanner extends AbstractEntityScanner<LoadBalancer> {
+public class ElbScanner extends AwsEntityScanner<LoadBalancer> {
 
 	public static final int TAG_BATCH_SIZE = 20;
 
@@ -227,5 +227,9 @@ public class ElbScanner extends AbstractEntityScanner<LoadBalancer> {
 	public void scan(String id) {
 		scanLoadBalancerByName(id);
 		
+	}
+	@Override
+	public AwsEntityType getEntityType() {
+		return AwsEntityType.AwsElb;
 	}
 }

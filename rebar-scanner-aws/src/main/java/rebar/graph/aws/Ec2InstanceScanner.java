@@ -38,7 +38,7 @@ import rebar.graph.neo4j.GraphDriver;
 import rebar.util.Json;
 import rebar.util.RebarException;
 
-public class Ec2InstanceScanner extends AbstractEntityScanner<Instance> {
+public class Ec2InstanceScanner extends AwsEntityScanner<Instance> {
 
 
 
@@ -199,4 +199,8 @@ public class Ec2InstanceScanner extends AbstractEntityScanner<Instance> {
 		
 	}
 
+	@Override
+	public AwsEntityType getEntityType() {
+		return AwsEntityType.AwsEc2Instance;
+	}
 }

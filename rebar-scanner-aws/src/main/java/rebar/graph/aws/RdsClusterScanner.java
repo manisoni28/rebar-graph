@@ -16,7 +16,7 @@ import com.machinezoo.noexception.Exceptions;
 
 import rebar.util.Json;
 
-public class RdsClusterScanner extends AbstractEntityScanner<DBCluster> {
+public class RdsClusterScanner extends AwsEntityScanner<DBCluster> {
 
 	
 
@@ -110,5 +110,11 @@ public class RdsClusterScanner extends AbstractEntityScanner<DBCluster> {
 		}
 
 	}
+	
+	@Override
+	public AwsEntityType getEntityType() {
+		return AwsEntityType.AwsRdsCluster;
+	}
+	
 
 }

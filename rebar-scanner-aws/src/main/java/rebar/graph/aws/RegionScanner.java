@@ -25,7 +25,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import rebar.graph.core.GraphDB;
 import rebar.util.Json;
 
-public class RegionScanner extends AbstractEntityScanner<Regions> {
+public class RegionScanner extends AwsEntityScanner<Regions> {
 
 	
 
@@ -38,7 +38,7 @@ public class RegionScanner extends AbstractEntityScanner<Regions> {
 
 		ec2.describeRegions().getRegions().forEach(r -> {
 
-			getGraphDB().nodes("AwsRegion").properties(Json.objectNode().put("region", r.getRegionName()).put(GraphDB.ENTITY_GROUP, "aws").put(GraphDB.ENTITY_TYPE, getEntityType())).idKey("region").merge();
+			getGraphDB().nodes("AwsRegion").properties(Json.objectNode().put("region", r.getRegionName()).put(GraphDB.ENTITY_GROUP, "aws").put(GraphDB.ENTITY_TYPE, getEntityTypeName())).idKey("region").merge();
 
 		});
 
@@ -57,6 +57,11 @@ public class RegionScanner extends AbstractEntityScanner<Regions> {
 	public void scan(String id) {
 		// do nothing
 		
+	}
+	
+	@Override
+	public AwsEntityType getEntityType() {
+		return AwsEntityType.AwsRegion;
 	}
 
 }

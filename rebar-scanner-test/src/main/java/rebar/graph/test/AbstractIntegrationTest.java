@@ -32,17 +32,32 @@ public abstract class AbstractIntegrationTest {
 
 	private static RebarGraph rebarGraph;
 
+	static Boolean integrationTestEnabled=null;
+	static String reason=null;
 	public AbstractIntegrationTest() {
 
 	}
 
+	/**
+	 * By setting NEO4J_REQUIRED=true, we disallow the skipping of tests when neo4j is not available.
+	 * 
+	 * @return
+	 */
+	public boolean isNeo4jRequired() {
+		
+		return Boolean.parseBoolean(System.getenv("NEO4J_REQUIRED"));
+	}
 	@BeforeEach
-	public void setup() {
+	protected final void setupEnv() {
 
 		if (this.rebarGraph!=null) {
 			return;
 		}
-
+		if (integrationTestEnabled!=null && integrationTestEnabled==false) {
+			logger.info("integration test disabled because: "+reason);
+			Assumptions.assumeTrue(false);
+			return;
+		}
 		EnvConfig checkConfig = new EnvConfig();
 		
 	
@@ -64,11 +79,14 @@ public abstract class AbstractIntegrationTest {
 			rebarGraph = graph;
 		
 			cleanupTestData();
-		} catch (Exception e) {
-
-	
+			integrationTestEnabled=true;
+		} catch (RuntimeException e) {
+			if (isNeo4jRequired()) {
+				throw e;
+			}
+			integrationTestEnabled=false;
 			logger.warn("could not connect to neo4j",e);
-
+			reason=e.getMessage();
 			Assumptions.assumeTrue(false);
 		}
 

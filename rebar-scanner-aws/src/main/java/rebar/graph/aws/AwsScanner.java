@@ -62,7 +62,7 @@ public final class AwsScanner extends Scanner {
 	Cache<String, AmazonWebServiceClient> clientCache = CacheBuilder.newBuilder().expireAfterAccess(1, TimeUnit.MINUTES)
 			.build();
 
-	static Map<String, Class<? extends AbstractEntityScanner>> typeMap = Maps.newHashMap();
+	static Map<String, Class<? extends AwsEntityScanner>> typeMap = Maps.newHashMap();
 
 	static {
 		findEntityScanners();
@@ -107,7 +107,7 @@ public final class AwsScanner extends Scanner {
 		}
 	}
 
-	public <T extends AbstractEntityScanner> T getEntityScanner(Class<T> clazz) {
+	public <T extends AwsEntityScanner> T getEntityScanner(Class<T> clazz) {
 		try {
 			T t = clazz.newInstance();
 			t.init(this);
@@ -160,7 +160,7 @@ public final class AwsScanner extends Scanner {
 		}
 	}
 
-	<T extends AbstractEntityScanner> T getEntityScannerForType(final String type) {
+	<T extends AwsEntityScanner> T getEntityScannerForType(final String type) {
 
 	
 		String t = Strings.nullToEmpty(type).toLowerCase().trim();
@@ -169,7 +169,7 @@ public final class AwsScanner extends Scanner {
 		}
 	
 		
-		Class<? extends AbstractEntityScanner> es = typeMap.get(t);
+		Class<? extends AwsEntityScanner> es = typeMap.get(t);
 		if (es==null) {
 			throw new IllegalArgumentException("unsupported entity type: "+type);
 		}
@@ -184,11 +184,11 @@ public final class AwsScanner extends Scanner {
 		typeMap = Maps.newHashMap();
 		result.getAllClasses().forEach(it -> {
 			try {
-				if (it.extendsSuperclass(AbstractEntityScanner.class.getName())) {
+				if (it.extendsSuperclass(AwsEntityScanner.class.getName())) {
 					String n = it.getName().replace(AwsScanner.class.getPackage().getName() + ".", "")
 							.replace("Scanner", "").toLowerCase();
 
-					Class<? extends AbstractEntityScanner> es = (Class<? extends AbstractEntityScanner>) Class
+					Class<? extends AwsEntityScanner> es = (Class<? extends AwsEntityScanner>) Class
 							.forName(it.getName());
 					typeMap.put(n, es);
 				}
@@ -214,7 +214,7 @@ public final class AwsScanner extends Scanner {
 			return;
 		}
 		try {
-			AbstractEntityScanner scanner = getEntityScannerForType(type);
+			AwsEntityScanner scanner = getEntityScannerForType(type);
 			if (Strings.isNullOrEmpty(id)) {
 				scanner.scan();
 			} else {

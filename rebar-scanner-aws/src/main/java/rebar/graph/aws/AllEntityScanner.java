@@ -29,8 +29,8 @@ public class AllEntityScanner extends SerialScanner {
 
 	
 
-	public static List<Class<? extends AbstractEntityScanner>> getEntityScanners() {
-		List<Class<? extends AbstractEntityScanner>> classList = Lists.newArrayList();
+	public static List<Class<? extends AwsEntityScanner>> getEntityScanners() {
+		List<Class<? extends AwsEntityScanner>> classList = Lists.newArrayList();
 		classList.add(AccountScanner.class);
 		classList.add(RegionScanner.class);
 		classList.add(VpcScanner.class);

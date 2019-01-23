@@ -26,7 +26,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Strings;
 
-public class LaunchConfigScanner extends AbstractEntityScanner<LaunchConfiguration> {
+public class LaunchConfigScanner extends AwsEntityScanner<LaunchConfiguration> {
 
 	
 
@@ -42,7 +42,7 @@ public class LaunchConfigScanner extends AbstractEntityScanner<LaunchConfigurati
 
 	@Override
 	public void scan(JsonNode entity) {
-		if (isEntityType(entity, AwsEntities.LAUNCH_CONFIG_TYPE)) {
+		if (isEntityType(entity, AwsEntityType.AwsLaunchConfig.name())) {
 			scanLaunchConfigByName(entity.path("name").asText());
 		}
 
@@ -62,7 +62,7 @@ public class LaunchConfigScanner extends AbstractEntityScanner<LaunchConfigurati
 			request.setNextToken(result.getNextToken());
 		} while (!Strings.isNullOrEmpty(request.getNextToken()));
 
-		gc(AwsEntities.LAUNCH_CONFIG_TYPE, ts);
+		gc(getEntityTypeName(), ts);
 	}
 	
 	public void scanLaunchConfigByName(String name) {
@@ -72,7 +72,7 @@ public class LaunchConfigScanner extends AbstractEntityScanner<LaunchConfigurati
 		request.withLaunchConfigurationNames(name);
 		DescribeLaunchConfigurationsResult result = client.describeLaunchConfigurations(request);
 		if (result.getLaunchConfigurations().isEmpty()) {
-			getGraphDB().nodes(AwsEntities.LAUNCH_CONFIG_TYPE)
+			getGraphDB().nodes(getEntityTypeName())
 			.id("name", name, "region", getRegionName(), "account", getAccount()).delete();
 		} else {
 			result.getLaunchConfigurations().forEach(lc -> {
@@ -85,7 +85,7 @@ public class LaunchConfigScanner extends AbstractEntityScanner<LaunchConfigurati
 	public void project(LaunchConfiguration lc) {
 		ObjectNode n = toJson(lc);
 
-		getGraphDB().nodes(AwsEntities.LAUNCH_CONFIG_TYPE).idKey("arn").properties(n).merge();
+		getGraphDB().nodes(getEntityTypeName()).idKey("arn").properties(n).merge();
 
 	}
 
@@ -93,6 +93,11 @@ public class LaunchConfigScanner extends AbstractEntityScanner<LaunchConfigurati
 	public void scan(String id) {
 		scanLaunchConfigByName(id);
 		
+	}
+	
+	@Override
+	public AwsEntityType getEntityType() {
+		return AwsEntityType.AwsLaunchConfig;
 	}
 
 }

@@ -11,7 +11,7 @@ import com.google.common.collect.ImmutableList;
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ScanResult;
 
-public class AwsNodeTypeTest {
+public class AwsEntityTypeTest {
 
 	@Test
 	public void testIt() {
@@ -22,16 +22,19 @@ public class AwsNodeTypeTest {
 		List<Class> exclusions = ImmutableList.of(ElbListenerScanner.class, SerialScanner.class,
 				AllEntityScanner.class);
 
-		result.getSubclasses(AbstractEntityScanner.class.getName()).stream().filter(p -> !p.isAbstract())
+		result.getSubclasses(AwsEntityScanner.class.getName()).stream().filter(p -> !p.isAbstract())
 
 				.forEach(it -> {
 					try {
 
 						Class clazz = Class.forName(it.getName());
 						if (!exclusions.contains(clazz)) {
-							System.out.println(clazz);
-		//					Assertions.assertThat(AbstractEntityScanner.class.cast(clazz.getDeclaredConstructor(AwsScanner.class).newInstance(null)).getEntityType())
-		//							.isNotNull();
+							AwsEntityScanner x = (AwsEntityScanner) clazz.newInstance();
+
+							Assertions.assertThat(x.getEntityTypeName()).isNotEmpty();
+							AwsEntityType et = AwsEntityType.valueOf(x.getEntityTypeName());
+
+							Assertions.assertThat(x.getEntityTypeName()).isEqualTo(et.name());
 
 						}
 					} catch (Exception e) {
@@ -39,6 +42,18 @@ public class AwsNodeTypeTest {
 					}
 				});
 
+	}
+
+	@Test
+	public void testValues() {
+		for (AwsEntityType t : AwsEntityType.values()) {
+			if (t != AwsEntityType.UNKNOWN) {
+
+				Assertions.assertThat(t.name()).startsWith("Aws").isEqualTo(t.toString());
+				
+				Assertions.assertThat(t).isSameAs(AwsEntityType.valueOf(t.name()));
+			}
+		}
 	}
 
 }

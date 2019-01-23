@@ -15,15 +15,35 @@
  */
 package rebar.graph.aws;
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import rebar.util.Json;
 
 public class AsgScannerTest extends AwsIntegrationTest {
 
 
 	@Test
 	public void testIT() {
-	//	getAwsScanner().scan();
+		getAwsScanner().getEntityScanner(AccountScanner.class);
+		getAwsScanner().getEntityScanner(VpcScanner.class);
+		getAwsScanner().getEntityScanner(SubnetScanner.class);
+		getAwsScanner().getEntityScanner(Ec2InstanceScanner.class).scan();
 		getAwsScanner().getEntityScanner(AsgScanner.class).scan();
+		
+		
+		// Verify that there are not any rogue relationships
+		getRebarGraph().getGraphDB().getNeo4jDriver().cypher("match (a:AwsAsg)-[r]-(e:AwsEc2Instance) return a,r,e").forEach(it->{
+		
+			String instanceId = it.path("e").path("instanceId").asText();	
+			Assertions.assertThat(it.path("a").path("instances").iterator()).anyMatch(p->p.asText().equals(instanceId));	
+			assertSameAccountRegion(it.path("a"),it.path("e"));
+		
+		});
+		
+		
 	}
+	
+	
 
 }

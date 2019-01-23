@@ -47,6 +47,7 @@ subprojects {
         useJUnitPlatform()
         testLogging.showStandardStreams = true
         environment 'GRAPH_URL', System.getenv('GRAPH_URL') ?: "bolt://localhost:7687"
+        environment 'NEO4J_REQUIRED', System.getenv('NEO4J_REQUIRED') ?: "false"
         reports {
             junitXml.enabled = true
             html.enabled = true

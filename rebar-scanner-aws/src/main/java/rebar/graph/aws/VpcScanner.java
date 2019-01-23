@@ -29,7 +29,7 @@ import com.google.common.base.Strings;
 
 import rebar.util.RebarException;
 
-public class VpcScanner extends AbstractEntityScanner<Vpc> {
+public class VpcScanner extends AwsEntityScanner<Vpc> {
 
 	static final String VPC_ID_PROPERTY = "vpcId";
 
@@ -48,7 +48,7 @@ public class VpcScanner extends AbstractEntityScanner<Vpc> {
 		} catch (AmazonEC2Exception e) {
 			if (Strings.nullToEmpty(e.getErrorCode()).equals("InvalidVpcID.NotFound")) {
 
-				getGraphDB().nodes(getEntityType()).id( "account", getAccount(), "vpcId", vpcId).delete();
+				getGraphDB().nodes(getEntityTypeName()).id( "account", getAccount(), "vpcId", vpcId).delete();
 			} else {
 				throw e;
 			}
@@ -60,12 +60,12 @@ public class VpcScanner extends AbstractEntityScanner<Vpc> {
 
 		ObjectNode n = toJson(it);
 
-		getGraphDB().nodes(getEntityType()).properties( n).idKey("arn").merge();
+		getGraphDB().nodes(getEntityTypeName()).properties( n).idKey("arn").merge();
 
-		getGraphDB().nodes(AwsEntities.ACCOUNT_TYPE).id("account", getAccount()).relationship("HAS").on("account","account")
-				.to(AwsEntities.VPC_TYPE).id("arn", n.path("arn").asText()).merge();
+		getGraphDB().nodes(AwsEntityType.AwsAccount.name()).id("account", getAccount()).relationship("HAS").on("account","account")
+				.to(AwsEntityType.AwsVpc.name()).id("arn", n.path("arn").asText()).merge();
 
-		getGraphDB().nodes(AwsEntities.VPC_TYPE).id("arn",n.path("arn").asText()).relationship("RESIDES_IN").on("region", "region").to(AwsEntities.REGION_TYPE).merge();
+		getGraphDB().nodes(AwsEntityType.AwsVpc.name()).id("arn",n.path("arn").asText()).relationship("RESIDES_IN").on("region", "region").to(AwsEntityType.AwsRegion.name()).merge();
 	}
 
 	protected Optional<String> toArn(Vpc vpc) {
@@ -90,7 +90,7 @@ public class VpcScanner extends AbstractEntityScanner<Vpc> {
 		scanVPCs(ec2);
 		
 	
-		gc(getEntityType(),ts);
+		gc(getEntityTypeName(),ts);
 	}
 
 	
@@ -115,6 +115,11 @@ public class VpcScanner extends AbstractEntityScanner<Vpc> {
 	@Override
 	public void scan(String id) {
 		scanVPC(id);
+	}
+	
+	@Override
+	public AwsEntityType getEntityType() {
+		return AwsEntityType.AwsVpc;
 	}
 
 }

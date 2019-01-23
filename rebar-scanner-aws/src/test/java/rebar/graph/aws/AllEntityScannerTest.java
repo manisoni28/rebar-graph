@@ -46,7 +46,7 @@ public class AllEntityScannerTest extends AwsIntegrationTest {
 		// Maybe we move this to a test. Just want to prevent scanners from being
 		// forgotten.
 
-		result.getSubclasses(AbstractEntityScanner.class.getName()).stream().filter(p -> !p.isAbstract()) 
+		result.getSubclasses(AwsEntityScanner.class.getName()).stream().filter(p -> !p.isAbstract()) 
 
 				.forEach(it -> {
 					try {
@@ -55,7 +55,7 @@ public class AllEntityScannerTest extends AwsIntegrationTest {
 						if (!exclusions.contains(clazz)) {
 
 							Assertions.assertThat(getAwsScanner().getEntityScanner(AllEntityScanner.class).scanners)
-									.contains((Class<? extends AbstractEntityScanner>) clazz);
+									.contains((Class<? extends AwsEntityScanner>) clazz);
 						}
 					} catch (ClassNotFoundException e) {
 						throw new RuntimeException(e);

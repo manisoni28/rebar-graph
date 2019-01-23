@@ -24,22 +24,22 @@ import java.util.Optional;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.collect.Lists;
 
-public class SerialScanner extends AbstractEntityScanner {
+public class SerialScanner extends AwsEntityScanner {
 
-	List<Class<? extends AbstractEntityScanner>> scanners = Lists.newArrayList();
+	List<Class<? extends AwsEntityScanner>> scanners = Lists.newArrayList();
 
 	
 
-	public SerialScanner removeScanner(Class<? extends AbstractEntityScanner> scanner) {
+	public SerialScanner removeScanner(Class<? extends AwsEntityScanner> scanner) {
 		scanners.remove(scanner);
 		return this;
 	}
 	
-	public SerialScanner addScanners(List<Class<? extends AbstractEntityScanner>> scanners) {
+	public SerialScanner addScanners(List<Class<? extends AwsEntityScanner>> scanners) {
 		this.scanners.addAll(scanners);
 		return this;
 	}
-	public SerialScanner addScanners(Class<? extends AbstractEntityScanner>... scanners) {
+	public SerialScanner addScanners(Class<? extends AwsEntityScanner>... scanners) {
 		if (scanners != null) {
 			this.scanners.addAll(Arrays.asList(scanners));
 		}
@@ -55,7 +55,7 @@ public class SerialScanner extends AbstractEntityScanner {
 		scanners.forEach(scanner -> {
 			try {
 				Constructor ctor = scanner.getConstructor();
-				AbstractEntityScanner s = (AbstractEntityScanner) ctor.newInstance();
+				AwsEntityScanner s = (AwsEntityScanner) ctor.newInstance();
 				s.init(getAwsScanner());
 				s.scan();
 			}
@@ -77,5 +77,8 @@ public class SerialScanner extends AbstractEntityScanner {
 		// do nothing
 		
 	}
-
+	@Override
+	public AwsEntityType getEntityType() {
+		return AwsEntityType.UNKNOWN;
+	}
 }

@@ -18,7 +18,7 @@ import com.google.common.base.Strings;
 
 import rebar.util.Json;
 
-public class EksClusterScanner extends AbstractEntityScanner<Cluster> {
+public class EksClusterScanner extends AwsEntityScanner<Cluster> {
 
 	
 
@@ -90,6 +90,11 @@ public class EksClusterScanner extends AbstractEntityScanner<Cluster> {
 			awsGraphNodes("AwsEksCluster").id("name", clusterName).delete();
 		}
 
+	}
+
+	@Override
+	public AwsEntityType getEntityType() {
+		return AwsEntityType.AwsEksCluster;
 	}
 
 }

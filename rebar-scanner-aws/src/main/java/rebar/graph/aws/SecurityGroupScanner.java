@@ -31,7 +31,7 @@ import com.google.common.collect.ImmutableSet;
 
 import rebar.util.Json;
 
-public class SecurityGroupScanner extends AbstractEntityScanner<SecurityGroup> {
+public class SecurityGroupScanner extends AwsEntityScanner<SecurityGroup> {
 
 	
 
@@ -64,7 +64,7 @@ public class SecurityGroupScanner extends AbstractEntityScanner<SecurityGroup> {
 			});
 		} catch (AmazonEC2Exception e) {
 			if (ImmutableSet.of("InvalidGroup.NotFound").contains(e.getErrorCode())) {
-				getGraphDB().nodes(AwsEntities.SECURITY_GROUP_TYPE).id("region", getRegion().getName(), "account",
+				getGraphDB().nodes(AwsEntityType.AwsSecurityGroup.name()).id("region", getRegion().getName(), "account",
 						getAccount(), "groupId", id).delete();
 
 			} else {
@@ -151,6 +151,11 @@ public class SecurityGroupScanner extends AbstractEntityScanner<SecurityGroup> {
 	public void scan(String id) {
 		scanById(id);
 		
+	}
+	
+	@Override
+	public AwsEntityType getEntityType() {
+		return AwsEntityType.AwsSecurityGroup;
 	}
 
 }

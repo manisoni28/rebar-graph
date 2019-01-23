@@ -25,7 +25,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import rebar.graph.core.GraphDB;
 import rebar.util.Json;
 
-public class AvailabilityZoneScanner extends AbstractEntityScanner<AvailabilityZone> {
+public class AvailabilityZoneScanner extends AwsEntityScanner<AvailabilityZone> {
 
 	
 
@@ -61,6 +61,11 @@ public class AvailabilityZoneScanner extends AbstractEntityScanner<AvailabilityZ
 	public void scan(String id) {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	@Override
+	public AwsEntityType getEntityType() {
+		return AwsEntityType.AwsAvailabilityZone;
 	}
 
 }
