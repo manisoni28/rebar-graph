@@ -39,7 +39,8 @@ public abstract class AbstractIntegrationTest {
 	}
 
 	/**
-	 * By setting NEO4J_REQUIRED=true, we disallow the skipping of tests when neo4j is not available.
+	 * By setting NEO4J_REQUIRED=true, we prevent tests from being skipped.  We set this to true in the CI environment
+	 * so that all builds run against NEO4J.
 	 * 
 	 * @return
 	 */
@@ -102,8 +103,12 @@ public abstract class AbstractIntegrationTest {
 			driver.newTemplate().cypher("match (a:" + it + ") detach delete a").exec();
 		});
 	}
-	public RebarGraph getRebarGraph() {
+	public final RebarGraph getRebarGraph() {
 		return rebarGraph;
+	}
+	
+	public final GraphDriver getNeo4jDriver() {
+		return rebarGraph.getGraphDB().getNeo4jDriver();
 	}
 
 }

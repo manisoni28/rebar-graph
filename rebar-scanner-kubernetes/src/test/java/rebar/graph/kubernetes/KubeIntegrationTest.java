@@ -77,9 +77,6 @@ public abstract class KubeIntegrationTest extends AbstractIntegrationTest {
 		return GraphDB.class.cast(getRebarGraph().getGraphDB());
 	}
 
-	public GraphDriver getNeo4jDriver() {
-		return GraphDB.class.cast(getRebarGraph().getGraphDB()).getNeo4jDriver();
-	}
 
 	@BeforeEach
 	public void assumeNeo4j() {
