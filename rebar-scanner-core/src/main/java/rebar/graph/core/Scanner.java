@@ -33,7 +33,8 @@ public abstract class Scanner {
 
 	static ObjectMapper mapper = new ObjectMapper();
 	ScannerBuilder<? extends Scanner> scannerBuilder;
-
+	Boolean failOnError = null;
+	
 	public Scanner(ScannerBuilder<? extends Scanner> builder) {
 		this.scannerBuilder = builder;
 	}
@@ -86,8 +87,8 @@ public abstract class Scanner {
 		}
 	}
 
-	protected boolean isFailOnError() {
-		return false;
+	public boolean isFailOnError() {
+		return failOnError!=null && failOnError==true;
 	}
 
 
