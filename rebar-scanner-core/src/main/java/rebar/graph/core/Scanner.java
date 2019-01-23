@@ -72,7 +72,7 @@ public abstract class Scanner {
 		logger.info("end scan for {} ({}ms)",this,sw.elapsed(TimeUnit.MILLISECONDS));
 	}
 	
-	public abstract void doScan();
+	protected abstract void doScan();
 
 	public void tryExecute(Runnable r) {
 		try {
@@ -86,7 +86,7 @@ public abstract class Scanner {
 		}
 	}
 
-	public boolean isFailOnError() {
+	protected boolean isFailOnError() {
 		return false;
 	}
 
@@ -101,6 +101,9 @@ public abstract class Scanner {
 	
 	public String getScannerType() {
 		return getClass().getPackage().getName().replace("rebar.graph.", "");
+	}
+	public final GraphDriver getGraphDriver() {
+		return getNeo4jDriver();
 	}
 	public final GraphDriver getNeo4jDriver() {
 		return getGraphDB().getNeo4jDriver();

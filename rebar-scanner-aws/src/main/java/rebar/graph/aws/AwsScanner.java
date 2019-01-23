@@ -144,7 +144,7 @@ public final class AwsScanner extends Scanner {
 	}
 
 	@Override
-	public void doScan() {
+	protected void doScan() {
 		getEntityScanner(AllEntityScanner.class).scan();
 	}
 

@@ -147,9 +147,10 @@ public abstract class AwsEntityScanner<A extends Object> {
 
 	public final void scan() {
 		Stopwatch sw = Stopwatch.createStarted();
-		logger.info("begin scan: " + getEntityTypeName());
+		String type = getEntityType()!=AwsEntityType.UNKNOWN ? getEntityTypeName() : getClass().getSimpleName();
+		logger.info("begin scan: {}",type);
 		doScan();
-		logger.info("end scan {} ({} ms)", getEntityTypeName(), sw.elapsed(TimeUnit.MILLISECONDS));
+		logger.info("end scan {} ({} ms)", type, sw.elapsed(TimeUnit.MILLISECONDS));
 	}
 
 	protected abstract void doScan();
