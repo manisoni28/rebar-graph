@@ -1,0 +1,19 @@
+
+plugins {
+  id 'com.github.johnrengelman.shadow' version '4.0.3'
+}
+apply plugin: 'application'
+
+mainClassName = "rebar.graph.core.Main"
+
+
+dependencies {
+
+    compile project(':rebar-scanner-core')
+
+    compile 'org.kohsuke:github-api:1.95'
+    compile "ch.qos.logback:logback-classic:${LOGBACK_VERSION}"
+    testCompile project(':rebar-scanner-test')
+    
+
+}

@@ -26,6 +26,7 @@ import com.google.common.base.Stopwatch;
 
 import rebar.graph.neo4j.GraphDriver;
 import rebar.graph.neo4j.GraphException;
+import rebar.util.RebarException;
 
 public abstract class Scanner {
 
@@ -91,7 +92,19 @@ public abstract class Scanner {
 		return failOnError!=null && failOnError==true;
 	}
 
-
+	public final void maybeThrow(Exception e) {
+		if (isFailOnError()) {
+			if (e instanceof RuntimeException) {
+				throw (RuntimeException) e;
+			}
+			else {
+				throw new RebarException(e);
+			}
+		}
+		else {
+			logger.warn("unexpected exception",e);
+		}
+	}
 	public RebarGraph getRebarGraph() {
 		return getScannerBuilder().getRebarGraph();
 	}

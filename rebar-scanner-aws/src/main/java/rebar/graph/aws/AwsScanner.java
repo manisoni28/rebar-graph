@@ -148,17 +148,6 @@ public final class AwsScanner extends Scanner {
 		getEntityScanner(AllEntityScanner.class).scan();
 	}
 
-	public void maybeThrow(Exception e) {
-		if (isFailOnError()) {
-			if (e instanceof RuntimeException) {
-				throw RuntimeException.class.cast(e);
-			} else {
-				throw new RebarException("problem", e);
-			}
-		} else {
-			logger.warn("problem", e);
-		}
-	}
 
 	<T extends AwsEntityScanner> T getEntityScannerForType(final String type) {
 
