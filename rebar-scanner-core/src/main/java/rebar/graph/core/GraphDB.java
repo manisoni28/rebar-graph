@@ -15,12 +15,15 @@
  */
 package rebar.graph.core;
 
+import java.nio.charset.Charset;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -32,6 +35,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeType;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.base.Charsets;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
@@ -40,6 +44,9 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.MapDifference;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.google.common.hash.HashFunction;
+import com.google.common.hash.Hasher;
+import com.google.common.hash.Hashing;
 
 import rebar.graph.core.RelationshipBuilder.FromNode;
 import rebar.graph.neo4j.GraphDriver;
@@ -48,8 +55,6 @@ import rebar.graph.neo4j.GraphSchema;
 
 public class GraphDB {
 
-	
-	
 	GraphDriver neo4j;
 	Logger logger = org.slf4j.LoggerFactory.getLogger(GraphDB.class);
 	static ObjectMapper mapper = new ObjectMapper();
@@ -66,8 +71,6 @@ public class GraphDB {
 				"match (a:" + label + " " + patternClause + ") where a.graphUpdateTs<{__graphUpdateTs} return a")
 				.params(map).stream();
 	}
-
-	
 
 	static String toRemoveClause(Collection<String> ra) {
 		StringBuffer sb = new StringBuffer();
@@ -86,13 +89,10 @@ public class GraphDB {
 		return sb.toString();
 	}
 
+	public static final String ENTITY_TYPE = "graphEntityType";
+	public static final String ENTITY_GROUP = "graphEntityGroup";
+	public static final String UPDATE_TS = "graphUpdateTs";
 
-
-
-	public static final String ENTITY_TYPE="graphEntityType";
-	public static final String ENTITY_GROUP="graphEntityGroup";
-	public static final String UPDATE_TS="graphUpdateTs";
-	
 	GraphDB(GraphDriver driver) {
 		this.neo4j = driver;
 	}
@@ -100,6 +100,7 @@ public class GraphDB {
 	public GraphDriver getNeo4jDriver() {
 		return this.neo4j;
 	}
+
 	/**
 	 * Same as graphDB.nodes().label("mylabel")
 	 * 
@@ -108,8 +109,9 @@ public class GraphDB {
 	 */
 	public <T extends NodeOperation> T nodes(String label) {
 		return new NodeOperation().label(label);
-	
+
 	}
+
 	static String directedMatchClause(String abbrev, String label, Map<String, Object> attrs) {
 		StringBuffer sb = new StringBuffer();
 		sb.append("(");
@@ -132,7 +134,6 @@ public class GraphDB {
 		sb.append("}) ");
 		return sb.toString();
 	}
-	
 
 	public class Neo4jTagUpdate extends TagOperation {
 
@@ -171,13 +172,12 @@ public class GraphDB {
 					nodes(label).properties(update).idKey(identifyingAttributes.keySet().toArray(new String[0]))
 							.merge();
 				}
-			
 
 			});
 		}
 
 	}
-	
+
 	public class NodeOperation {
 		protected String label;
 		protected Map<String, Object> idAttributes = Maps.newHashMap();
@@ -189,13 +189,10 @@ public class GraphDB {
 		protected Set<String> removeAttributes = Sets.newHashSet();
 
 		protected Collection<String> shadowAttributePrefixes = ImmutableSet.of();
-		
-		
+
 		protected String attributeLessThanName;
 		protected long attributeLessThanValue = 0;
 
-	
-		
 		@SuppressWarnings("unchecked")
 		public <T extends NodeOperation> T removeProperties(String... properties) {
 			if (properties != null) {
@@ -280,7 +277,6 @@ public class GraphDB {
 			});
 		}
 
-	
 		public Stream<JsonNode> delete() {
 			String whereClause = "";
 			if (!Strings.isNullOrEmpty(attributeLessThanName)) {
@@ -296,7 +292,6 @@ public class GraphDB {
 					+ whereClause + " detach delete a").params(idAttributes).stream();
 		}
 
-	
 		public Stream<JsonNode> match() {
 			if (Strings.isNullOrEmpty(label)) {
 				throw new GraphException("label not set");
@@ -320,10 +315,10 @@ public class GraphDB {
 			if (idAttributes != null) {
 				combined.putAll(idAttributes);
 			}
+			injectDigest(combined);
 			return neo4j.newTemplate().cypher(cypher).params(combined).stream();
 		}
 
-	
 		public Stream<JsonNode> merge() {
 			populateMatchValues();
 			if (Strings.isNullOrEmpty(label)) {
@@ -350,11 +345,10 @@ public class GraphDB {
 					+ toRemoveClause(removeAttributes) + " set a+={__params}, a.graphUpdateTs=timestamp() "
 					+ whereClause + " return a";
 
+			injectDigest(combined);
 			List<JsonNode> results = neo4j.newTemplate().cypher(cypher).params(combined).stream()
 					.collect(Collectors.toList());
 
-	
-			
 			// look through the results and remove specific attributes that are gone.
 			Set<String> attributesToBeRemoved = Sets.newHashSet();
 			shadowAttributePrefixes.forEach(prefix -> {
@@ -367,34 +361,34 @@ public class GraphDB {
 				});
 			});
 
-			if (!attributesToBeRemoved.isEmpty())  {
-				logger.info("removing shadow attributes: {}",attributesToBeRemoved);
+			if (!attributesToBeRemoved.isEmpty()) {
+				logger.info("removing shadow attributes: {}", attributesToBeRemoved);
 				cypher = "merge (a:" + label + " " + toPatternClause(idAttributes) + " ) "
 						+ toRemoveClause(attributesToBeRemoved);
-				
+
 				neo4j.newTemplate().cypher(cypher).params(combined).exec();
 			}
-			
+
 			return results.stream();
 		}
 
 		@SuppressWarnings("unchecked")
 		public RelationshipBuilder.Relationship relationship(String name) {
 			FromNode n = new RelationshipBuilder().driver(getNeo4jDriver()).from(this.label);
-			
-			for (String it: idAttributeNames) {
+
+			for (String it : idAttributeNames) {
 				n = n.id(it, dataAttributes.get(it));
 			}
-			for (Entry<String,Object> e: idAttributes.entrySet()) {
-				n = n.id(e.getKey(),e.getValue());
+			for (Entry<String, Object> e : idAttributes.entrySet()) {
+				n = n.id(e.getKey(), e.getValue());
 			}
 			return n.relationship(name);
-			
+
 		}
 
 		/**
-		 * This is a rebar-graph specific condition for graphUpdateTs. No real interest in
-		 * abstracting ad-hoc query predicates. We are not trying to create a general
+		 * This is a rebar-graph specific condition for graphUpdateTs. No real interest
+		 * in abstracting ad-hoc query predicates. We are not trying to create a general
 		 * purpose inteface for working with the underlying graph...just make it easy to
 		 * build graphs.
 		 * 
@@ -409,17 +403,15 @@ public class GraphDB {
 			return (T) this;
 		}
 
-		public  <T extends NodeOperation> T withTagPrefixes(Set<String> prefixes) {
-			if (prefixes==null) {
+		public <T extends NodeOperation> T withTagPrefixes(Set<String> prefixes) {
+			if (prefixes == null) {
 				this.shadowAttributePrefixes = ImmutableSet.of();
-			}
-			else {
+			} else {
 				this.shadowAttributePrefixes = ImmutableSet.copyOf(prefixes);
 			}
 			return (T) this;
 		}
 	}
-
 
 	/*
 	 * public abstract class MatchNodesOperation extends NodeOperation { protected
@@ -509,8 +501,6 @@ public class GraphDB {
 	public GraphSchema schema() {
 		return this.neo4j.schema();
 	}
-	
-
 
 	static String toPatternClause(Map<String, Object> m) {
 		if (m == null || m.isEmpty()) {
@@ -545,5 +535,52 @@ public class GraphDB {
 		return m;
 	}
 
+	private void hashType(Hasher h, Object val) {
+		if (val == null) {
+			h.putString("null", Charsets.UTF_8);
+		} else {
+			h.putString(val.getClass().getSimpleName(), Charsets.UTF_8);
+		}
+	}
+
+	protected boolean isKeyExcludedFromDigest(String s) {
+		if (s == null) {
+			return true;
+		}
+		if (s.startsWith("__")) {
+			return true;
+		}
+		if (s.startsWith("tag_") || s.startsWith("annotation_") || s.startsWith("label_")) {
+			return true;
+		}
+		if (s.equals("graphNodeDigest")) {
+			return true;
+		}
+		return false;
+	}
+
+	protected String injectDigest(Map<String, Object> v) {
+		HashFunction hf = Hashing.sha256();
+		Hasher h = hf.newHasher();
+		SortedSet<String> ss = new TreeSet(v.keySet());
+
+		for (String k : ss) {
+			if (!isKeyExcludedFromDigest(k)) {
+				h.putString(k, Charsets.UTF_8);
+				Object val = v.get(k);
+				if (val == null) {
+					h.putString("null", Charsets.UTF_8);
+				} else {
+					hashType(h, val);
+					h.putString(val.toString(), Charsets.UTF_8);
+				}
+			}
+		}
+		
+		String digest = h.hash().toString();
+		v.put("graphNodeDigest", digest);
+		return digest;
+
+	}
 
 }

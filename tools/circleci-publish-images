@@ -16,6 +16,11 @@ push_image() {
     docker push rebar/$1-scanner:${DOCKER_SRC_TAG} || exit 99
 }
 
+# build the shared base image
+# this speeds multiple image builds, allows for shared layers, and minimizes duplication
+docker build rebar-scanner-core -t rebar-scanner-core
+
+
 build_image docker
 build_image kubernetes
 build_image aws

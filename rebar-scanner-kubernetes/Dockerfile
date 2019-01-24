@@ -1,14 +1,4 @@
-FROM openjdk:8-alpine
-
-
-
-RUN apk update
-
-RUN apk add curl bash  && \
-curl -o /bin/kubectl  https://storage.googleapis.com/kubernetes-release/release/v1.12.0/bin/linux/amd64/kubectl && \
-chmod +x /bin/kubectl 
-
-
+FROM rebar-scanner-core
 
 
 COPY src/main/docker/app /app

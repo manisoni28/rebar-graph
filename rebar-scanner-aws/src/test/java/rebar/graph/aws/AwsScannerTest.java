@@ -138,7 +138,7 @@ public class AwsScannerTest extends AwsIntegrationTest {
 	
 	@Test
 	public void testMaybeThrow() {
-		getAwsScanner().maybeThrow(new RuntimeException("foo"));
+		getAwsScanner().maybeThrow(new RuntimeException("testing maybeThrow()"));
 	}
 
 }

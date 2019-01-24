@@ -1,5 +1,4 @@
-FROM openjdk:8-alpine
-
+FROM rebar-scanner-core:latest
 
 
 RUN apk update
