@@ -11,6 +11,7 @@ build_image() {
     --build-arg GIT_COMMIT=${CIRCLE_SHA1} \
     --build-arg GIT_REPO=${CIRCLE_REPOSITORY_URL} || exit 99
 }
+
 push_image() {
     docker push rebar/$1-scanner || exit 99
     docker push rebar/$1-scanner:${DOCKER_SRC_TAG} || exit 99
@@ -18,7 +19,7 @@ push_image() {
 
 # build the shared base image
 # this speeds multiple image builds, allows for shared layers, and minimizes duplication
-docker build rebar-scanner-core -t rebar/scanner-core
+docker build rebar-scanner-core -t rebar/scanner-core:latest
 
 build_image docker
 build_image kubernetes
@@ -41,6 +42,7 @@ if [ ! "${DOCKER_PASSWORD}" = "" ]; then
     echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
 fi
 
+docker push rebar/scanner-core:latest
 push_image docker
 push_image kubernetes
 push_image aws
