@@ -1,4 +1,4 @@
-FROM rebar-scanner-core:latest
+FROM rebar/scanner-core:latest
 
 
 
