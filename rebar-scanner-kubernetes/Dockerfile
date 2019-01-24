@@ -1,11 +1,11 @@
-FROM rebar-scanner-core
+FROM rebar/scanner-core:latest
 
 
-COPY src/main/docker/app /app
+RUN curl -o /bin/kubectl  https://storage.googleapis.com/kubernetes-release/release/v1.13.2/bin/linux/amd64/kubectl && \
+chmod +x /bin/kubectl 
+
 COPY build/libs/*-all.jar /app/app.jar
 
-
-RUN chmod +x /app/docker-init
 
 ARG GIT_COMMIT=unknown
 ARG GIT_REPO=unknwon
@@ -15,4 +15,5 @@ LABEL GIT_COMMIT=$GIT_COMMIT
 LABEL GIT_REPO=$GIT_REPO
 LABEL CI_BUILD_URL=$CI_BUILD_URL
 
+USER rebar
 CMD ["/app/docker-init"]

@@ -18,8 +18,7 @@ push_image() {
 
 # build the shared base image
 # this speeds multiple image builds, allows for shared layers, and minimizes duplication
-docker build rebar-scanner-core -t rebar-scanner-core
-
+docker build rebar-scanner-core -t rebar/scanner-core
 
 build_image docker
 build_image kubernetes

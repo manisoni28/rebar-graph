@@ -1,9 +1,11 @@
-FROM rebar-scanner-core
+FROM rebar/scanner-core:latest
 
 
+RUN	apk -Uuv add groff less python py-pip && \
+	pip install awscli && \
+	apk --purge -v del py-pip
 
 
-COPY src/main/docker/app /app
 COPY build/libs/*-all.jar /app/app.jar
 
 ARG GIT_COMMIT=unknown
@@ -14,8 +16,6 @@ LABEL GIT_COMMIT=$GIT_COMMIT
 LABEL GIT_REPO=$GIT_REPO
 LABEL CI_BUILD_URL=$CI_BUILD_URL
 
-
-RUN chmod +x /app/docker-init
 
 USER rebar
 CMD ["/app/docker-init"]

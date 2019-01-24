@@ -1,5 +1,0 @@
-#!/bin/bash
-
-
-java -Dlogback.configurationFile=/app/conf/logback.xml -jar /app/app.jar
-
