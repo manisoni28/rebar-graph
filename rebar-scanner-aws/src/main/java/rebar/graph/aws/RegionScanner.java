@@ -38,7 +38,7 @@ public class RegionScanner extends AwsEntityScanner<Regions> {
 
 		ec2.describeRegions().getRegions().forEach(r -> {
 
-			getGraphDB().nodes("AwsRegion").properties(Json.objectNode().put("region", r.getRegionName()).put(GraphDB.ENTITY_GROUP, "aws").put(GraphDB.ENTITY_TYPE, getEntityTypeName())).idKey("region").merge();
+			getGraphDB().nodes("AwsRegion").properties(Json.objectNode().put("name", r.getRegionName()).put("region", r.getRegionName()).put(GraphDB.ENTITY_GROUP, "aws").put(GraphDB.ENTITY_TYPE, getEntityTypeName())).idKey("region").merge();
 
 		});
 

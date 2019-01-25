@@ -1,5 +1,6 @@
 package rebar.graph.core;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -10,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 import rebar.graph.neo4j.CypherTemplate;
@@ -29,10 +31,14 @@ public class RelationshipBuilder {
 	private Map<String, Object> sourceIdAttributes = Maps.newHashMap();
 	private Map<String, Object> targetIdAttributes = Maps.newHashMap();
 
-	private Map<String, String> joinAttributes = Maps.newHashMap();
+	private List<JoinOn> joinOn = Lists.newArrayList();
+
 
 	Logger logger = LoggerFactory.getLogger(RelationshipBuilder.class);
-
+	public static enum Cardinality {
+		ONE,
+		MANY
+	}
 	public class FromNode {
 		public FromNode label(String name) {
 			sourceNodeType(name);
@@ -50,11 +56,27 @@ public class RelationshipBuilder {
 		}
 
 	}
-
+	static class JoinOn {
+		Cardinality toCardinality;
+		String fromAttribute;
+		String toAttribute;
+	}
 	public class Relationship {
 
-		public Relationship on(String fromAttribute, String toAttribute) {
-			joinAttributes.put(fromAttribute, toAttribute);
+		public Relationship on(String fromAttribute, Cardinality cardinality, String toAttribute) {
+			return this;
+		}
+		public Relationship on(String fromAttribue, String toAttribute) {
+			on(fromAttribue,toAttribute,Cardinality.ONE);
+			return this;
+		}
+		public Relationship on(String fromAttribute, String toAttribute, Cardinality cardinality) {
+			JoinOn j = new JoinOn();
+			j.fromAttribute = fromAttribute;
+			j.toAttribute = toAttribute;
+			j.toCardinality = cardinality;
+			joinOn.add(j);
+			
 			return this;
 		}
 
@@ -120,12 +142,12 @@ public class RelationshipBuilder {
 	protected String joinClause() {
 		StringBuffer sb = new StringBuffer();
 		int c = 0;
-		if (joinAttributes.isEmpty()) {
+		if (joinOn.isEmpty()) {
 			return sb.toString();
 		} else {
-			for (Map.Entry<String, String> entry : joinAttributes.entrySet()) {
-				
-				sb.append(String.format(" %s b.%s in a.%s ", (c++ > 0)? " AND " : "", CypherUtil.escapePropertyName(entry.getValue()), CypherUtil.escapePropertyName(entry.getKey())));
+			for (JoinOn on : joinOn) {
+				String cardinalityComparator = on.toCardinality==Cardinality.ONE ? "="  : "in";
+				sb.append(String.format(" %s b.%s %s a.%s ", (c++ > 0)? " AND " : "", CypherUtil.escapePropertyName(on.toAttribute), cardinalityComparator,CypherUtil.escapePropertyName(on.fromAttribute)));
 			}
 		}
 
@@ -151,6 +173,7 @@ public class RelationshipBuilder {
 				+ String.format(" %s merge (a)-[r:%s]->(b) return count(r) as count", whereClause, relationshipName);
 
 		logger.debug("create relationships: {}", cypher);
+		
 		CypherTemplate template = driver.cypher(cypher);
 		for (Entry<String, Object> entry : sourceIdAttributes.entrySet()) {
 			template = template.param("a_" + entry.getKey(), entry.getValue());
@@ -172,7 +195,7 @@ public class RelationshipBuilder {
 
 	private void deleteStaleRelationships() {
 
-		if (joinAttributes.isEmpty()) {
+		if (joinOn.isEmpty()) {
 			return;
 		}
 		String cypher = String.format("match (a:%s %s)-[r:%s]->(b:%s %s)", aLabel,

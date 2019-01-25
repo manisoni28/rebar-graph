@@ -86,6 +86,12 @@ public class AlibabaScanner extends Scanner {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public void applyConstraints() {
+		// TODO Auto-generated method stub
+		
+	}
 	
 	
 	

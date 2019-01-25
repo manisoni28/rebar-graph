@@ -1003,15 +1003,15 @@ public class KubeScanner extends Scanner {
 
 	public void applyConstraints() {
 
-		getRebarGraph().getGraphDB().schema().ensureUniqueIndex("KubeCluster", "name");
-		getRebarGraph().getGraphDB().schema().ensureUniqueIndex("KubeCluster", "clusterId");
-		getRebarGraph().getGraphDB().schema().ensureUniqueIndex("KubeNode", "uid");
-		getRebarGraph().getGraphDB().schema().ensureUniqueIndex("KubePod", "uid");
-		getRebarGraph().getGraphDB().schema().ensureUniqueIndex("KubeDeployment", "uid");
-		getRebarGraph().getGraphDB().schema().ensureUniqueIndex("KubeReplicaSet", "uid");
-		getRebarGraph().getGraphDB().schema().ensureUniqueIndex("KubeDaemonSet", "uid");
-		getRebarGraph().getGraphDB().schema().ensureUniqueIndex("KubeService", "uid");
-		getRebarGraph().getGraphDB().schema().ensureUniqueIndex("KubeNamespace", "uid");
+		getRebarGraph().getGraphDB().schema().createUniqueConstraint("KubeCluster", "name");
+		getRebarGraph().getGraphDB().schema().createUniqueConstraint("KubeCluster", "clusterId");
+		getRebarGraph().getGraphDB().schema().createUniqueConstraint("KubeNode", "uid");
+		getRebarGraph().getGraphDB().schema().createUniqueConstraint("KubePod", "uid");
+		getRebarGraph().getGraphDB().schema().createUniqueConstraint("KubeDeployment", "uid");
+		getRebarGraph().getGraphDB().schema().createUniqueConstraint("KubeReplicaSet", "uid");
+		getRebarGraph().getGraphDB().schema().createUniqueConstraint("KubeDaemonSet", "uid");
+		getRebarGraph().getGraphDB().schema().createUniqueConstraint("KubeService", "uid");
+		getRebarGraph().getGraphDB().schema().createUniqueConstraint("KubeNamespace", "uid");
 
 	}
 

@@ -48,6 +48,7 @@ import io.github.classgraph.ScanResult;
 import rebar.graph.core.GraphDB;
 import rebar.graph.core.Scanner;
 import rebar.graph.core.ScannerBuilder;
+import rebar.graph.neo4j.GraphSchema;
 import rebar.util.RebarException;
 
 public final class AwsScanner extends Scanner {
@@ -113,8 +114,7 @@ public final class AwsScanner extends Scanner {
 			t.init(this);
 			return t;
 
-		} catch (  IllegalAccessException | InstantiationException
-				 e) {
+		} catch (IllegalAccessException | InstantiationException e) {
 			throw new RebarException(e);
 		}
 	}
@@ -122,8 +122,6 @@ public final class AwsScanner extends Scanner {
 	public Regions getRegion() {
 		return region;
 	}
-
-
 
 	@SuppressWarnings("unchecked")
 	public <T extends AmazonWebServiceClient> T getClient(Class<? extends AwsClientBuilder> builderClass) {
@@ -148,23 +146,19 @@ public final class AwsScanner extends Scanner {
 		getEntityScanner(AllEntityScanner.class).scan();
 	}
 
-
 	<T extends AwsEntityScanner> T getEntityScannerForType(final String type) {
 
-	
 		String t = Strings.nullToEmpty(type).toLowerCase().trim();
 		if (type.toLowerCase().startsWith("aws")) {
 			t = t.substring(3);
 		}
-	
-		
+
 		Class<? extends AwsEntityScanner> es = typeMap.get(t);
-		if (es==null) {
-			throw new IllegalArgumentException("unsupported entity type: "+type);
+		if (es == null) {
+			throw new IllegalArgumentException("unsupported entity type: " + type);
 		}
 		return (T) getEntityScanner(es);
-		
-	
+
 	}
 
 	private static void findEntityScanners() {
@@ -215,9 +209,29 @@ public final class AwsScanner extends Scanner {
 
 	}
 
+	public void applyConstraints() {
+		GraphSchema s = getRebarGraph().getGraphDB().getNeo4jDriver().schema();
+		s.createUniqueConstraint("AwsRegion", "name");
+		s.createUniqueConstraint("AwsAvailabilityZone", "name");
+		s.createUniqueConstraint("AwsAccount", "account");
+		s.createUniqueConstraint("AwsSecurityGroup", "arn");
+		s.createUniqueConstraint("AwsSubnet", "arn");
+		s.createUniqueConstraint("AwsEc2Instance", "arn");
+		s.createUniqueConstraint("AwsAmi", "arn");
+		s.createUniqueConstraint("AwsLaunchConfig", "arn");
+		s.createUniqueConstraint("AwsLaunchTemplate", "arn");
+		s.createUniqueConstraint("AwsElb", "arn");
+		s.createUniqueConstraint("AwsElbTargetGroup", "arn");
+		s.createUniqueConstraint("AwsElbListener", "arn");
+		s.createUniqueConstraint("AwsAsg", "arn");
+		s.createUniqueConstraint("AwsEksCluster", "arn");
+		s.createUniqueConstraint("AwsLambdaFunction", "arn");
+		s.createUniqueConstraint("AwsVpc", "arn");
+	}
 
 	public String toString() {
-		return MoreObjects.toStringHelper(this).add("type", getScannerType()).add("account",getAccount()).add("region", getRegion().getName()).toString();
+		return MoreObjects.toStringHelper(this).add("type", getScannerType()).add("account", getAccount())
+				.add("region", getRegion().getName()).toString();
 	}
 
 }

@@ -43,9 +43,13 @@ public class Neo4jStatementResultImpl {
 	}
 
 	void consume(StatementResult sr) {
-
-		sr.forEachRemaining(new StatementConsumer());
-		sr.consume();
+		try {
+			if (sr.hasNext()) {
+				sr.forEachRemaining(new StatementConsumer());
+			}
+		} finally {
+			sr.consume();
+		}
 	}
 
 	List<JsonNode> results = new ArrayList<>();
@@ -103,6 +107,10 @@ public class Neo4jStatementResultImpl {
 						n.put(k, (Integer) v);
 					} else if (v instanceof Long) {
 						n.put(k, (Long) v);
+					} else if (v instanceof Double) {
+						n.put(k, (Double) v);
+					} else if (v instanceof Float) {
+						n.put(k, (Float) v);
 					} else if (v instanceof BigDecimal) {
 						n.put(k, (BigDecimal) v);
 					} else if (v instanceof BigInteger) {
@@ -110,6 +118,8 @@ public class Neo4jStatementResultImpl {
 					} else if (v instanceof Boolean) {
 						n.put(k, (Boolean) v);
 					} else if (v instanceof List) {
+						n.set(k, Neo4jDriverImpl.mapper.valueToTree(v));
+					} else if (v instanceof Map) {
 						n.set(k, Neo4jDriverImpl.mapper.valueToTree(v));
 					} else {
 						logger.warn("unsupported type ({}): {}", k, v.getClass());

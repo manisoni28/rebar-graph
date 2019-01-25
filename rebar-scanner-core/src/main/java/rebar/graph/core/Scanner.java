@@ -36,6 +36,8 @@ public abstract class Scanner {
 	ScannerBuilder<? extends Scanner> scannerBuilder;
 	Boolean failOnError = null;
 	
+	private boolean constraintsApplied=false;
+	
 	public Scanner(ScannerBuilder<? extends Scanner> builder) {
 		this.scannerBuilder = builder;
 	}
@@ -68,6 +70,12 @@ public abstract class Scanner {
 	public abstract void scan(String scannerType, String a, String b, String c, String d);
 	
 	public final void scan() {
+		if (!constraintsApplied) {
+			if (Boolean.parseBoolean(this.scannerBuilder.env.get("INDEX_AUTOCREATE").orElse("true"))) {
+				constraintsApplied=true;
+				applyConstraints();
+			}
+		}
 		Stopwatch sw = Stopwatch.createStarted();
 		logger.info("begin scan for {}",this);
 		doScan();
@@ -126,4 +134,5 @@ public abstract class Scanner {
 		return getRebarGraph().getGraphDB();
 	}
 
+	public abstract void applyConstraints();
 }

@@ -16,6 +16,8 @@
 package rebar.graph.aws;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import org.assertj.core.api.Assertions;
@@ -25,6 +27,8 @@ import org.junit.jupiter.api.Test;
 import com.amazonaws.services.ec2.AmazonEC2ClientBuilder;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 import rebar.util.Sleep;
 
@@ -134,6 +138,23 @@ public class AwsScannerTest extends AwsIntegrationTest {
 					Assertions.assertThat(validRelationships).contains(rel);
 				});
 
+		Set<String> uniqueIndexes = Sets.newHashSet();
+		getNeo4jDriver().cypher("CALL db.indexes()").stream().filter(p->p.path("type").asText().equals("node_unique_property")).forEach(it->{
+			
+			
+			String label = it.path("tokenNames").path(0).asText();
+			String property = it.path("properties").path(0).asText();
+			
+			uniqueIndexes.add(label+"."+property);
+			
+		});
+		
+		getNeo4jDriver().cypher("match (a) where labels(a)[0]=~'Aws.*' and exists (a.arn) return distinct labels(a)[0] as label").forEach(it->{
+			String n = it.path("label").asText()+".arn";
+			System.out.println(n);
+		//	Assertions.assertThat(uniqueIndexes).as("should have unique index on %s",n).contains(n);
+		});;
+		System.out.println(uniqueIndexes);
 	}
 	
 	@Test

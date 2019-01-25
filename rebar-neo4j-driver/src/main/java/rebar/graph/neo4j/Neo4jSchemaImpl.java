@@ -15,18 +15,56 @@
  */
 package rebar.graph.neo4j;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class Neo4jSchemaImpl implements GraphSchema {
 
+	Logger logger = LoggerFactory.getLogger(Neo4jSchemaImpl.class);
 	Neo4jDriverImpl driver;
+
 	Neo4jSchemaImpl(Neo4jDriverImpl driver) {
 		this.driver = driver;
 	}
 
 	@Override
-	public void ensureUniqueIndex(String label, String attribute) {
-		
-		driver.cypher("CREATE CONSTRAINT ON (x:"+label+") ASSERT x.`"+attribute+"` IS UNIQUE").exec();
+	public void createUniqueConstraint(String label, String attribute) {
 
+		long count = driver.cypher("CALL db.indexes()").stream()
+				.filter(n -> n.path("type").asText().equals("node_unique_property"))
+				.filter(n -> n.path("tokenNames").path(0).asText().equals(label))
+				.filter(n -> n.path("properties").path(0).asText().equals(attribute)).count();
+
+		if (count == 0) {
+			String cypher = "CREATE CONSTRAINT ON (x:" + label + ") ASSERT x."
+					+ CypherUtil.escapePropertyName(attribute) + " IS UNIQUE";
+			logger.info("{}", cypher);
+			driver.cypher(cypher).exec();
+		} else {
+			logger.info("unique constraint already exists for {}.{}", label, attribute);
+		}
+
+	}
+
+	@Override
+	public void dropUniqueConstraint(String label, String attribute) {
+		// DROP CONSTRAINT ON (book:Book) ASSERT book.isbn IS UNIQUE
+		CypherUtil.assertValidLabel(label);
+
+		long count = driver.cypher("CALL db.indexes()").stream()
+				.filter(n -> n.path("type").asText().equals("node_unique_property"))
+				.filter(n -> n.path("tokenNames").path(0).asText().equals(label))
+				.filter(n -> n.path("properties").path(0).asText().equals(attribute)).count();
+
+		if (count>0) {
+			String cypher = String.format("DROP CONSTRAINT ON (a:%s) ASSERT a.%s IS UNIQUE", label,
+					CypherUtil.escapePropertyName(attribute));
+			logger.info("{}",cypher);
+			driver.cypher(cypher).exec();
+		}
+		else {
+			logger.info("unique constraint does not exist on {}.{}",label,(attribute));
+		}
 	}
 
 }

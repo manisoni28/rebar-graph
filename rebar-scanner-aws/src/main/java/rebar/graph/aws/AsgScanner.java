@@ -38,6 +38,7 @@ import com.google.common.collect.Lists;
 import rebar.graph.core.GraphDB;
 import rebar.graph.core.GraphOperation;
 import rebar.graph.core.Scanner;
+import rebar.graph.core.RelationshipBuilder.Cardinality;
 import rebar.graph.neo4j.GraphDriver;
 import rebar.util.Json;
 import rebar.util.RebarException;
@@ -209,7 +210,7 @@ public class AsgScanner extends AwsEntityScanner<AutoScalingGroup> {
 
 		// connect AwsAsg->AwsEc2Instance
 		getGraphDB().nodes("AwsAsg").id("region", getRegionName()).id("account", getAccount()).relationship("HAS")
-				.on("instances", "instanceId").on("account", "account").on("region", "region")
+				.on("instances", "instanceId",Cardinality.MANY).on("account", "account").on("region", "region")
 				.to("AwsEc2Instance").id("region", getRegionName()).id("account", getAccount()).merge();
 
 	}

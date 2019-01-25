@@ -40,6 +40,7 @@ import com.machinezoo.noexception.Exceptions;
 import rebar.graph.core.GraphDB;
 import rebar.graph.core.GraphDB.NodeOperation;
 import rebar.graph.core.RelationshipBuilder;
+import rebar.graph.core.RelationshipBuilder.Cardinality;
 import rebar.graph.core.RelationshipBuilder.FromNode;
 import rebar.util.Json;
 
@@ -221,7 +222,7 @@ public abstract class AwsEntityScanner<A extends Object> {
 			}
 		}
 
-		n.relationship("RESIDES_IN").on("subnets", "subnetId").to("AwsSubnet").merge();
+		n.relationship("RESIDES_IN").on("subnets", "subnetId",Cardinality.MANY).to("AwsSubnet").merge();
 	}
 
 	protected void mergeSecurityGroupRelationships(String... args) {
@@ -232,7 +233,7 @@ public abstract class AwsEntityScanner<A extends Object> {
 				n = n.id(args[i], args[i + 1]);
 			}
 		}
-		n.relationship("USES").on("securityGroups", "groupId").to("AwsSecurityGroup").merge();
+		n.relationship("USES").on("securityGroups", "groupId",Cardinality.MANY).to("AwsSecurityGroup").merge();
 	}
 
 	public FromNode awsRelationships() {

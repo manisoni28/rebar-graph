@@ -16,6 +16,7 @@
 package rebar.graph.github;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -28,11 +29,13 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Splitter;
+import com.google.common.collect.Sets;
 
 import rebar.graph.core.Scanner;
 import rebar.graph.core.ScannerBuilder;
 import rebar.util.EnvConfig;
 import rebar.util.Json;
+import rebar.util.RebarException;
 
 public class GitHubScanner extends Scanner {
 
@@ -47,13 +50,15 @@ public class GitHubScanner extends Scanner {
 	@Override
 	public void doScan() {
 
-		Set<String> orgs = getNeo4jDriver().cypher("match (a:GitHubOrg) return a.name as name").stream().map(n -> {
-			return n.path("name").asText();
-		}).collect(Collectors.toSet());
+		Set<String> orgs = Sets.newHashSet();
 		EnvConfig cfg = new EnvConfig();
 		orgs.addAll(Splitter.on(" ,;").omitEmptyStrings().trimResults().splitToList(cfg.get("GITHUB_ORGS").orElse("")));
 		orgs.forEach(name -> {
-			scanOrganization(name);
+			try {
+				scanOrg(name);
+			} catch (RuntimeException e) {
+				maybeThrow(e);
+			}
 		});
 
 	}
@@ -73,7 +78,7 @@ public class GitHubScanner extends Scanner {
 			n.put("httpTransportUrl", repo.getHttpTransportUrl());
 			n.put("htmlUrl", repo.getHtmlUrl().toExternalForm());
 
-			n.put("createdAt", repo.getCreatedAt().getTime());
+			n.put("createTs", repo.getCreatedAt().getTime());
 			n.put("language", repo.getLanguage());
 			n.put("mirrorUrl", repo.getMirrorUrl());
 			n.put("owner", repo.getOwnerName());
@@ -115,26 +120,45 @@ public class GitHubScanner extends Scanner {
 
 	}
 
-	public void scanOrganization(String name) {
+	public void scanRepo(String name) {
 		try {
-			logger.info("scanning GitHub org: {}",name);
+			List<String> parts = Splitter.on("/").trimResults().splitToList(name);
+			GHRepository r = github.getRepository(name);
+			projectRepo(parts.get(0), parts.get(1), r);
+		} catch (IOException e) {
+			throw new RebarException(e);
+		}
+	}
+
+	public void scanOrg(String name) {
+		try {
+
+			logger.info("scanning GitHub org: {}", name);
 			GHOrganization org = github.getOrganization(name);
-			
+
 			project(name, org);
 			org.getRepositories().forEach((repoName, repo) -> {
-				projectRepo(name, repoName, repo);
-
+				try {
+					projectRepo(name, repoName, repo);
+				} catch (RuntimeException e) {
+					logger.warn("unexpected exception", e);
+				}
 			});
-		} catch (IOException e) {
-			maybeThrow(e);
-		}
 
-		getGraphDB().nodes("GitHubOrg").relationship("HAS").on("name", "orgName").to("GitHubRepo").merge();
+			getGraphDB().nodes("GitHubOrg").relationship("HAS").on("name", "orgName").to("GitHubRepo").merge();
+		} catch (IOException e) {
+			throw new RebarException(e);
+		}
 	}
 
 	@Override
 	public void scan(String scannerType, String a, String b, String c, String id) {
 		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void applyConstraints() {
+		
 	}
 
 }
