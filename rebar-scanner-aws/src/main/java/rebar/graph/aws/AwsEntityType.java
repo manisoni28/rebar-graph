@@ -11,6 +11,8 @@ public enum AwsEntityType {
 	AwsEksCluster("AwsEksCluster"),
 	AwsElb("AwsElb"),
 	AwsElbTargetGroup("AwsElbTargetGroup"),
+	AwsHostedZone("AwsHostedZone"),
+	AwsHostedZoneRecordSet("AwsHostedZoneRecordSet"),
 	AwsLambdaFunction("AwsLambdaFunction"),
 	AwsLaunchConfig("AwsLaunchConfig"),
 	AwsLaunchTemplate("AwsLaunchTemplate"),

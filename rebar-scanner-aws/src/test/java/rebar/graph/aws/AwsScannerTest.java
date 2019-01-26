@@ -25,6 +25,7 @@ import org.assertj.core.data.Offset;
 import org.junit.jupiter.api.Test;
 
 import com.amazonaws.services.ec2.AmazonEC2ClientBuilder;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -73,14 +74,17 @@ public class AwsScannerTest extends AwsIntegrationTest {
 		getAwsScanner().scan();
 
 		long ts = System.currentTimeMillis();
-		getNeo4jDriver().cypher("match (a) where labels(a)[0]=~'Aws.*' return a").stream().forEach(it -> {
-			Assertions.assertThat(it.path("graphEntityType").asText()).startsWith("Aws");
-			Assertions.assertThat(it.path("graphEntityGroup").asText()).isEqualTo(getAwsScanner().getScannerType());
+		getNeo4jDriver().cypher("match (a) where labels(a)[0]=~'Aws.*' return a,labels(a)[0] as label").stream().forEach(x -> {
+			String label = x.path("label").asText();
+			JsonNode it = x.path("a");
+			Assertions.assertThat(it.path("graphEntityGroup").asText()).as("%s should have graphEntityGroup=aws",it.toString()).isEqualTo(getAwsScanner().getScannerType());
+			Assertions.assertThat(it.path("graphEntityType").asText()).as(label+" should have graphEntityType of "+it.path("label").asText()).isEqualTo(label);
+			
 			Assertions.assertThat(it.path("graphUpdateTs").asLong()).isCloseTo(System.currentTimeMillis(),
 					Offset.offset(TimeUnit.MINUTES.toMillis(5)));
 
 			Assertions.assertThat(it.path("graphEntityGroup").asText()).isEqualTo("aws");
-			if (ImmutableList.of("AwsAccount", "AwsRegion", "AwsAvailabilityZone")
+			if (ImmutableList.of("AwsHostedZoneRecordSet","AwsAccount", "AwsRegion", "AwsAvailabilityZone")
 					.contains(it.path("graphEntityType").asText())) {
 
 			} else {
@@ -111,6 +115,7 @@ public class AwsScannerTest extends AwsIntegrationTest {
 		List<String> validRelationships = Lists.newArrayList();
 		validRelationships.add("AwsVpc RESIDES_IN AwsRegion");
 		validRelationships.add("AwsAccount HAS AwsVpc");
+		validRelationships.add("AwsAccount HAS AwsHostedZone");
 		validRelationships.add("AwsRegion HAS AwsAvailabilityZone");
 		validRelationships.add("AwsSubnet RESIDES_IN AwsAvailabilityZone");
 		validRelationships.add("AwsEc2Instance USES AwsAmi");
@@ -130,6 +135,7 @@ public class AwsScannerTest extends AwsIntegrationTest {
 
 		validRelationships.add("AwsEksCluster RESIDES_IN AwsSubnet");
 		validRelationships.add("AwsEksCluster USES AwsSecurityGroup");
+		validRelationships.add("AwsHostedZone HAS AwsHostedZoneRecordSet");
 		getNeo4jDriver().cypher(
 				"match (a)-[r]->(b) where labels(a)[0]=~'Aws.*' return a.graphEntityType as fromLabel,r,b.graphEntityType as toLabel,type(r) as relType")
 				.forEach(it -> {

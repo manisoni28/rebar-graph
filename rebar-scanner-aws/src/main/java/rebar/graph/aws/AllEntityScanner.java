@@ -51,6 +51,8 @@ public class AllEntityScanner extends SerialScanner {
 		
 		classList.add(RdsClusterScanner.class);
 		classList.add(RdsInstanceScanner.class);
+		
+		classList.add(Route53Scanner.class);
 		return classList;
 	}
 	public AllEntityScanner() {
