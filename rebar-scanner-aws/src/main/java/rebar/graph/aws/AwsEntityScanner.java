@@ -115,10 +115,26 @@ public abstract class AwsEntityScanner<A extends Object> {
 			});
 		});
 
-		if (count.get() > 0 || sw.elapsed(TimeUnit.MILLISECONDS)>500L) {
+		if (count.get() > 0 || sw.elapsed(TimeUnit.MILLISECONDS) > 500L) {
 			logger.info("gc for {} {} nodes took {}ms", count.get(), type, sw.elapsed(TimeUnit.MILLISECONDS));
 		}
 
+	}
+
+	protected boolean isEntityOwner(JsonNode entity) {
+		if (entity == null) {
+			return false;
+		}
+		String account = entity.path("account").asText();
+		String region = entity.path("region").asText();
+		if (!account.equals(getAccount())) {
+			return false;
+		}
+
+		if (!region.equals(getRegionName())) {
+			return false;
+		}
+		return true;
 	}
 
 	protected void assertEntityOwner(JsonNode entity) {
@@ -222,7 +238,7 @@ public abstract class AwsEntityScanner<A extends Object> {
 			}
 		}
 
-		n.relationship("RESIDES_IN").on("subnets", "subnetId",Cardinality.MANY).to("AwsSubnet").merge();
+		n.relationship("RESIDES_IN").on("subnets", "subnetId", Cardinality.MANY).to("AwsSubnet").merge();
 	}
 
 	protected void mergeSecurityGroupRelationships(String... args) {
@@ -233,7 +249,7 @@ public abstract class AwsEntityScanner<A extends Object> {
 				n = n.id(args[i], args[i + 1]);
 			}
 		}
-		n.relationship("USES").on("securityGroups", "groupId",Cardinality.MANY).to("AwsSecurityGroup").merge();
+		n.relationship("USES").on("securityGroups", "groupId", Cardinality.MANY).to("AwsSecurityGroup").merge();
 	}
 
 	public FromNode awsRelationships() {
@@ -244,7 +260,17 @@ public abstract class AwsEntityScanner<A extends Object> {
 				.from(getEntityTypeName());
 	}
 
+	protected void mergeAccountOwner(AwsEntityType t)  {
+		if (t==AwsEntityType.AwsAccount) {
+			return;
+		}
+		getGraphDB().nodes(AwsEntityType.AwsAccount.name()).id("account", getAccount()).relationship("HAS").to(t.name()).id("account", getAccount());
+	}
+	protected void mergeAccountOwner() {
+		mergeAccountOwner(getEntityType());
+	}
 	protected void mergeResidesInRegionRelationship(String... args) {
+		
 		FromNode n = awsRelationships();
 
 		if (args != null) {

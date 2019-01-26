@@ -553,7 +553,7 @@ public class GraphDB {
 		if (s.startsWith("tag_") || s.startsWith("annotation_") || s.startsWith("label_")) {
 			return true;
 		}
-		if (s.equals("graphNodeDigest")) {
+		if (s.equals("graphEntityDigest")) {
 			return true;
 		}
 		return false;
@@ -578,7 +578,7 @@ public class GraphDB {
 		}
 		
 		String digest = h.hash().toString();
-		v.put("graphNodeDigest", digest);
+		v.put("graphEntityDigest", digest);
 		return digest;
 
 	}

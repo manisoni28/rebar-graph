@@ -136,6 +136,8 @@ public class AwsScannerTest extends AwsIntegrationTest {
 		validRelationships.add("AwsEksCluster RESIDES_IN AwsSubnet");
 		validRelationships.add("AwsEksCluster USES AwsSecurityGroup");
 		validRelationships.add("AwsHostedZone HAS AwsHostedZoneRecordSet");
+		
+		validRelationships.add("AwsAccount HAS AwsSqsQueue");
 		getNeo4jDriver().cypher(
 				"match (a)-[r]->(b) where labels(a)[0]=~'Aws.*' return a.graphEntityType as fromLabel,r,b.graphEntityType as toLabel,type(r) as relType")
 				.forEach(it -> {
@@ -157,8 +159,8 @@ public class AwsScannerTest extends AwsIntegrationTest {
 		
 		getNeo4jDriver().cypher("match (a) where labels(a)[0]=~'Aws.*' and exists (a.arn) return distinct labels(a)[0] as label").forEach(it->{
 			String n = it.path("label").asText()+".arn";
-			System.out.println(n);
-		//	Assertions.assertThat(uniqueIndexes).as("should have unique index on %s",n).contains(n);
+		
+			Assertions.assertThat(uniqueIndexes).as("should have unique index on %s",n).contains(n);
 		});;
 		System.out.println(uniqueIndexes);
 	}

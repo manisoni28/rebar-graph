@@ -227,6 +227,14 @@ public final class AwsScanner extends Scanner {
 		s.createUniqueConstraint("AwsEksCluster", "arn");
 		s.createUniqueConstraint("AwsLambdaFunction", "arn");
 		s.createUniqueConstraint("AwsVpc", "arn");
+		
+		s.createUniqueConstraint("AwsHostedZone", "id");
+		s.createUniqueConstraint("AwsHostedZone", "arn");
+		
+		s.createUniqueConstraint("AwsSqsQueue", "url");
+		s.createUniqueConstraint("AwsSqsQueue", "arn");
+		s.createUniqueConstraint("AwsSnsTopic", "arn");
+		s.createUniqueConstraint("AwsSnsSubscription", "arn");
 	}
 
 	public String toString() {
