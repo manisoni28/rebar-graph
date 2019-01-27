@@ -54,6 +54,9 @@ public class SerialScanner extends AwsEntityScanner {
 		scanners = ImmutableList.copyOf(scanners);
 	}
 	
+	public List<Class<? extends AwsEntityScanner>> getScannerClasses() {
+		return scanners;
+	}
 	@Override
 	protected final void doScan() {
 		makeImmutable();

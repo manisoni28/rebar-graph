@@ -23,7 +23,10 @@ import com.amazonaws.regions.Regions;
 public class AwsVpcScannerTest extends AwsIntegrationTest {
 
 	
-	
+	@Override
+	protected void beforeAll() {
+		deleteAllAwsEntities();
+	}
 	@Test
 	public void testIt() {
 

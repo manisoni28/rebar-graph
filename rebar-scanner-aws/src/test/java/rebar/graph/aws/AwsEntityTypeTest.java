@@ -13,6 +13,7 @@ import io.github.classgraph.ScanResult;
 
 public class AwsEntityTypeTest {
 
+
 	@Test
 	public void testIt() {
 
@@ -20,7 +21,7 @@ public class AwsEntityTypeTest {
 				.scan();
 
 		List<Class> exclusions = ImmutableList.of(ElbListenerScanner.class, SerialScanner.class,
-				AllEntityScanner.class);
+				AllEntityScannerGroup.class);
 
 		result.getSubclasses(AwsEntityScanner.class.getName()).stream().filter(p -> !p.isAbstract())
 

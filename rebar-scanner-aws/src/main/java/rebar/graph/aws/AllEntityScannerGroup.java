@@ -25,28 +25,18 @@ import com.google.common.collect.Streams;
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ScanResult;
 
-public class AllEntityScanner extends SerialScanner {
+public class AllEntityScannerGroup extends SerialScanner {
 
 	
 
 	public static List<Class<? extends AwsEntityScanner>> getEntityScanners() {
 		List<Class<? extends AwsEntityScanner>> classList = Lists.newArrayList();
-		classList.add(AccountScanner.class);
-		classList.add(RegionScanner.class);
-		classList.add(VpcScanner.class);
-		classList.add(AvailabilityZoneScanner.class);
-		classList.add(SecurityGroupScanner.class);
-		classList.add(SubnetScanner.class);
-		classList.add(Ec2InstanceScanner.class);
-		classList.add(AmiScanner.class);
-		classList.add(LaunchConfigScanner.class);
-		classList.add(LaunchTemplateScanner.class);
-		classList.add(ElbClassicScanner.class);
-		classList.add(ElbScanner.class);
-		classList.add(ElbTargetGroupScanner.class);
+		classList.add(VpcScannerGroup.class);
+		
+		classList.add(Ec2ScannerGroup.class);
 		
 		classList.add(S3Scanner.class);
-		classList.add(AsgScanner.class);
+		
 		classList.add(EksClusterScanner.class);
 		classList.add(LambdaFunctionScanner.class);
 		
@@ -63,7 +53,7 @@ public class AllEntityScanner extends SerialScanner {
 		
 		return classList;
 	}
-	public AllEntityScanner() {
+	public AllEntityScannerGroup() {
 		super();
 
 

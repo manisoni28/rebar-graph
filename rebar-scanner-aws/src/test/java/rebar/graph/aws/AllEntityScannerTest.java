@@ -30,37 +30,21 @@ import io.github.classgraph.ScanResult;
 
 public class AllEntityScannerTest extends AwsIntegrationTest {
 
-	@Test
-	public void testIt() {
-		getAwsScanner().getEntityScanner(AllEntityScanner.class).doScan();
-	}
+
 
 	@Test
 	public void testCompleteness() {
-		ScanResult result = new ClassGraph().enableClassInfo().whitelistPackages(getClass().getPackage().getName())
-				.scan();
-
-		List<Class> exclusions = ImmutableList.of(ElbListenerScanner.class, ParallelScanner.class,SerialScanner.class,
-				AllEntityScanner.class);
-
-		// Maybe we move this to a test. Just want to prevent scanners from being
-		// forgotten.
-
-		result.getSubclasses(AwsEntityScanner.class.getName()).stream().filter(p -> !p.isAbstract()) 
-
-				.forEach(it -> {
-					try {
-
-						Class clazz = Class.forName(it.getName());
-						if (!exclusions.contains(clazz)) {
-
-							Assertions.assertThat(getAwsScanner().getEntityScanner(AllEntityScanner.class).scanners)
-									.contains((Class<? extends AwsEntityScanner>) clazz);
-						}
-					} catch (ClassNotFoundException e) {
-						throw new RuntimeException(e);
-					}
-				});
+		AllEntityScannerGroup s = getAwsScanner().getEntityScanner(AllEntityScannerGroup.class);
+		
+		s.getScannerClasses().forEach(it->{
+			logger.info("scanner: {}",it.getSimpleName());
+		});
+		
+		Assertions.assertThat(s.getScannerClasses().get(0)).isEqualTo(VpcScannerGroup.class);
+		Assertions.assertThat(s.getScannerClasses().get(1)).isEqualTo(Ec2ScannerGroup.class);
+		
+		
+		Assertions.assertThat(s.getScannerClasses()).containsAll(ImmutableList.of(S3Scanner.class,EksClusterScanner.class,RdsClusterScanner.class,RdsInstanceScanner.class,SqsScanner.class,SnsScanner.class,Route53Scanner.class));
 
 	}
 

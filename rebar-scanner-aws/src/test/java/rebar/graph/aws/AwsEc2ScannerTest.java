@@ -21,13 +21,16 @@ import com.amazonaws.regions.Regions;
 
 public class AwsEc2ScannerTest extends AwsIntegrationTest {
 
-	
+	@Override
+	protected void beforeAll() {
+		deleteAllAwsEntities();
+	}
 	
 	@Test
 	public void testIt() {
 
 		
-		getAwsScanner().scan();
+		getAwsScanner().getEntityScanner(Ec2ScannerGroup.class);
 		//getAwsScanner().newAsgScanner().scanLaunchConfigByName("foo");
 		// getAwsScanner().newEc2Scanner().scanLaunchTemplates();
 		 

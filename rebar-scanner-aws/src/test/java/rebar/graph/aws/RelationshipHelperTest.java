@@ -7,7 +7,10 @@ import rebar.graph.core.GraphDB;
 
 public class RelationshipHelperTest extends AwsIntegrationTest {
 
-	
+	@Override
+	protected void beforeAll() {
+		deleteAllAwsEntities();
+	}
 	@Test
 	public void testIt() {
 		

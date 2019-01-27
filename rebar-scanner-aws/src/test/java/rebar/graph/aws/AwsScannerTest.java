@@ -35,6 +35,10 @@ import rebar.util.Sleep;
 
 public class AwsScannerTest extends AwsIntegrationTest {
 
+	@Override
+	protected void beforeAll() {
+		deleteAllAwsEntities();
+	}
 	public void testScannerType() {
 		Assertions.assertThat(getAwsScanner().getScannerType()).isEqualTo("aws");
 	}

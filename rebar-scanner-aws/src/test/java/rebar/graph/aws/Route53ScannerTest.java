@@ -4,7 +4,10 @@ import org.junit.jupiter.api.Test;
 
 public class Route53ScannerTest extends AwsIntegrationTest {
 
-	
+	@Override
+	protected void beforeAll() {
+		deleteAllAwsEntities();
+	}
 	@Test
 	public void testIt() {
 		

@@ -22,14 +22,16 @@ import rebar.util.Json;
 
 public class AsgScannerTest extends AwsIntegrationTest {
 
-
+	@Override
+	protected void beforeAll() {
+		deleteAllAwsEntities();
+		getAwsScanner().getEntityScanner(VpcScannerGroup.class).scan();
+		getAwsScanner().getEntityScanner(Ec2ScannerGroup.class).scan();
+	}
+	
 	@Test
 	public void testIT() {
-		getAwsScanner().getEntityScanner(AccountScanner.class);
-		getAwsScanner().getEntityScanner(VpcScanner.class);
-		getAwsScanner().getEntityScanner(SubnetScanner.class);
-		getAwsScanner().getEntityScanner(Ec2InstanceScanner.class).scan();
-		getAwsScanner().getEntityScanner(AsgScanner.class).scan();
+	
 		
 		
 		// Verify that there are not any rogue relationships

@@ -16,7 +16,10 @@
 package rebar.graph.test;
 
 import org.junit.jupiter.api.Assumptions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,19 +28,36 @@ import rebar.graph.neo4j.GraphDriver;
 import rebar.util.EnvConfig;
 
 
-
+@TestInstance(Lifecycle.PER_CLASS)
 public abstract class AbstractIntegrationTest {
 
 	Logger logger = LoggerFactory.getLogger(getClass());
 
+	
 	private static RebarGraph rebarGraph;
 
 	static Boolean integrationTestEnabled=null;
 	static String reason=null;
+	
+	private TestDataPolicy testDataPolicy=TestDataPolicy.NOOP;
+	
 	public AbstractIntegrationTest() {
 
 	}
-
+	@BeforeAll
+	public final void __beforeAll() {
+		logger.info("invoking beforeAll()...");
+		beforeAll();
+	}
+	protected void beforeAll() {
+		
+	}
+	public void setTestDataPolicy(TestDataPolicy policy) {
+		this.testDataPolicy = policy;
+	}
+	public TestDataPolicy getTestDataPolicy() {
+		return testDataPolicy;
+	}
 	/**
 	 * By setting NEO4J_REQUIRED=true, we prevent tests from being skipped.  We set this to true in the CI environment
 	 * so that all builds run against NEO4J.
@@ -49,15 +69,30 @@ public abstract class AbstractIntegrationTest {
 		return Boolean.parseBoolean(System.getenv("NEO4J_REQUIRED"));
 	}
 	@BeforeEach
-	protected final void setupEnv() {
+	protected final void __setupRebarGraph() {
 
+		Assumptions.assumeTrue(getRebarGraph()!=null);
+
+	}
+
+	protected void cleanupTestData() {
+		GraphDriver driver = getRebarGraph().getGraphDB().getNeo4jDriver();
+		driver.newTemplate().cypher("match (a) where exists (a.testData) detach delete a").list();
+		driver.newTemplate().cypher("match (a) return distinct labels(a)[0] as label").stream()
+		.map(x -> x.path("label").asText()).distinct().filter(p -> p.toLowerCase().startsWith("junit") || p.toLowerCase().startsWith("test"))
+		.forEach(it -> {
+			logger.info("deleting nodes with label: {}", it);
+			driver.newTemplate().cypher("match (a:" + it + ") detach delete a").exec();
+		});
+	}
+	public final RebarGraph getRebarGraph() {
 		if (this.rebarGraph!=null) {
-			return;
+			return this.rebarGraph;
 		}
 		if (integrationTestEnabled!=null && integrationTestEnabled==false) {
 			logger.info("integration test disabled because: "+reason);
 			Assumptions.assumeTrue(false);
-			return;
+			return null;
 		}
 		EnvConfig checkConfig = new EnvConfig();
 		
@@ -90,25 +125,11 @@ public abstract class AbstractIntegrationTest {
 			reason=e.getMessage();
 			Assumptions.assumeTrue(false);
 		}
-
-	}
-
-	private void cleanupTestData() {
-		GraphDriver driver = getRebarGraph().getGraphDB().getNeo4jDriver();
-		driver.newTemplate().cypher("match (a) where exists (a.testData) detach delete a").list();
-		driver.newTemplate().cypher("match (a) return distinct labels(a)[0] as label").stream()
-		.map(x -> x.path("label").asText()).distinct().filter(p -> p.toLowerCase().startsWith("junit") || p.toLowerCase().startsWith("test"))
-		.forEach(it -> {
-			logger.info("deleting nodes with label: {}", it);
-			driver.newTemplate().cypher("match (a:" + it + ") detach delete a").exec();
-		});
-	}
-	public final RebarGraph getRebarGraph() {
 		return rebarGraph;
 	}
 	
 	public final GraphDriver getNeo4jDriver() {
-		return rebarGraph.getGraphDB().getNeo4jDriver();
+		return getRebarGraph().getGraphDB().getNeo4jDriver();
 	}
 
 }

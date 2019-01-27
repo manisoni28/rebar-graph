@@ -143,7 +143,7 @@ public final class AwsScanner extends Scanner {
 
 	@Override
 	protected void doScan() {
-		getEntityScanner(AllEntityScanner.class).scan();
+		getEntityScanner(AllEntityScannerGroup.class).scan();
 	}
 
 	<T extends AwsEntityScanner> T getEntityScannerForType(final String type) {

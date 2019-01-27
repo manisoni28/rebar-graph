@@ -53,10 +53,9 @@ public abstract class AwsEntityScanner<A extends Object> {
 	protected static final Set<String> TAG_PREFIXES = ImmutableSet.of(TAG_PREFIX);
 	private AwsEntityType entityType;
 
-	public AwsEntityScanner() {
-
+	boolean isEnabled() {
+		return true;
 	}
-
 	protected void init(AwsScanner scanner) {
 		this.scanner = scanner;
 
@@ -169,6 +168,10 @@ public abstract class AwsEntityScanner<A extends Object> {
 	}
 
 	public final void scan() {
+		if (!isEnabled()) {
+			logger.info("skipping execution of {}",getClass().getSimpleName());
+			return;
+		}
 		Stopwatch sw = Stopwatch.createStarted();
 		String type = getEntityType() != AwsEntityType.UNKNOWN ? getEntityTypeName() : getClass().getSimpleName();
 		logger.info("begin scan: {}", type);
