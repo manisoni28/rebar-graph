@@ -109,6 +109,7 @@ public abstract class AwsEntityScanner<A extends Object> {
 		op.match().forEach(it -> {
 			Exceptions.log(logger).run(() -> {
 				count.incrementAndGet();
+			
 				logger.info("running gc on {}", it.path(GraphDB.ENTITY_TYPE).asText());
 				scan(it);
 			});

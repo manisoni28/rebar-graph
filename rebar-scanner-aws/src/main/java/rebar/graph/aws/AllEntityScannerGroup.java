@@ -42,7 +42,8 @@ public class AllEntityScannerGroup extends SerialScanner {
 		
 		classList.add(RdsScannerGroup.class);
 	
-		
+		classList.add(ApiGatewayScannerGroup.class);
+		classList.add(ElasticMapReduceScannerGroup.class);
 		classList.add(SqsScanner.class);
 		classList.add(SnsScanner.class);
 		

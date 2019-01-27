@@ -19,6 +19,7 @@ dependencies {
     compile "com.amazonaws:aws-java-sdk-eks:${AWS_VERSION}"
     compile "com.amazonaws:aws-java-sdk-route53:${AWS_VERSION}"
     compile "com.amazonaws:aws-java-sdk-api-gateway:${AWS_VERSION}"
+    compile "com.amazonaws:aws-java-sdk-emr:${AWS_VERSION}"
     compile "com.amazonaws:aws-java-sdk-elasticache:${AWS_VERSION}"
     compile "com.amazonaws:aws-java-sdk-elasticsearch:${AWS_VERSION}"
     compile "com.amazonaws:aws-java-sdk-elasticloadbalancing:${AWS_VERSION}"
