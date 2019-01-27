@@ -15,11 +15,8 @@
  */
 package rebar.graph.aws;
 
-import java.util.Map;
-
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
@@ -28,11 +25,8 @@ import org.slf4j.LoggerFactory;
 
 import com.amazonaws.regions.Regions;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.google.common.base.Stopwatch;
-import com.google.common.collect.Maps;
 
 import rebar.graph.test.AbstractIntegrationTest;
-import rebar.graph.test.TestDataPolicy;
 
 /**
  * Peform live integration tests against AWS.
@@ -49,11 +43,16 @@ public abstract class AwsIntegrationTest extends AbstractIntegrationTest {
 
 	
 	public AwsIntegrationTest() {
-		this(TestDataPolicy.DELETE_BEFORE_TEST);
+		super();
 	}
-	public AwsIntegrationTest(TestDataPolicy policy) {
-		setTestDataPolicy(policy);
+
+
+	@Override
+	protected void beforeAll() {
+		super.beforeAll();
+		deleteAllAwsEntities();
 	}
+
 
 	boolean hasNodesOfType(AwsEntityType entityType) {
 		return getNeo4jDriver().cypher("match (a:"+entityType+") return count(a) as count").findFirst().get().path("count").asInt()>0;
@@ -71,19 +70,7 @@ public abstract class AwsIntegrationTest extends AbstractIntegrationTest {
 		.cypher("match (a) where labels(a)[0]=~'Aws.*' detach delete a").exec();
 	
 	}
-	@BeforeEach
-	public void _prepareData() {
 
-		if (getTestDataPolicy()==TestDataPolicy.DELETE_BEFORE_TEST) {
-			logger.info("deleting Aws entities before test...");
-			deleteAllAwsEntities();
-		}
-		else {
-			logger.info("not deleting Aws* entities becuase test data policy is: {}",getTestDataPolicy());
-		}
-		
-
-	}
 
 	protected AwsScanner getAwsScanner() {
 		try {

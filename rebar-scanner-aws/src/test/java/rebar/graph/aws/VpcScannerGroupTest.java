@@ -1,18 +1,10 @@
 package rebar.graph.aws;
 
-import java.awt.AWTKeyStroke;
-import java.util.List;
-
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
-
-import rebar.graph.test.TestDataPolicy;
 import rebar.util.Json;
 
 public class VpcScannerGroupTest extends AwsIntegrationTest {
@@ -20,7 +12,7 @@ public class VpcScannerGroupTest extends AwsIntegrationTest {
 	Logger logger = LoggerFactory.getLogger(VpcScannerGroupTest.class);
 
 	public VpcScannerGroupTest() {
-		super(TestDataPolicy.NOOP);
+		super();
 	}
 
 	@Override

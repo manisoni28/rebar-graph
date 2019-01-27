@@ -37,6 +37,7 @@ public class AwsScannerTest extends AwsIntegrationTest {
 
 	@Override
 	protected void beforeAll() {
+		logger.info("deleting all aws entities...");
 		deleteAllAwsEntities();
 	}
 	public void testScannerType() {

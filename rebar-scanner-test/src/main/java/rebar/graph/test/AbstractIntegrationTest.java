@@ -39,8 +39,7 @@ public abstract class AbstractIntegrationTest {
 	static Boolean integrationTestEnabled=null;
 	static String reason=null;
 	
-	private TestDataPolicy testDataPolicy=TestDataPolicy.NOOP;
-	
+
 	public AbstractIntegrationTest() {
 
 	}
@@ -52,12 +51,7 @@ public abstract class AbstractIntegrationTest {
 	protected void beforeAll() {
 		
 	}
-	public void setTestDataPolicy(TestDataPolicy policy) {
-		this.testDataPolicy = policy;
-	}
-	public TestDataPolicy getTestDataPolicy() {
-		return testDataPolicy;
-	}
+
 	/**
 	 * By setting NEO4J_REQUIRED=true, we prevent tests from being skipped.  We set this to true in the CI environment
 	 * so that all builds run against NEO4J.

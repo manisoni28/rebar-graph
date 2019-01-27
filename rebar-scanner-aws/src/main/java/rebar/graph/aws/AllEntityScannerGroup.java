@@ -40,8 +40,8 @@ public class AllEntityScannerGroup extends SerialScanner {
 		classList.add(EksClusterScanner.class);
 		classList.add(LambdaFunctionScanner.class);
 		
-		classList.add(RdsClusterScanner.class);
-		classList.add(RdsInstanceScanner.class);
+		classList.add(RdsScannerGroup.class);
+	
 		
 		classList.add(SqsScanner.class);
 		classList.add(SnsScanner.class);

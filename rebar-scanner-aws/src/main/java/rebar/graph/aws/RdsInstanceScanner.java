@@ -35,7 +35,7 @@ public class RdsInstanceScanner extends AwsEntityScanner<DBInstance> {
 		n.set("endpointAddress", n.path("endpoint").path("address"));
 		n.set("endpointPort", n.path("endpoint").path("port"));
 		n.set("endpointHostedZoneId", n.path("endpoint").path("hostedZoneId"));
-		
+		n.set("status", n.path("dbInstanceStatus"));
 		n.set("vpcId",n.path("dbsubnetGroup").path("vpcId"));
 		
 		ArrayNode an = Json.arrayNode();
@@ -66,6 +66,8 @@ public class RdsInstanceScanner extends AwsEntityScanner<DBInstance> {
 		} while (!Strings.isNullOrEmpty(request.getMarker()));
 
 		gc("AwsRdsInstance", ts);
+		mergeClusterInstanceRelationships();
+		mergeAccountOwner();
 	}
 
 	protected void project(DBInstance instance) {
@@ -92,11 +94,18 @@ public class RdsInstanceScanner extends AwsEntityScanner<DBInstance> {
 			result.getDBInstances().forEach(it -> {
 				project(it);			
 			});
+			mergeClusterInstanceRelationships();
+			mergeAccountOwner();
 		} catch (DBInstanceNotFoundException e) {
 			getGraphDB().nodes("AwsRdsInstance").id("account", getAccount()).id("region", getRegionName())
 					.id("dbInstanceIdentifier", id).delete();
 		}
 
+	}
+	
+	protected void mergeClusterInstanceRelationships() {
+		awsGraphNodes(AwsEntityType.AwsRdsCluster.name()).relationship("HAS").on("dbClusterIdentifier", "dbClusterIdentifier").to(AwsEntityType.AwsRdsInstance.name()).merge();
+		
 	}
 	@Override
 	public AwsEntityType getEntityType() {

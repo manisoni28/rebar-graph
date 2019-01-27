@@ -58,7 +58,8 @@ public class RdsClusterScanner extends AwsEntityScanner<DBCluster> {
 		ObjectNode n = super.toJson(awsObject);
 
 		fixBrokenNames(n);
-
+		n.put("arn", awsObject.getDBClusterArn());
+		
 		return n;
 	}
 
@@ -76,6 +77,8 @@ public class RdsClusterScanner extends AwsEntityScanner<DBCluster> {
 			request.setMarker(result.getMarker());
 		} while (!Strings.isNullOrEmpty(request.getMarker()));
 		gc("AwsRdsCluster", ts);
+		
+		mergeAccountOwner();
 
 	}
 
@@ -108,7 +111,7 @@ public class RdsClusterScanner extends AwsEntityScanner<DBCluster> {
 			getGraphDB().nodes("AwsRdsCluster").id("account", getAccount()).id("region", getRegionName())
 					.id("dbclusterIdentifier", dbClusterIdentifier).delete();
 		}
-
+		mergeAccountOwner();
 	}
 	
 	@Override

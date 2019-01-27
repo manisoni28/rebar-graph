@@ -44,7 +44,7 @@ public class AllEntityScannerTest extends AwsIntegrationTest {
 		Assertions.assertThat(s.getScannerClasses().get(1)).isEqualTo(Ec2ScannerGroup.class);
 		
 		
-		Assertions.assertThat(s.getScannerClasses()).containsAll(ImmutableList.of(S3Scanner.class,EksClusterScanner.class,RdsClusterScanner.class,RdsInstanceScanner.class,SqsScanner.class,SnsScanner.class,Route53Scanner.class));
+		Assertions.assertThat(s.getScannerClasses()).containsAll(ImmutableList.of(S3Scanner.class,EksClusterScanner.class,RdsScannerGroup.class,SqsScanner.class,SnsScanner.class,Route53Scanner.class));
 
 	}
 
