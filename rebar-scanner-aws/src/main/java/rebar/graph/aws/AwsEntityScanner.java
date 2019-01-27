@@ -264,7 +264,8 @@ public abstract class AwsEntityScanner<A extends Object> {
 		if (t==AwsEntityType.AwsAccount) {
 			return;
 		}
-		getGraphDB().nodes(AwsEntityType.AwsAccount.name()).id("account", getAccount()).relationship("HAS").to(t.name()).id("account", getAccount());
+		logger.info("merging owner AwsAccount({}) -> {}",getAccount(),t.name());
+		getGraphDB().nodes(AwsEntityType.AwsAccount.name()).id("account", getAccount()).relationship("HAS").on("account", "account").to(t.name()).id("account", getAccount()).merge();;
 	}
 	protected void mergeAccountOwner() {
 		mergeAccountOwner(getEntityType());

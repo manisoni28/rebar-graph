@@ -95,7 +95,11 @@ public class AwsScannerTest extends AwsIntegrationTest {
 						.startsWith("arn:aws:");
 				Assertions.assertThat(it.has("region")).as("missing region attribute: %s", arn).isTrue();
 				Assertions.assertThat(it.has("account")).as("missing account attribute: %s", arn).isTrue();
-				Assertions.assertThat(it.path("region").asText()).isEqualTo(getAwsScanner().getRegion().getName());
+				
+				if (!label.equals("AwsS3Bucket")) {
+					// S3 is semi-global
+					Assertions.assertThat(it.path("region").asText()).isEqualTo(getAwsScanner().getRegion().getName());
+				}
 
 				if (!it.path("graphEntityType").asText().equals("AwsAmi")) {
 					// account on AMI doesn't necessarily match since AMIs are widely shared cross-account
@@ -136,7 +140,8 @@ public class AwsScannerTest extends AwsIntegrationTest {
 		validRelationships.add("AwsEksCluster RESIDES_IN AwsSubnet");
 		validRelationships.add("AwsEksCluster USES AwsSecurityGroup");
 		validRelationships.add("AwsHostedZone HAS AwsHostedZoneRecordSet");
-		
+		validRelationships.add("AwsAccount HAS AwsSnsTopic");
+		validRelationships.add("AwsAccount HAS AwsS3Bucket");
 		validRelationships.add("AwsAccount HAS AwsSqsQueue");
 		getNeo4jDriver().cypher(
 				"match (a)-[r]->(b) where labels(a)[0]=~'Aws.*' return a.graphEntityType as fromLabel,r,b.graphEntityType as toLabel,type(r) as relType")

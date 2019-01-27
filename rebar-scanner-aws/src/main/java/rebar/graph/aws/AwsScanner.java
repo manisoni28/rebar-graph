@@ -235,6 +235,9 @@ public final class AwsScanner extends Scanner {
 		s.createUniqueConstraint("AwsSqsQueue", "arn");
 		s.createUniqueConstraint("AwsSnsTopic", "arn");
 		s.createUniqueConstraint("AwsSnsSubscription", "arn");
+		
+		s.createUniqueConstraint("AwsS3Bucket", "arn");
+		s.createUniqueConstraint("AwsS3Bucket", "name");
 	}
 
 	public String toString() {

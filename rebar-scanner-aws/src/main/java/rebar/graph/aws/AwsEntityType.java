@@ -24,6 +24,7 @@ public enum AwsEntityType {
 	AwsSnsSubscription("AwsSnsSubscription"),
 	AwsSqsQueue("AwsSqsQueue"),
 	AwsElbListener("AwsElbListener"),
+	AwsS3Bucket("AwsS3Bucket"),
 	AwsSubnet("AwsSubnet"),
 	AwsVpc("AwsVpc"),
 	UNKNOWN("UNKNOWN");
