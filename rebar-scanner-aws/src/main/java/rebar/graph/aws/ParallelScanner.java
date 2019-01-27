@@ -1,6 +1,7 @@
 package rebar.graph.aws;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
@@ -9,19 +10,27 @@ import java.util.concurrent.TimeUnit;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 import rebar.util.Sleep;
 
 public class ParallelScanner extends AwsEntityScanner {
 
-	static ExecutorService globalExecutor = Executors.newWorkStealingPool(20);
+	
+	private static Map<String,ExecutorService> regionalExecutorMap = Maps.newConcurrentMap();
+	
 	public ParallelScanner() {
 	
 	}
-	Set<Class<? extends AwsEntityScanner>> scanners =Sets.newCopyOnWriteArraySet();
 	
+	Set<Class<? extends AwsEntityScanner>> scanners =Sets.newHashSet();
+	
+	public ParallelScanner addScanner(Class<? extends AwsEntityScanner> scannerClass) { 
+		return withScanner(scannerClass);
+	}
 	public ParallelScanner withScanner(Class<? extends AwsEntityScanner> scannerClass) {
 		
 		Preconditions.checkArgument(!ParallelScanner.class.isAssignableFrom(scannerClass));
@@ -30,9 +39,12 @@ public class ParallelScanner extends AwsEntityScanner {
 		return this;
 	}
 
+	private synchronized void makeImmutable() {
+		scanners = ImmutableSet.copyOf(scanners);
+	}
 	@Override
-	protected void doScan() {
-		
+	protected final void doScan() {
+		makeImmutable();
 		List<CompletableFuture> futureList = Lists.newArrayList();
 		for (Class<? extends AwsEntityScanner> x: scanners) {
 			
@@ -46,7 +58,7 @@ public class ParallelScanner extends AwsEntityScanner {
 				}
 				
 			};
-			CompletableFuture future = CompletableFuture.runAsync(r, globalExecutor);
+			CompletableFuture future = CompletableFuture.runAsync(r, getExecutorServiceForRegion(getRegionName()));
 			futureList.add(future);
 		}
 		
@@ -77,4 +89,20 @@ public class ParallelScanner extends AwsEntityScanner {
 		return AwsEntityType.UNKNOWN;
 	}
 
+	/**
+	 * Allows parallel concurrency by region.  This prevents a given region from locking up or hogging ability to make progress
+	 * on other regions.
+	 * @param region
+	 * @return
+	 */
+	protected synchronized ExecutorService getExecutorServiceForRegion(String region) {
+		ExecutorService executor = regionalExecutorMap.get(region);
+		if (executor==null) {
+			logger.info("creating executor to handle reagion: {}",region);
+			executor = Executors.newWorkStealingPool(10);
+			regionalExecutorMap.put(region, executor);
+			
+		}
+		return executor;
+	}
 }

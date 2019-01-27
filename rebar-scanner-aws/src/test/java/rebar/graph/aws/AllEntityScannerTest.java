@@ -40,7 +40,7 @@ public class AllEntityScannerTest extends AwsIntegrationTest {
 		ScanResult result = new ClassGraph().enableClassInfo().whitelistPackages(getClass().getPackage().getName())
 				.scan();
 
-		List<Class> exclusions = ImmutableList.of(ElbListenerScanner.class, SerialScanner.class,
+		List<Class> exclusions = ImmutableList.of(ElbListenerScanner.class, ParallelScanner.class,SerialScanner.class,
 				AllEntityScanner.class);
 
 		// Maybe we move this to a test. Just want to prevent scanners from being

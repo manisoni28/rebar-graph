@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
 public class SerialScanner extends AwsEntityScanner {
@@ -49,9 +50,13 @@ public class SerialScanner extends AwsEntityScanner {
 		return Optional.empty();
 	}
 
+	private synchronized void makeImmutable() {
+		scanners = ImmutableList.copyOf(scanners);
+	}
+	
 	@Override
-	protected void doScan() {
-
+	protected final void doScan() {
+		makeImmutable();
 		scanners.forEach(scanner -> {
 			try {
 				Constructor ctor = scanner.getConstructor();
