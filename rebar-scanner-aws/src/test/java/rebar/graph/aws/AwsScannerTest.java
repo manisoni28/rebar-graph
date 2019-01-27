@@ -175,4 +175,11 @@ public class AwsScannerTest extends AwsIntegrationTest {
 		getAwsScanner().maybeThrow(new RuntimeException("testing maybeThrow()"));
 	}
 
+	
+	@Test
+	public void testParallel() {
+		
+		getAwsScanner().getEntityScanner(ParallelScanner.class).withScanner(SqsScanner.class).scan();
+	
+	}
 }
