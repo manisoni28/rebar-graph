@@ -7,6 +7,8 @@ public enum AwsEntityType {
 	AwsAmi("AwsAmi"),
 	AwsAsg("AwsAsg"),
 	AwsAvailabilityZone("AwsAvailabilityZone"),
+	AwsCacheCluster("AwsCacheCluster"),
+	AwsCacheClusterNode("AwsCacheClusterNode"),
 	AwsEc2Instance("AwsEc2Instance"),
 	AwsEksCluster("AwsEksCluster"),
 	AwsElb("AwsElb"),
