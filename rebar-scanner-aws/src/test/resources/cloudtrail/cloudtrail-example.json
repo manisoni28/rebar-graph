@@ -1,0 +1,944 @@
+{
+    "Records": [
+        {
+            "eventVersion": "1.05",
+            "userIdentity": {
+                "type": "AWSService",
+                "invokedBy": "cloudtrail.amazonaws.com"
+            },
+            "eventTime": "2019-01-26T23:58:47Z",
+            "eventSource": "s3.amazonaws.com",
+            "eventName": "PutObject",
+            "awsRegion": "us-west-2",
+            "sourceIPAddress": "cloudtrail.amazonaws.com",
+            "userAgent": "cloudtrail.amazonaws.com",
+            "requestParameters": {
+                "bucketName": "my-bucket-name",
+                "Host": "my-bucket-name.s3.us-west-2.amazonaws.com",
+                "x-amz-acl": "bucket-owner-full-control",
+                "x-amz-server-side-encryption": "AES256",
+                "key": "AWSLogs/123456789765/CloudTrail/us-east-2/2019/01/26/123456789765_CloudTrail_us-east-2_20190126T2355Z_lQ3gBcXQ2CFAKZ0O.json.gz"
+            },
+            "responseElements": {
+                "x-amz-server-side-encryption": "AES256"
+            },
+            "additionalEventData": {
+                "SignatureVersion": "SigV4",
+                "CipherSuite": "ECDHE-RSA-AES128-SHA",
+                "SSEApplied": "SSE_S3",
+                "AuthenticationMethod": "AuthHeader",
+                "x-amz-id-2": "FE9svrsfCyBcdcGPfrkUnQitMl+cPLO1DywVuWPiTWnTDLegrxB8qe4yYiLIL/T/H5GFCkWxfuU="
+            },
+            "requestID": "DB87A8E238617626",
+            "eventID": "febab46f-fc63-4fd8-b4ef-a89d8dc417f9",
+            "readOnly": false,
+            "resources": [
+                {
+                    "type": "AWS::S3::Object",
+                    "ARN": "arn:aws:s3:::my-bucket-name/AWSLogs/123456789765/CloudTrail/us-east-2/2019/01/26/123456789765_CloudTrail_us-east-2_20190126T2355Z_lQ3gBcXQ2CFAKZ0O.json.gz"
+                },
+                {
+                    "accountId": "123456789765",
+                    "type": "AWS::S3::Bucket",
+                    "ARN": "arn:aws:s3:::my-bucket-name"
+                }
+            ],
+            "eventType": "AwsApiCall",
+            "recipientAccountId": "123456789765",
+            "sharedEventID": "e5d6120f-f7f8-4b6e-bff1-0be55cb093f8"
+        },
+        {
+            "eventVersion": "1.05",
+            "userIdentity": {
+                "type": "AWSService",
+                "invokedBy": "cloudtrail.amazonaws.com"
+            },
+            "eventTime": "2019-01-26T23:58:48Z",
+            "eventSource": "s3.amazonaws.com",
+            "eventName": "PutObject",
+            "awsRegion": "us-west-2",
+            "sourceIPAddress": "cloudtrail.amazonaws.com",
+            "userAgent": "cloudtrail.amazonaws.com",
+            "requestParameters": {
+                "bucketName": "my-bucket-name",
+                "Host": "my-bucket-name.s3.us-west-2.amazonaws.com",
+                "x-amz-acl": "bucket-owner-full-control",
+                "x-amz-server-side-encryption": "AES256",
+                "key": "AWSLogs/123456789765/CloudTrail/us-west-2/2019/01/27/123456789765_CloudTrail_us-west-2_20190127T0000Z_k9bWung4eNxTlRIA.json.gz"
+            },
+            "responseElements": {
+                "x-amz-server-side-encryption": "AES256"
+            },
+            "additionalEventData": {
+                "SignatureVersion": "SigV4",
+                "CipherSuite": "ECDHE-RSA-AES128-SHA",
+                "SSEApplied": "SSE_S3",
+                "AuthenticationMethod": "AuthHeader",
+                "x-amz-id-2": "sAVj39EZz/zAtcnitFOgtkxLvMd2Ot0gJOa9TGMKVfYaE/+rAjHeJNfS97kltx9Pkp5pcVgnGbE="
+            },
+            "requestID": "577A0AB72045F020",
+            "eventID": "1967f10e-356c-4e18-98a3-f9637446fba7",
+            "readOnly": false,
+            "resources": [
+                {
+                    "type": "AWS::S3::Object",
+                    "ARN": "arn:aws:s3:::my-bucket-name/AWSLogs/123456789765/CloudTrail/us-west-2/2019/01/27/123456789765_CloudTrail_us-west-2_20190127T0000Z_k9bWung4eNxTlRIA.json.gz"
+                },
+                {
+                    "accountId": "123456789765",
+                    "type": "AWS::S3::Bucket",
+                    "ARN": "arn:aws:s3:::my-bucket-name"
+                }
+            ],
+            "eventType": "AwsApiCall",
+            "recipientAccountId": "123456789765",
+            "sharedEventID": "a30e101c-ce04-4b14-ad4b-b91654e0de6c"
+        },
+        {
+            "eventVersion": "1.05",
+            "userIdentity": {
+                "type": "AWSService",
+                "invokedBy": "cloudtrail.amazonaws.com"
+            },
+            "eventTime": "2019-01-26T23:58:48Z",
+            "eventSource": "s3.amazonaws.com",
+            "eventName": "PutObject",
+            "awsRegion": "us-west-2",
+            "sourceIPAddress": "cloudtrail.amazonaws.com",
+            "userAgent": "cloudtrail.amazonaws.com",
+            "requestParameters": {
+                "bucketName": "my-bucket-name",
+                "Host": "my-bucket-name.s3.us-west-2.amazonaws.com",
+                "x-amz-acl": "bucket-owner-full-control",
+                "x-amz-server-side-encryption": "AES256",
+                "key": "AWSLogs/123456789765/CloudTrail/us-east-1/2019/01/26/123456789765_CloudTrail_us-east-1_20190126T2355Z_YbKpnYhRvm6k6FXE.json.gz"
+            },
+            "responseElements": {
+                "x-amz-server-side-encryption": "AES256"
+            },
+            "additionalEventData": {
+                "SignatureVersion": "SigV4",
+                "CipherSuite": "ECDHE-RSA-AES128-GCM-SHA256",
+                "SSEApplied": "SSE_S3",
+                "AuthenticationMethod": "AuthHeader",
+                "x-amz-id-2": "SjUTxfbI8R0nZhYAlZriHUWdJrOXyCjSHQ/WwENb2+6hYkq6siOgew7qB+Be9z/IZPKZ/XA9PfQ="
+            },
+            "requestID": "936066B9287C84E8",
+            "eventID": "b8aa0464-ef3d-42c5-a734-db7134240e53",
+            "readOnly": false,
+            "resources": [
+                {
+                    "type": "AWS::S3::Object",
+                    "ARN": "arn:aws:s3:::my-bucket-name/AWSLogs/123456789765/CloudTrail/us-east-1/2019/01/26/123456789765_CloudTrail_us-east-1_20190126T2355Z_YbKpnYhRvm6k6FXE.json.gz"
+                },
+                {
+                    "accountId": "123456789765",
+                    "type": "AWS::S3::Bucket",
+                    "ARN": "arn:aws:s3:::my-bucket-name"
+                }
+            ],
+            "eventType": "AwsApiCall",
+            "recipientAccountId": "123456789765",
+            "sharedEventID": "de0c7944-9ff2-4286-8f0c-b254d6169888"
+        },
+        {
+            "eventVersion": "1.05",
+            "userIdentity": {
+                "type": "AWSService",
+                "invokedBy": "cloudtrail.amazonaws.com"
+            },
+            "eventTime": "2019-01-26T23:58:49Z",
+            "eventSource": "s3.amazonaws.com",
+            "eventName": "PutObject",
+            "awsRegion": "us-west-2",
+            "sourceIPAddress": "cloudtrail.amazonaws.com",
+            "userAgent": "cloudtrail.amazonaws.com",
+            "requestParameters": {
+                "bucketName": "my-bucket-name",
+                "Host": "my-bucket-name.s3.us-west-2.amazonaws.com",
+                "x-amz-acl": "bucket-owner-full-control",
+                "x-amz-server-side-encryption": "AES256",
+                "key": "AWSLogs/123456789765/CloudTrail/ca-central-1/2019/01/26/123456789765_CloudTrail_ca-central-1_20190126T2355Z_eM6KUI0Im0lfMz3p.json.gz"
+            },
+            "responseElements": {
+                "x-amz-server-side-encryption": "AES256"
+            },
+            "additionalEventData": {
+                "SignatureVersion": "SigV4",
+                "CipherSuite": "ECDHE-RSA-AES128-GCM-SHA256",
+                "SSEApplied": "SSE_S3",
+                "AuthenticationMethod": "AuthHeader",
+                "x-amz-id-2": "GKs/J2oLAajCXBccfHPJjQCx3svbsXusgCUX5Sy00W5UHsWT3pjhIrWxQYO+3Rzqij/fDZjwbFs="
+            },
+            "requestID": "226E8F451CD5B3F8",
+            "eventID": "d846e07c-66ee-43e4-b449-20599462a94c",
+            "readOnly": false,
+            "resources": [
+                {
+                    "type": "AWS::S3::Object",
+                    "ARN": "arn:aws:s3:::my-bucket-name/AWSLogs/123456789765/CloudTrail/ca-central-1/2019/01/26/123456789765_CloudTrail_ca-central-1_20190126T2355Z_eM6KUI0Im0lfMz3p.json.gz"
+                },
+                {
+                    "accountId": "123456789765",
+                    "type": "AWS::S3::Bucket",
+                    "ARN": "arn:aws:s3:::my-bucket-name"
+                }
+            ],
+            "eventType": "AwsApiCall",
+            "recipientAccountId": "123456789765",
+            "sharedEventID": "5e2de47d-f99e-4a75-b316-7cbf0fcd54b8"
+        },
+        {
+            "eventVersion": "1.05",
+            "userIdentity": {
+                "type": "AWSService",
+                "invokedBy": "cloudtrail.amazonaws.com"
+            },
+            "eventTime": "2019-01-26T23:58:50Z",
+            "eventSource": "s3.amazonaws.com",
+            "eventName": "PutObject",
+            "awsRegion": "us-west-2",
+            "sourceIPAddress": "cloudtrail.amazonaws.com",
+            "userAgent": "cloudtrail.amazonaws.com",
+            "requestParameters": {
+                "bucketName": "my-bucket-name",
+                "Host": "my-bucket-name.s3.us-west-2.amazonaws.com",
+                "x-amz-acl": "bucket-owner-full-control",
+                "x-amz-server-side-encryption": "AES256",
+                "key": "AWSLogs/123456789765/CloudTrail/ap-northeast-2/2019/01/26/123456789765_CloudTrail_ap-northeast-2_20190126T2355Z_3wIvzEiD4HSGrV3o.json.gz"
+            },
+            "responseElements": {
+                "x-amz-server-side-encryption": "AES256"
+            },
+            "additionalEventData": {
+                "SignatureVersion": "SigV4",
+                "CipherSuite": "ECDHE-RSA-AES128-GCM-SHA256",
+                "SSEApplied": "SSE_S3",
+                "AuthenticationMethod": "AuthHeader",
+                "x-amz-id-2": "8y0IufDSFwnQiL808W+GX+/l1J1BI3SHte67RpzQX2tPcjlcXSQrMvj+RZkVLcmD0BW4esSm84g="
+            },
+            "requestID": "EF6587AC27D28B67",
+            "eventID": "ba10aa23-3a4d-484d-8948-7a7f63293fba",
+            "readOnly": false,
+            "resources": [
+                {
+                    "type": "AWS::S3::Object",
+                    "ARN": "arn:aws:s3:::my-bucket-name/AWSLogs/123456789765/CloudTrail/ap-northeast-2/2019/01/26/123456789765_CloudTrail_ap-northeast-2_20190126T2355Z_3wIvzEiD4HSGrV3o.json.gz"
+                },
+                {
+                    "accountId": "123456789765",
+                    "type": "AWS::S3::Bucket",
+                    "ARN": "arn:aws:s3:::my-bucket-name"
+                }
+            ],
+            "eventType": "AwsApiCall",
+            "recipientAccountId": "123456789765",
+            "sharedEventID": "98e8a2a7-151a-48ce-a602-7c59e163241f"
+        },
+        {
+            "eventVersion": "1.05",
+            "userIdentity": {
+                "type": "AWSService",
+                "invokedBy": "cloudtrail.amazonaws.com"
+            },
+            "eventTime": "2019-01-26T23:58:50Z",
+            "eventSource": "s3.amazonaws.com",
+            "eventName": "PutObject",
+            "awsRegion": "us-west-2",
+            "sourceIPAddress": "cloudtrail.amazonaws.com",
+            "userAgent": "cloudtrail.amazonaws.com",
+            "requestParameters": {
+                "bucketName": "my-bucket-name",
+                "Host": "my-bucket-name.s3.us-west-2.amazonaws.com",
+                "x-amz-acl": "bucket-owner-full-control",
+                "x-amz-server-side-encryption": "AES256",
+                "key": "AWSLogs/123456789765/CloudTrail/us-west-1/2019/01/26/123456789765_CloudTrail_us-west-1_20190126T2355Z_j4tXiy2UySsJ8PHA.json.gz"
+            },
+            "responseElements": {
+                "x-amz-server-side-encryption": "AES256"
+            },
+            "additionalEventData": {
+                "SignatureVersion": "SigV4",
+                "CipherSuite": "ECDHE-RSA-AES128-GCM-SHA256",
+                "SSEApplied": "SSE_S3",
+                "AuthenticationMethod": "AuthHeader",
+                "x-amz-id-2": "vYPn05isTENCwT+M5Cq054c0utzWdFORRsCVcdJvCJo0+8eCQAUwRZYA5oP76YO6gvN03ZDUw7Q="
+            },
+            "requestID": "6CEC7E955DD9509B",
+            "eventID": "5a3b8ed3-fc42-4647-888c-2a541153f011",
+            "readOnly": false,
+            "resources": [
+                {
+                    "type": "AWS::S3::Object",
+                    "ARN": "arn:aws:s3:::my-bucket-name/AWSLogs/123456789765/CloudTrail/us-west-1/2019/01/26/123456789765_CloudTrail_us-west-1_20190126T2355Z_j4tXiy2UySsJ8PHA.json.gz"
+                },
+                {
+                    "accountId": "123456789765",
+                    "type": "AWS::S3::Bucket",
+                    "ARN": "arn:aws:s3:::my-bucket-name"
+                }
+            ],
+            "eventType": "AwsApiCall",
+            "recipientAccountId": "123456789765",
+            "sharedEventID": "af66cf6a-bc09-422b-82a8-e9fff91e07f1"
+        },
+        {
+            "eventVersion": "1.05",
+            "userIdentity": {
+                "type": "AWSService",
+                "invokedBy": "cloudtrail.amazonaws.com"
+            },
+            "eventTime": "2019-01-26T23:58:51Z",
+            "eventSource": "s3.amazonaws.com",
+            "eventName": "PutObject",
+            "awsRegion": "us-west-2",
+            "sourceIPAddress": "cloudtrail.amazonaws.com",
+            "userAgent": "cloudtrail.amazonaws.com",
+            "requestParameters": {
+                "bucketName": "my-bucket-name",
+                "Host": "my-bucket-name.s3.us-west-2.amazonaws.com",
+                "x-amz-acl": "bucket-owner-full-control",
+                "x-amz-server-side-encryption": "AES256",
+                "key": "AWSLogs/123456789765/CloudTrail/eu-west-3/2019/01/26/123456789765_CloudTrail_eu-west-3_20190126T2355Z_U1ODP7mEFK8Z9lk5.json.gz"
+            },
+            "responseElements": {
+                "x-amz-server-side-encryption": "AES256"
+            },
+            "additionalEventData": {
+                "SignatureVersion": "SigV4",
+                "CipherSuite": "ECDHE-RSA-AES128-GCM-SHA256",
+                "SSEApplied": "SSE_S3",
+                "AuthenticationMethod": "AuthHeader",
+                "x-amz-id-2": "xdo7CP4Mf896+0vzfclSv8EbyeYxIRtv4nyJGN7C4SC4rhQ3MxtyCeYwnQ4D4p8b1ZA8vsBGmVw="
+            },
+            "requestID": "CDBB6CF583CB1C2F",
+            "eventID": "ef528456-9a69-4dca-ac78-88214ea3637b",
+            "readOnly": false,
+            "resources": [
+                {
+                    "type": "AWS::S3::Object",
+                    "ARN": "arn:aws:s3:::my-bucket-name/AWSLogs/123456789765/CloudTrail/eu-west-3/2019/01/26/123456789765_CloudTrail_eu-west-3_20190126T2355Z_U1ODP7mEFK8Z9lk5.json.gz"
+                },
+                {
+                    "accountId": "123456789765",
+                    "type": "AWS::S3::Bucket",
+                    "ARN": "arn:aws:s3:::my-bucket-name"
+                }
+            ],
+            "eventType": "AwsApiCall",
+            "recipientAccountId": "123456789765",
+            "sharedEventID": "c553f335-ca5a-4b9c-ab8f-548b3bec8572"
+        },
+        {
+            "eventVersion": "1.05",
+            "userIdentity": {
+                "type": "AWSService",
+                "invokedBy": "cloudtrail.amazonaws.com"
+            },
+            "eventTime": "2019-01-26T23:58:52Z",
+            "eventSource": "s3.amazonaws.com",
+            "eventName": "PutObject",
+            "awsRegion": "us-west-2",
+            "sourceIPAddress": "cloudtrail.amazonaws.com",
+            "userAgent": "cloudtrail.amazonaws.com",
+            "requestParameters": {
+                "bucketName": "my-bucket-name",
+                "Host": "my-bucket-name.s3.us-west-2.amazonaws.com",
+                "x-amz-acl": "bucket-owner-full-control",
+                "x-amz-server-side-encryption": "AES256",
+                "key": "AWSLogs/123456789765/CloudTrail/ap-southeast-2/2019/01/26/123456789765_CloudTrail_ap-southeast-2_20190126T2355Z_c5Xt7ZaLJEBOBJq8.json.gz"
+            },
+            "responseElements": {
+                "x-amz-server-side-encryption": "AES256"
+            },
+            "additionalEventData": {
+                "SignatureVersion": "SigV4",
+                "CipherSuite": "ECDHE-RSA-AES128-GCM-SHA256",
+                "SSEApplied": "SSE_S3",
+                "AuthenticationMethod": "AuthHeader",
+                "x-amz-id-2": "/M9HKhbC/T9aoqqIlx9hh7xDYEjKSDMS3gN0/b8yIVSUvfmszIkCINkoBsESRAW88WyWzeeMMAc="
+            },
+            "requestID": "E31934183D592B92",
+            "eventID": "5ba991cd-e109-45cd-aa4a-ba1147ae5fd9",
+            "readOnly": false,
+            "resources": [
+                {
+                    "type": "AWS::S3::Object",
+                    "ARN": "arn:aws:s3:::my-bucket-name/AWSLogs/123456789765/CloudTrail/ap-southeast-2/2019/01/26/123456789765_CloudTrail_ap-southeast-2_20190126T2355Z_c5Xt7ZaLJEBOBJq8.json.gz"
+                },
+                {
+                    "accountId": "123456789765",
+                    "type": "AWS::S3::Bucket",
+                    "ARN": "arn:aws:s3:::my-bucket-name"
+                }
+            ],
+            "eventType": "AwsApiCall",
+            "recipientAccountId": "123456789765",
+            "sharedEventID": "e6b5431d-a681-44ef-804e-33415b28b2b5"
+        },
+        {
+            "eventVersion": "1.05",
+            "userIdentity": {
+                "type": "AWSService",
+                "invokedBy": "cloudtrail.amazonaws.com"
+            },
+            "eventTime": "2019-01-26T23:58:52Z",
+            "eventSource": "s3.amazonaws.com",
+            "eventName": "PutObject",
+            "awsRegion": "us-west-2",
+            "sourceIPAddress": "cloudtrail.amazonaws.com",
+            "userAgent": "cloudtrail.amazonaws.com",
+            "requestParameters": {
+                "bucketName": "my-bucket-name",
+                "Host": "my-bucket-name.s3.us-west-2.amazonaws.com",
+                "x-amz-acl": "bucket-owner-full-control",
+                "x-amz-server-side-encryption": "AES256",
+                "key": "AWSLogs/123456789765/CloudTrail/ap-south-1/2019/01/26/123456789765_CloudTrail_ap-south-1_20190126T2355Z_Lci3o15G743nuBiq.json.gz"
+            },
+            "responseElements": {
+                "x-amz-server-side-encryption": "AES256"
+            },
+            "additionalEventData": {
+                "SignatureVersion": "SigV4",
+                "CipherSuite": "ECDHE-RSA-AES128-SHA",
+                "SSEApplied": "SSE_S3",
+                "AuthenticationMethod": "AuthHeader",
+                "x-amz-id-2": "qLGH0IS2AeOCE4Mr2QpDDO0cAzukItc4Gw0CkCWzBVi9ZsndpeIiPnIcTxuEqJO7BnDZvsUF4tA="
+            },
+            "requestID": "02A6E409037BED94",
+            "eventID": "dd937c06-ae69-426d-a696-8f63c4a182a9",
+            "readOnly": false,
+            "resources": [
+                {
+                    "type": "AWS::S3::Object",
+                    "ARN": "arn:aws:s3:::my-bucket-name/AWSLogs/123456789765/CloudTrail/ap-south-1/2019/01/26/123456789765_CloudTrail_ap-south-1_20190126T2355Z_Lci3o15G743nuBiq.json.gz"
+                },
+                {
+                    "accountId": "123456789765",
+                    "type": "AWS::S3::Bucket",
+                    "ARN": "arn:aws:s3:::my-bucket-name"
+                }
+            ],
+            "eventType": "AwsApiCall",
+            "recipientAccountId": "123456789765",
+            "sharedEventID": "c3334a7c-fc56-4f02-a96c-b0259d6ee7b8"
+        },
+        {
+            "eventVersion": "1.05",
+            "userIdentity": {
+                "type": "AWSService",
+                "invokedBy": "cloudtrail.amazonaws.com"
+            },
+            "eventTime": "2019-01-26T23:58:52Z",
+            "eventSource": "s3.amazonaws.com",
+            "eventName": "PutObject",
+            "awsRegion": "us-west-2",
+            "sourceIPAddress": "cloudtrail.amazonaws.com",
+            "userAgent": "cloudtrail.amazonaws.com",
+            "requestParameters": {
+                "bucketName": "my-bucket-name",
+                "Host": "my-bucket-name.s3.us-west-2.amazonaws.com",
+                "x-amz-acl": "bucket-owner-full-control",
+                "x-amz-server-side-encryption": "AES256",
+                "key": "AWSLogs/123456789765/CloudTrail/eu-north-1/2019/01/26/123456789765_CloudTrail_eu-north-1_20190126T2355Z_sl9o8WiT27s2sc6n.json.gz"
+            },
+            "responseElements": {
+                "x-amz-server-side-encryption": "AES256"
+            },
+            "additionalEventData": {
+                "SignatureVersion": "SigV4",
+                "CipherSuite": "ECDHE-RSA-AES128-GCM-SHA256",
+                "SSEApplied": "SSE_S3",
+                "AuthenticationMethod": "AuthHeader",
+                "x-amz-id-2": "WxII0W+aFQ+XILkZSs+UZ3nmI0GelNtuzfRbxVJ2mG4aKaNcX7Is/dNQ03hz5u639v5mfwlswrc="
+            },
+            "requestID": "3A9681E183CAA1CC",
+            "eventID": "ef04e126-473a-48a5-b542-ac79e9c153d7",
+            "readOnly": false,
+            "resources": [
+                {
+                    "type": "AWS::S3::Object",
+                    "ARN": "arn:aws:s3:::my-bucket-name/AWSLogs/123456789765/CloudTrail/eu-north-1/2019/01/26/123456789765_CloudTrail_eu-north-1_20190126T2355Z_sl9o8WiT27s2sc6n.json.gz"
+                },
+                {
+                    "accountId": "123456789765",
+                    "type": "AWS::S3::Bucket",
+                    "ARN": "arn:aws:s3:::my-bucket-name"
+                }
+            ],
+            "eventType": "AwsApiCall",
+            "recipientAccountId": "123456789765",
+            "sharedEventID": "1a83e260-47cb-4854-84ca-fa86d9c611e0"
+        },
+        {
+            "eventVersion": "1.05",
+            "userIdentity": {
+                "type": "AWSService",
+                "invokedBy": "cloudtrail.amazonaws.com"
+            },
+            "eventTime": "2019-01-26T23:58:54Z",
+            "eventSource": "s3.amazonaws.com",
+            "eventName": "PutObject",
+            "awsRegion": "us-west-2",
+            "sourceIPAddress": "cloudtrail.amazonaws.com",
+            "userAgent": "cloudtrail.amazonaws.com",
+            "requestParameters": {
+                "bucketName": "my-bucket-name",
+                "Host": "my-bucket-name.s3.us-west-2.amazonaws.com",
+                "x-amz-acl": "bucket-owner-full-control",
+                "x-amz-server-side-encryption": "AES256",
+                "key": "AWSLogs/123456789765/CloudTrail/eu-central-1/2019/01/26/123456789765_CloudTrail_eu-central-1_20190126T2355Z_JCyGbMSKSN5O4opU.json.gz"
+            },
+            "responseElements": {
+                "x-amz-server-side-encryption": "AES256"
+            },
+            "additionalEventData": {
+                "SignatureVersion": "SigV4",
+                "CipherSuite": "ECDHE-RSA-AES128-SHA",
+                "SSEApplied": "SSE_S3",
+                "AuthenticationMethod": "AuthHeader",
+                "x-amz-id-2": "W6KKca+udh2lMpXJ9qcqZk7QfmMYbDBD3JLbiZ//oIejV4RJOIGaU7qa1/k/T2yWmLcpdLtwtR8="
+            },
+            "requestID": "6BF7C781F3F8B1CE",
+            "eventID": "9674594d-4214-47c9-92d1-122278ba77f8",
+            "readOnly": false,
+            "resources": [
+                {
+                    "type": "AWS::S3::Object",
+                    "ARN": "arn:aws:s3:::my-bucket-name/AWSLogs/123456789765/CloudTrail/eu-central-1/2019/01/26/123456789765_CloudTrail_eu-central-1_20190126T2355Z_JCyGbMSKSN5O4opU.json.gz"
+                },
+                {
+                    "accountId": "123456789765",
+                    "type": "AWS::S3::Bucket",
+                    "ARN": "arn:aws:s3:::my-bucket-name"
+                }
+            ],
+            "eventType": "AwsApiCall",
+            "recipientAccountId": "123456789765",
+            "sharedEventID": "fa21124d-a8f8-4886-aaad-f1d14954a6ff"
+        },
+        {
+            "eventVersion": "1.05",
+            "userIdentity": {
+                "type": "AWSService",
+                "invokedBy": "cloudtrail.amazonaws.com"
+            },
+            "eventTime": "2019-01-26T23:58:54Z",
+            "eventSource": "s3.amazonaws.com",
+            "eventName": "PutObject",
+            "awsRegion": "us-west-2",
+            "sourceIPAddress": "cloudtrail.amazonaws.com",
+            "userAgent": "cloudtrail.amazonaws.com",
+            "requestParameters": {
+                "bucketName": "my-bucket-name",
+                "Host": "my-bucket-name.s3.us-west-2.amazonaws.com",
+                "x-amz-acl": "bucket-owner-full-control",
+                "x-amz-server-side-encryption": "AES256",
+                "key": "AWSLogs/123456789765/CloudTrail/eu-central-1/2019/01/26/123456789765_CloudTrail_eu-central-1_20190126T2355Z_xaKAiVI7OPi4Bkam.json.gz"
+            },
+            "responseElements": {
+                "x-amz-server-side-encryption": "AES256"
+            },
+            "additionalEventData": {
+                "SignatureVersion": "SigV4",
+                "CipherSuite": "ECDHE-RSA-AES128-GCM-SHA256",
+                "SSEApplied": "SSE_S3",
+                "AuthenticationMethod": "AuthHeader",
+                "x-amz-id-2": "MtcicwnpnotJ+Pbr9jFmQTeST75A0XVQ6TX+b41h6X53+nTUuECB8MCgox6l12HteiGhMZhUHCE="
+            },
+            "requestID": "BC72684AF8724549",
+            "eventID": "6a94d4c9-6250-4b8d-8022-3c1137083e9e",
+            "readOnly": false,
+            "resources": [
+                {
+                    "type": "AWS::S3::Object",
+                    "ARN": "arn:aws:s3:::my-bucket-name/AWSLogs/123456789765/CloudTrail/eu-central-1/2019/01/26/123456789765_CloudTrail_eu-central-1_20190126T2355Z_xaKAiVI7OPi4Bkam.json.gz"
+                },
+                {
+                    "accountId": "123456789765",
+                    "type": "AWS::S3::Bucket",
+                    "ARN": "arn:aws:s3:::my-bucket-name"
+                }
+            ],
+            "eventType": "AwsApiCall",
+            "recipientAccountId": "123456789765",
+            "sharedEventID": "21133d6d-dc93-42c4-b049-c310032a7899"
+        },
+        {
+            "eventVersion": "1.05",
+            "userIdentity": {
+                "type": "AWSService",
+                "invokedBy": "cloudtrail.amazonaws.com"
+            },
+            "eventTime": "2019-01-26T23:58:55Z",
+            "eventSource": "s3.amazonaws.com",
+            "eventName": "PutObject",
+            "awsRegion": "us-west-2",
+            "sourceIPAddress": "cloudtrail.amazonaws.com",
+            "userAgent": "cloudtrail.amazonaws.com",
+            "requestParameters": {
+                "bucketName": "my-bucket-name",
+                "Host": "my-bucket-name.s3.us-west-2.amazonaws.com",
+                "x-amz-acl": "bucket-owner-full-control",
+                "x-amz-server-side-encryption": "AES256",
+                "key": "AWSLogs/123456789765/CloudTrail/ap-northeast-1/2019/01/26/123456789765_CloudTrail_ap-northeast-1_20190126T2355Z_MtLV3Om2D3F6SqvS.json.gz"
+            },
+            "responseElements": {
+                "x-amz-server-side-encryption": "AES256"
+            },
+            "additionalEventData": {
+                "SignatureVersion": "SigV4",
+                "CipherSuite": "ECDHE-RSA-AES128-SHA",
+                "SSEApplied": "SSE_S3",
+                "AuthenticationMethod": "AuthHeader",
+                "x-amz-id-2": "M5TQ4ByYXIDwy0V/f2bQbEzSWC/EwZINt5Sb3Jrm8R3Uom5M5tZKBaWy5vtqcjIu0jOIynjia4I="
+            },
+            "requestID": "AC70CB54B15227BB",
+            "eventID": "405847f0-9b5d-4e24-9cf9-d7cc495135d9",
+            "readOnly": false,
+            "resources": [
+                {
+                    "type": "AWS::S3::Object",
+                    "ARN": "arn:aws:s3:::my-bucket-name/AWSLogs/123456789765/CloudTrail/ap-northeast-1/2019/01/26/123456789765_CloudTrail_ap-northeast-1_20190126T2355Z_MtLV3Om2D3F6SqvS.json.gz"
+                },
+                {
+                    "accountId": "123456789765",
+                    "type": "AWS::S3::Bucket",
+                    "ARN": "arn:aws:s3:::my-bucket-name"
+                }
+            ],
+            "eventType": "AwsApiCall",
+            "recipientAccountId": "123456789765",
+            "sharedEventID": "ba381608-3fc1-484f-8fe4-a03bc9f16cfc"
+        },
+        {
+            "eventVersion": "1.05",
+            "userIdentity": {
+                "type": "AWSService",
+                "invokedBy": "cloudtrail.amazonaws.com"
+            },
+            "eventTime": "2019-01-26T23:58:55Z",
+            "eventSource": "s3.amazonaws.com",
+            "eventName": "PutObject",
+            "awsRegion": "us-west-2",
+            "sourceIPAddress": "cloudtrail.amazonaws.com",
+            "userAgent": "cloudtrail.amazonaws.com",
+            "requestParameters": {
+                "bucketName": "my-bucket-name",
+                "Host": "my-bucket-name.s3.us-west-2.amazonaws.com",
+                "x-amz-acl": "bucket-owner-full-control",
+                "x-amz-server-side-encryption": "AES256",
+                "key": "AWSLogs/123456789765/CloudTrail/eu-west-2/2019/01/26/123456789765_CloudTrail_eu-west-2_20190126T2355Z_uPH1Gy01IAqALgvE.json.gz"
+            },
+            "responseElements": {
+                "x-amz-server-side-encryption": "AES256"
+            },
+            "additionalEventData": {
+                "SignatureVersion": "SigV4",
+                "CipherSuite": "ECDHE-RSA-AES128-GCM-SHA256",
+                "SSEApplied": "SSE_S3",
+                "AuthenticationMethod": "AuthHeader",
+                "x-amz-id-2": "zQNUX5zdcJ7Oags6MDPpnzCltOLlBH7jxQDu1V4qqr+48y3tonr1y5aP1JCm4puPkJQsLVN/OQU="
+            },
+            "requestID": "414185CD69EFE74F",
+            "eventID": "915effb7-b6c4-44f3-bae2-c43fb16e77f1",
+            "readOnly": false,
+            "resources": [
+                {
+                    "type": "AWS::S3::Object",
+                    "ARN": "arn:aws:s3:::my-bucket-name/AWSLogs/123456789765/CloudTrail/eu-west-2/2019/01/26/123456789765_CloudTrail_eu-west-2_20190126T2355Z_uPH1Gy01IAqALgvE.json.gz"
+                },
+                {
+                    "accountId": "123456789765",
+                    "type": "AWS::S3::Bucket",
+                    "ARN": "arn:aws:s3:::my-bucket-name"
+                }
+            ],
+            "eventType": "AwsApiCall",
+            "recipientAccountId": "123456789765",
+            "sharedEventID": "2aee486e-f0c8-4de0-8169-e1077e9ce2cc"
+        },
+        {
+            "eventVersion": "1.05",
+            "userIdentity": {
+                "type": "AWSService",
+                "invokedBy": "cloudtrail.amazonaws.com"
+            },
+            "eventTime": "2019-01-26T23:58:55Z",
+            "eventSource": "s3.amazonaws.com",
+            "eventName": "PutObject",
+            "awsRegion": "us-west-2",
+            "sourceIPAddress": "cloudtrail.amazonaws.com",
+            "userAgent": "cloudtrail.amazonaws.com",
+            "requestParameters": {
+                "bucketName": "my-bucket-name",
+                "Host": "my-bucket-name.s3.us-west-2.amazonaws.com",
+                "x-amz-acl": "bucket-owner-full-control",
+                "x-amz-server-side-encryption": "AES256",
+                "key": "AWSLogs/123456789765/CloudTrail/ap-northeast-3/2019/01/26/123456789765_CloudTrail_ap-northeast-3_20190126T2355Z_8LDncYGymZGtNjWU.json.gz"
+            },
+            "responseElements": {
+                "x-amz-server-side-encryption": "AES256"
+            },
+            "additionalEventData": {
+                "SignatureVersion": "SigV4",
+                "CipherSuite": "ECDHE-RSA-AES128-GCM-SHA256",
+                "SSEApplied": "SSE_S3",
+                "AuthenticationMethod": "AuthHeader",
+                "x-amz-id-2": "+sexwuxB7QadXL9kvoVHlTQf5+zEAX5cxdG0stplFePXKaA3PjSwxXroMFXv6sMbjXM85nn4XTY="
+            },
+            "requestID": "7E8B32E9A8E49E6B",
+            "eventID": "b51512c4-0bc2-4037-8722-1eb787fea13a",
+            "readOnly": false,
+            "resources": [
+                {
+                    "type": "AWS::S3::Object",
+                    "ARN": "arn:aws:s3:::my-bucket-name/AWSLogs/123456789765/CloudTrail/ap-northeast-3/2019/01/26/123456789765_CloudTrail_ap-northeast-3_20190126T2355Z_8LDncYGymZGtNjWU.json.gz"
+                },
+                {
+                    "accountId": "123456789765",
+                    "type": "AWS::S3::Bucket",
+                    "ARN": "arn:aws:s3:::my-bucket-name"
+                }
+            ],
+            "eventType": "AwsApiCall",
+            "recipientAccountId": "123456789765",
+            "sharedEventID": "0ee44835-3499-4522-8299-31ab3c9212e4"
+        },
+        {
+            "eventVersion": "1.05",
+            "userIdentity": {
+                "type": "AWSService",
+                "invokedBy": "cloudtrail.amazonaws.com"
+            },
+            "eventTime": "2019-01-26T23:58:55Z",
+            "eventSource": "s3.amazonaws.com",
+            "eventName": "PutObject",
+            "awsRegion": "us-west-2",
+            "sourceIPAddress": "cloudtrail.amazonaws.com",
+            "userAgent": "cloudtrail.amazonaws.com",
+            "requestParameters": {
+                "bucketName": "my-bucket-name",
+                "Host": "my-bucket-name.s3.us-west-2.amazonaws.com",
+                "x-amz-acl": "bucket-owner-full-control",
+                "x-amz-server-side-encryption": "AES256",
+                "key": "AWSLogs/123456789765/CloudTrail/sa-east-1/2019/01/26/123456789765_CloudTrail_sa-east-1_20190126T2355Z_zCtshBA6jp1bv7jk.json.gz"
+            },
+            "responseElements": {
+                "x-amz-server-side-encryption": "AES256"
+            },
+            "additionalEventData": {
+                "SignatureVersion": "SigV4",
+                "CipherSuite": "ECDHE-RSA-AES128-SHA",
+                "SSEApplied": "SSE_S3",
+                "AuthenticationMethod": "AuthHeader",
+                "x-amz-id-2": "BVgrDZYzVkhsTfouuqdainlj1lb2P2SdISBPnfpUO5jfo91ZWs19lXfK0EqWgvC5TeWJ6itNxtk="
+            },
+            "requestID": "F4127687A693F552",
+            "eventID": "5e06b28e-4c22-4059-bf40-590a3c1235ff",
+            "readOnly": false,
+            "resources": [
+                {
+                    "type": "AWS::S3::Object",
+                    "ARN": "arn:aws:s3:::my-bucket-name/AWSLogs/123456789765/CloudTrail/sa-east-1/2019/01/26/123456789765_CloudTrail_sa-east-1_20190126T2355Z_zCtshBA6jp1bv7jk.json.gz"
+                },
+                {
+                    "accountId": "123456789765",
+                    "type": "AWS::S3::Bucket",
+                    "ARN": "arn:aws:s3:::my-bucket-name"
+                }
+            ],
+            "eventType": "AwsApiCall",
+            "recipientAccountId": "123456789765",
+            "sharedEventID": "cb96d131-6ffe-4da5-9527-73c21385649d"
+        },
+        {
+            "eventVersion": "1.05",
+            "userIdentity": {
+                "type": "AWSService",
+                "invokedBy": "cloudtrail.amazonaws.com"
+            },
+            "eventTime": "2019-01-26T23:58:57Z",
+            "eventSource": "s3.amazonaws.com",
+            "eventName": "PutObject",
+            "awsRegion": "us-west-2",
+            "sourceIPAddress": "cloudtrail.amazonaws.com",
+            "userAgent": "cloudtrail.amazonaws.com",
+            "requestParameters": {
+                "bucketName": "my-bucket-name",
+                "Host": "my-bucket-name.s3.us-west-2.amazonaws.com",
+                "x-amz-acl": "bucket-owner-full-control",
+                "x-amz-server-side-encryption": "AES256",
+                "key": "AWSLogs/123456789765/CloudTrail/eu-west-1/2019/01/26/123456789765_CloudTrail_eu-west-1_20190126T2355Z_nwNjG2GB1KdIRyhy.json.gz"
+            },
+            "responseElements": {
+                "x-amz-server-side-encryption": "AES256"
+            },
+            "additionalEventData": {
+                "SignatureVersion": "SigV4",
+                "CipherSuite": "ECDHE-RSA-AES128-GCM-SHA256",
+                "SSEApplied": "SSE_S3",
+                "AuthenticationMethod": "AuthHeader",
+                "x-amz-id-2": "gDOVLIG3QE1lx6IsD7m619ZWdIO+NB5q+vaJ+JWD/pf3rnyvG74JDZsntEB7rsdRjUhBhl8kJIA="
+            },
+            "requestID": "F0B5FEE05390096E",
+            "eventID": "a4dfd0f0-439b-4c7c-8b3f-dd4c3ca7a68e",
+            "readOnly": false,
+            "resources": [
+                {
+                    "type": "AWS::S3::Object",
+                    "ARN": "arn:aws:s3:::my-bucket-name/AWSLogs/123456789765/CloudTrail/eu-west-1/2019/01/26/123456789765_CloudTrail_eu-west-1_20190126T2355Z_nwNjG2GB1KdIRyhy.json.gz"
+                },
+                {
+                    "accountId": "123456789765",
+                    "type": "AWS::S3::Bucket",
+                    "ARN": "arn:aws:s3:::my-bucket-name"
+                }
+            ],
+            "eventType": "AwsApiCall",
+            "recipientAccountId": "123456789765",
+            "sharedEventID": "e94ee4b5-7f1f-4212-bea5-493525ee74a3"
+        },
+        {
+            "eventVersion": "1.05",
+            "userIdentity": {
+                "type": "AWSService",
+                "invokedBy": "cloudtrail.amazonaws.com"
+            },
+            "eventTime": "2019-01-26T23:58:56Z",
+            "eventSource": "s3.amazonaws.com",
+            "eventName": "PutObject",
+            "awsRegion": "us-west-2",
+            "sourceIPAddress": "cloudtrail.amazonaws.com",
+            "userAgent": "cloudtrail.amazonaws.com",
+            "requestParameters": {
+                "bucketName": "my-bucket-name",
+                "Host": "my-bucket-name.s3.us-west-2.amazonaws.com",
+                "x-amz-acl": "bucket-owner-full-control",
+                "x-amz-server-side-encryption": "AES256",
+                "key": "AWSLogs/123456789765/CloudTrail/ap-southeast-1/2019/01/26/123456789765_CloudTrail_ap-southeast-1_20190126T2355Z_7aEE8g0yPzlGgGss.json.gz"
+            },
+            "responseElements": {
+                "x-amz-server-side-encryption": "AES256"
+            },
+            "additionalEventData": {
+                "SignatureVersion": "SigV4",
+                "CipherSuite": "ECDHE-RSA-AES128-GCM-SHA256",
+                "SSEApplied": "SSE_S3",
+                "AuthenticationMethod": "AuthHeader",
+                "x-amz-id-2": "cQtxwA2/U+BKi9wir4u4T6Zey6ct/Yw7DB8KA6WVxsLQD67u5nJy3U2rmx3gKpFY/e7Cqkfdpsk="
+            },
+            "requestID": "ECD99BBAB97D1435",
+            "eventID": "3f83e0b5-cced-418e-bb88-21f966b0017a",
+            "readOnly": false,
+            "resources": [
+                {
+                    "type": "AWS::S3::Object",
+                    "ARN": "arn:aws:s3:::my-bucket-name/AWSLogs/123456789765/CloudTrail/ap-southeast-1/2019/01/26/123456789765_CloudTrail_ap-southeast-1_20190126T2355Z_7aEE8g0yPzlGgGss.json.gz"
+                },
+                {
+                    "accountId": "123456789765",
+                    "type": "AWS::S3::Bucket",
+                    "ARN": "arn:aws:s3:::my-bucket-name"
+                }
+            ],
+            "eventType": "AwsApiCall",
+            "recipientAccountId": "123456789765",
+            "sharedEventID": "37caf7a6-3ad6-4124-a51d-6d53b51c7032"
+        },
+        {
+            "eventVersion": "1.05",
+            "userIdentity": {
+                "type": "AWSService",
+                "invokedBy": "cloudtrail.amazonaws.com"
+            },
+            "eventTime": "2019-01-26T23:58:57Z",
+            "eventSource": "s3.amazonaws.com",
+            "eventName": "PutObject",
+            "awsRegion": "us-west-2",
+            "sourceIPAddress": "cloudtrail.amazonaws.com",
+            "userAgent": "cloudtrail.amazonaws.com",
+            "requestParameters": {
+                "bucketName": "my-bucket-name",
+                "Host": "my-bucket-name.s3.us-west-2.amazonaws.com",
+                "x-amz-acl": "bucket-owner-full-control",
+                "x-amz-server-side-encryption": "AES256",
+                "key": "AWSLogs/123456789765/CloudTrail/ap-southeast-2/2019/01/26/123456789765_CloudTrail_ap-southeast-2_20190126T2355Z_aauVhYxad3wAUmmn.json.gz"
+            },
+            "responseElements": {
+                "x-amz-server-side-encryption": "AES256"
+            },
+            "additionalEventData": {
+                "SignatureVersion": "SigV4",
+                "CipherSuite": "ECDHE-RSA-AES128-GCM-SHA256",
+                "SSEApplied": "SSE_S3",
+                "AuthenticationMethod": "AuthHeader",
+                "x-amz-id-2": "DZiEgyHgv2MHVjt+07yPsn623vn1L2g6OVECAwSAyi+l6GbERoSROiacJxVTSiWOe5As4uCu9iU="
+            },
+            "requestID": "1D7A7BACA265E110",
+            "eventID": "8fd8fcf4-4595-4b94-9341-785ec61beec1",
+            "readOnly": false,
+            "resources": [
+                {
+                    "type": "AWS::S3::Object",
+                    "ARN": "arn:aws:s3:::my-bucket-name/AWSLogs/123456789765/CloudTrail/ap-southeast-2/2019/01/26/123456789765_CloudTrail_ap-southeast-2_20190126T2355Z_aauVhYxad3wAUmmn.json.gz"
+                },
+                {
+                    "accountId": "123456789765",
+                    "type": "AWS::S3::Bucket",
+                    "ARN": "arn:aws:s3:::my-bucket-name"
+                }
+            ],
+            "eventType": "AwsApiCall",
+            "recipientAccountId": "123456789765",
+            "sharedEventID": "da64eb48-fafb-4a58-93e7-352d7e5d66cf"
+        },
+        {
+            "eventVersion": "1.05",
+            "userIdentity": {
+                "type": "AWSService",
+                "invokedBy": "cloudtrail.amazonaws.com"
+            },
+            "eventTime": "2019-01-26T23:59:00Z",
+            "eventSource": "s3.amazonaws.com",
+            "eventName": "PutObject",
+            "awsRegion": "us-west-2",
+            "sourceIPAddress": "cloudtrail.amazonaws.com",
+            "userAgent": "cloudtrail.amazonaws.com",
+            "requestParameters": {
+                "bucketName": "my-bucket-name",
+                "Host": "my-bucket-name.s3.us-west-2.amazonaws.com",
+                "x-amz-acl": "bucket-owner-full-control",
+                "x-amz-server-side-encryption": "AES256",
+                "key": "AWSLogs/123456789765/CloudTrail/ap-south-1/2019/01/26/123456789765_CloudTrail_ap-south-1_20190126T2355Z_QKZJmexSPuk4jKjX.json.gz"
+            },
+            "responseElements": {
+                "x-amz-server-side-encryption": "AES256"
+            },
+            "additionalEventData": {
+                "SignatureVersion": "SigV4",
+                "CipherSuite": "ECDHE-RSA-AES128-GCM-SHA256",
+                "SSEApplied": "SSE_S3",
+                "AuthenticationMethod": "AuthHeader",
+                "x-amz-id-2": "lTfxkfEe7/adVG6vGWKOShXeV+gwE8z9dfmbaVLS1HocaaIPXW5jIZxMBULstViBuY0aPl46ze4="
+            },
+            "requestID": "57B9B5FCAEC526EC",
+            "eventID": "eda089cd-9668-4053-8be0-c520d71fbd46",
+            "readOnly": false,
+            "resources": [
+                {
+                    "type": "AWS::S3::Object",
+                    "ARN": "arn:aws:s3:::my-bucket-name/AWSLogs/123456789765/CloudTrail/ap-south-1/2019/01/26/123456789765_CloudTrail_ap-south-1_20190126T2355Z_QKZJmexSPuk4jKjX.json.gz"
+                },
+                {
+                    "accountId": "123456789765",
+                    "type": "AWS::S3::Bucket",
+                    "ARN": "arn:aws:s3:::my-bucket-name"
+                }
+            ],
+            "eventType": "AwsApiCall",
+            "recipientAccountId": "123456789765",
+            "sharedEventID": "c483398b-463a-4baa-ad25-03b917063922"
+        }
+    ]
+}

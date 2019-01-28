@@ -119,6 +119,9 @@ public final class AwsScanner extends Scanner {
 		}
 	}
 
+	public String getRegionName() {
+		return getRegion().getName();
+	}
 	public Regions getRegion() {
 		return region;
 	}
@@ -240,6 +243,9 @@ public final class AwsScanner extends Scanner {
 		s.createUniqueConstraint("AwsS3Bucket", "name");
 	}
 
+	public CloudTrailEvents cloudTrailEvents() {
+		return new CloudTrailEvents(this);
+	}
 	public String toString() {
 		return MoreObjects.toStringHelper(this).add("type", getScannerType()).add("account", getAccount())
 				.add("region", getRegion().getName()).toString();

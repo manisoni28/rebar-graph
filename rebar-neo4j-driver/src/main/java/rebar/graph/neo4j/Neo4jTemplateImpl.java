@@ -229,7 +229,4 @@ class Neo4jTemplateImpl extends CypherTemplate  {
 		
 	}
 
-
-
-
 }
