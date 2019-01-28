@@ -31,6 +31,7 @@ import rebar.util.RebarException;
 
 public class VpcScanner extends AwsEntityScanner<Vpc> {
 
+
 	static final String VPC_ID_PROPERTY = "vpcId";
 
 
@@ -60,7 +61,7 @@ public class VpcScanner extends AwsEntityScanner<Vpc> {
 
 		ObjectNode n = toJson(it);
 
-		getGraphDB().nodes(getEntityTypeName()).properties( n).idKey("arn").merge();
+		getGraphDB().nodes(getEntityTypeName()).withTagPrefixes(TAG_PREFIXES).properties( n).idKey("arn").merge();
 
 		getGraphDB().nodes(AwsEntityType.AwsAccount.name()).id("account", getAccount()).relationship("HAS").on("account","account")
 				.to(AwsEntityType.AwsVpc.name()).id("arn", n.path("arn").asText()).merge();
@@ -120,6 +121,17 @@ public class VpcScanner extends AwsEntityScanner<Vpc> {
 	@Override
 	public AwsEntityType getEntityType() {
 		return AwsEntityType.AwsVpc;
+	}
+
+	@Override
+	protected ObjectNode toJson(Vpc awsObject) {
+	
+		ObjectNode n =  super.toJson(awsObject);
+		awsObject.getTags().forEach(it->{
+			n.put(TAG_PREFIX+it.getKey(),it.getValue());
+		});
+		n.remove("tags");
+		return n;
 	}
 
 }

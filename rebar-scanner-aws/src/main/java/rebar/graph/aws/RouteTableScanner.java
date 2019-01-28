@@ -71,6 +71,7 @@ public class RouteTableScanner extends AbstractNetworkScanner<RouteTable> {
 			result.getRouteTables().forEach(it -> {
 				tryExecute(() -> project(it));
 			});
+			req.setNextToken(result.getNextToken());
 		} while (!Strings.isNullOrEmpty(req.getNextToken()));
 
 		if (Strings.isNullOrEmpty(id)) {
@@ -83,8 +84,14 @@ public class RouteTableScanner extends AbstractNetworkScanner<RouteTable> {
 		awsRelationships(AwsEntityType.AwsVpc.name()).relationship("HAS").on("vpcId", "vpcId")
 				.to(getEntityType().name()).merge();
 
-		awsRelationships().relationship("ATTACHED_TO").on("associatedSubnets", "subnetId", Cardinality.MANY)
-				.to("AwsSubnet").merge();
+		
+		// our relationship builder can't reverse the relationship (yet) so we do it manually
+		getGraphDB().getNeo4jDriver().cypher("match (s:AwsSubnet {account:{account},region:{region}}),(r:AwsRouteTable {account:{account},region:{region}})"
+				+ " where s.subnetId in r.associatedSubnets merge (s)-[x:USES]->(r)")
+		.param("region",getRegionName()).params("account",getAccount()).exec();
+		
+		getGraphDB().getNeo4jDriver().cypher("match (s:AwsSubnet {account:{account},region:{region}})-[x:USES]->(r) where NOT s.subnetId in r.associatedSubnets delete x")
+		.param("region",getRegionName()).params("account",getAccount()).exec();
 	}
 
 	@Override

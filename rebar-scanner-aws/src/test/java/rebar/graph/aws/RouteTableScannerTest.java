@@ -20,11 +20,10 @@ public class RouteTableScannerTest extends AwsIntegrationTest {
 	@Test
 	public void testIt() {
 
-		while (true == true) {
-			getAwsScanner().getEntityScanner(RouteTableScanner.class).scan();
 
-			Sleep.sleep(5, TimeUnit.SECONDS);
-		}
+			getAwsScanner().getEntityScanner(RouteTableScanner.class).scan("fizz");
+
+		
 	}
 
 }

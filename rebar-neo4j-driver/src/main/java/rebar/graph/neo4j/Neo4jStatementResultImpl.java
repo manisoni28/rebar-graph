@@ -101,7 +101,10 @@ public class Neo4jStatementResultImpl {
 						});
 					}
 				} else {
-					if (v instanceof String) {
+					if (v == null) {
+						n.put(k, (String) null);
+					}
+					else if (v instanceof String) {
 						n.put(k, (String) v);
 					} else if (v instanceof Integer) {
 						n.put(k, (Integer) v);

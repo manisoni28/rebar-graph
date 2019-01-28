@@ -244,6 +244,7 @@ public final class AwsScanner extends Scanner {
 		
 		s.createUniqueConstraint("AwsEmrCluster", "arn");
 		
+		s.createUniqueConstraint("AwsRouteTable","arn");
 		s.createUniqueConstraint("AwsInternetGateway", "arn");
 		s.createUniqueConstraint("AwsEgressOnlyInternetGateway", "arn");
 	}

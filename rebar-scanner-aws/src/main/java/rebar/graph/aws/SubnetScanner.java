@@ -32,11 +32,23 @@ public class SubnetScanner extends AwsEntityScanner<Subnet> {
 
 	
 
+	
+	@Override
+	protected ObjectNode toJson(Subnet awsObject) {
+
+		ObjectNode n =  super.toJson(awsObject);
+		awsObject.getTags().forEach(it->{
+			n.put("tag_"+it.getKey(),it.getValue());
+		});
+		n.remove("tags");
+		return n;
+	}
+
 	private void projectSubnet(Subnet it) {
 
 		ObjectNode n = toJson(it);
 
-		getGraphDB().nodes(getEntityTypeName()).idKey("arn").properties(n).merge();
+		getGraphDB().nodes(getEntityTypeName()).idKey("arn").withTagPrefixes(TAG_PREFIXES).properties(n).merge();
 
 		getGraphDB().nodes(AwsEntityType.AwsVpc.name()).id(VpcScanner.VPC_ID_PROPERTY, it.getVpcId()).relationship("HAS")
 				.to(AwsEntityType.AwsSubnet.name()).id("subnetId", it.getSubnetId()).merge();
