@@ -89,7 +89,7 @@ public class AwsScannerTest extends AwsIntegrationTest {
 					Offset.offset(TimeUnit.MINUTES.toMillis(5)));
 
 			Assertions.assertThat(it.path("graphEntityGroup").asText()).isEqualTo("aws");
-			if (ImmutableList.of("AwsHostedZoneRecordSet","AwsAccount", "AwsRegion", "AwsAvailabilityZone")
+			if (ImmutableList.of("AwsHostedZoneRecordSet","AwsAccount", AwsEntityType.AwsApiGatewayRestApi.name(),"AwsRegion", "AwsAvailabilityZone")
 					.contains(it.path("graphEntityType").asText())) {
 
 			} else {
@@ -148,6 +148,8 @@ public class AwsScannerTest extends AwsIntegrationTest {
 		validRelationships.add("AwsAccount HAS AwsSnsTopic");
 		validRelationships.add("AwsAccount HAS AwsS3Bucket");
 		validRelationships.add("AwsAccount HAS AwsSqsQueue");
+		validRelationships.add("AwsAccount HAS AwsEmrCluster");
+		validRelationships.add("AwsAccount HAS AwsApiGatewayRestApi");
 		getNeo4jDriver().cypher(
 				"match (a)-[r]->(b) where labels(a)[0]=~'Aws.*' return a.graphEntityType as fromLabel,r,b.graphEntityType as toLabel,type(r) as relType")
 				.forEach(it -> {

@@ -241,6 +241,8 @@ public final class AwsScanner extends Scanner {
 		
 		s.createUniqueConstraint("AwsS3Bucket", "arn");
 		s.createUniqueConstraint("AwsS3Bucket", "name");
+		
+		s.createUniqueConstraint("AwsEmrCluster", "arn");
 	}
 
 	public CloudTrailEvents cloudTrailEvents() {

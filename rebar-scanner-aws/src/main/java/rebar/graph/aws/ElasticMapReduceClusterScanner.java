@@ -17,6 +17,7 @@ import com.amazonaws.services.elasticmapreduce.model.ListClustersResult;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 
 import rebar.util.Json;
@@ -49,12 +50,12 @@ public class ElasticMapReduceClusterScanner extends AwsEntityScanner<Cluster> {
 	public Optional<String> toArn(ClusterSummary cluster) {
 
 		return Optional.ofNullable(String.format("arn:aws:elasticmapreduce:%s:%s:cluster/%s", getRegionName(),
-				getAccount(), cluster.getName()));
+				getAccount(), cluster.getId()));
 	}
 	public Optional<String> toArn(Cluster cluster) {
 
 		return Optional.ofNullable(String.format("arn:aws:elasticmapreduce:%s:%s:cluster/%s", getRegionName(),
-				getAccount(), cluster.getName()));
+				getAccount(), cluster.getId()));
 	}
 	protected void project(Cluster cluster) {
 		ObjectNode n = toJson(cluster);
@@ -138,6 +139,7 @@ public class ElasticMapReduceClusterScanner extends AwsEntityScanner<Cluster> {
 
 	@Override
 	public void scan(String id) {
+		Preconditions.checkArgument(!id.startsWith("arn:"),"arn not yet supported");
 		try {
 			DescribeClusterResult result = getClient().describeCluster(new DescribeClusterRequest().withClusterId(id));
 			project(result.getCluster());
