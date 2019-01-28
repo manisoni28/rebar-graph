@@ -33,6 +33,7 @@ public class AllEntityScannerGroup extends SerialScanner {
 		List<Class<? extends AwsEntityScanner>> classList = Lists.newArrayList();
 		classList.add(VpcScannerGroup.class);
 		
+		
 		classList.add(Ec2ScannerGroup.class);
 		
 		classList.add(S3Scanner.class);
@@ -40,6 +41,8 @@ public class AllEntityScannerGroup extends SerialScanner {
 		classList.add(EksClusterScanner.class);
 		classList.add(LambdaFunctionScanner.class);
 		
+		// NetworkScannerGroup is not really used by any other objects
+		classList.add(NetworkScannerGroup.class);
 		classList.add(RdsScannerGroup.class);
 	
 		classList.add(ApiGatewayScannerGroup.class);

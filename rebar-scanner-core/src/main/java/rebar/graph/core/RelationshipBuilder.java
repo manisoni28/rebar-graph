@@ -57,24 +57,37 @@ public class RelationshipBuilder {
 
 	}
 	static class JoinOn {
-		Cardinality toCardinality;
+		Cardinality fromAttributeCardinality;
 		String fromAttribute;
 		String toAttribute;
 	}
 	public class Relationship {
 
-		public Relationship on(String fromAttribute, Cardinality cardinality, String toAttribute) {
-			return this;
-		}
+	
 		public Relationship on(String fromAttribue, String toAttribute) {
 			on(fromAttribue,toAttribute,Cardinality.ONE);
 			return this;
 		}
+		
+		/**
+		 * Allows for one-to-many relationships to be established via array.
+		 * Note that ANY relationship construction can be one-to-many.  This just tells rebar that the FROM attribute is an array
+		 * instead of a scalar value.
+		 * 
+		 * Example: label("AwsVpc").relationship("HAS").on("subnets","subnetId",Cardinality.MANY).to("AwsSubnet")
+		 * 
+		 * This looks at the "subnets" array on AwsVpc and establishes all the right relationships.
+		 * 
+		 * @param fromAttribute
+		 * @param toAttribute
+		 * @param cardinality
+		 * @return
+		 */
 		public Relationship on(String fromAttribute, String toAttribute, Cardinality cardinality) {
 			JoinOn j = new JoinOn();
 			j.fromAttribute = fromAttribute;
 			j.toAttribute = toAttribute;
-			j.toCardinality = cardinality;
+			j.fromAttributeCardinality = cardinality;
 			joinOn.add(j);
 			
 			return this;
@@ -146,7 +159,7 @@ public class RelationshipBuilder {
 			return sb.toString();
 		} else {
 			for (JoinOn on : joinOn) {
-				String cardinalityComparator = on.toCardinality==Cardinality.ONE ? "="  : "in";
+				String cardinalityComparator = on.fromAttributeCardinality==Cardinality.ONE ? "="  : "in";
 				sb.append(String.format(" %s b.%s %s a.%s ", (c++ > 0)? " AND " : "", CypherUtil.escapePropertyName(on.toAttribute), cardinalityComparator,CypherUtil.escapePropertyName(on.fromAttribute)));
 			}
 		}

@@ -24,9 +24,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.amazonaws.AmazonServiceException;
 import com.amazonaws.AmazonWebServiceClient;
 import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.regions.Regions;
+import com.amazonaws.services.ec2.model.AmazonEC2Exception;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
@@ -56,6 +58,7 @@ public abstract class AwsEntityScanner<A extends Object> {
 	boolean isEnabled() {
 		return true;
 	}
+
 	protected void init(AwsScanner scanner) {
 		this.scanner = scanner;
 
@@ -73,6 +76,14 @@ public abstract class AwsEntityScanner<A extends Object> {
 		return getGraphDB().nodes(labelType).id("region", getRegionName()).id("account", getAccount());
 	}
 
+	protected NodeOperation awsGraphNodes(AwsEntityType type) {
+		return awsGraphNodes(type.name());
+	}
+
+	protected NodeOperation awsGraphNodes() {
+		return awsGraphNodes(getEntityTypeName());
+	}
+
 	/**
 	 * Convenience for initializing a NodeOperation with common boilerplate.
 	 * 
@@ -85,6 +96,9 @@ public abstract class AwsEntityScanner<A extends Object> {
 		return awsGraphNodes(labelType).id(attrName, attrVal);
 	}
 
+	protected final void gc(AwsEntityType type, long cutoff) {
+		gc(type.name(),cutoff);
+	}
 	protected final void gc(String type, long cutoff) {
 		gc(type, cutoff, new String[0]);
 	}
@@ -109,7 +123,7 @@ public abstract class AwsEntityScanner<A extends Object> {
 		op.match().forEach(it -> {
 			Exceptions.log(logger).run(() -> {
 				count.incrementAndGet();
-			
+
 				logger.info("running gc on {}", it.path(GraphDB.ENTITY_TYPE).asText());
 				scan(it);
 			});
@@ -170,7 +184,7 @@ public abstract class AwsEntityScanner<A extends Object> {
 
 	public final void scan() {
 		if (!isEnabled()) {
-			logger.info("skipping execution of {}",getClass().getSimpleName());
+			logger.info("skipping execution of {}", getClass().getSimpleName());
 			return;
 		}
 		Stopwatch sw = Stopwatch.createStarted();
@@ -230,6 +244,7 @@ public abstract class AwsEntityScanner<A extends Object> {
 	public abstract AwsEntityType getEntityType();
 
 	public String getEntityTypeName() {
+		Preconditions.checkState(getEntityType() != null, "AwsEntityType not set on " + getClass().getSimpleName());
 		return getEntityType().name();
 	}
 
@@ -257,25 +272,36 @@ public abstract class AwsEntityScanner<A extends Object> {
 	}
 
 	public FromNode awsRelationships() {
+		return awsRelationships(getEntityTypeName());
+	}
+
+	public FromNode awsRelationships(AwsEntityType type) {
+		return awsRelationships(type.name());
+	}
+
+	public FromNode awsRelationships(String labelName) {
 
 		return new RelationshipBuilder().sourceIdAttribute("region", getRegionName())
 				.sourceIdAttribute("account", getAccount()).targetIdAttribute("region", getRegionName())
-				.targetIdAttribute("account", getAccount()).driver(getGraphDB().getNeo4jDriver())
-				.from(getEntityTypeName());
+				.targetIdAttribute("account", getAccount()).driver(getGraphDB().getNeo4jDriver()).from(labelName);
 	}
 
-	protected void mergeAccountOwner(AwsEntityType t)  {
-		if (t==AwsEntityType.AwsAccount) {
+	protected void mergeAccountOwner(AwsEntityType t) {
+		if (t == AwsEntityType.AwsAccount) {
 			return;
 		}
-		logger.info("merging owner AwsAccount({}) -> {}",getAccount(),t.name());
-		getGraphDB().nodes(AwsEntityType.AwsAccount.name()).id("account", getAccount()).relationship("HAS").on("account", "account").to(t.name()).id("account", getAccount()).merge();;
+		logger.info("merging owner AwsAccount({}) -> {}", getAccount(), t.name());
+		getGraphDB().nodes(AwsEntityType.AwsAccount.name()).id("account", getAccount()).relationship("HAS")
+				.on("account", "account").to(t.name()).id("account", getAccount()).merge();
+		;
 	}
+
 	protected void mergeAccountOwner() {
 		mergeAccountOwner(getEntityType());
 	}
+
 	protected void mergeResidesInRegionRelationship(String... args) {
-		
+
 		FromNode n = awsRelationships();
 
 		if (args != null) {
@@ -284,5 +310,19 @@ public abstract class AwsEntityScanner<A extends Object> {
 			}
 		}
 		n.relationship("RESIDES_IN").on("region", "region").to("AwsRegion").merge();
+	}
+
+	protected boolean isNotFoundException(AmazonServiceException e) {
+		if (e instanceof AmazonEC2Exception) {
+			String code = Strings.nullToEmpty(e.getErrorCode());
+			if (code.contains("NotFound") || code.contains("Malformed")) {
+				return true;
+			}
+		}
+		if (e.getClass().getName().contains("NotFound")) {
+			return true;
+		}
+		
+		return false;
 	}
 }

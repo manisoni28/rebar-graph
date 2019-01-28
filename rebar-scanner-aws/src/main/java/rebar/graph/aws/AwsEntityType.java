@@ -11,19 +11,23 @@ public enum AwsEntityType {
 	AwsCacheCluster("AwsCacheCluster"),
 	AwsCacheClusterNode("AwsCacheClusterNode"),
 	AwsEc2Instance("AwsEc2Instance"),
+	AwsEgressOnlyInternetGateway("AwsEgressOnlyInternetGateway"),
 	AwsEksCluster("AwsEksCluster"),
 	AwsEmrCluster("AwsEmrCluster"),
 	AwsEmrClusterInstance("AwsEmrClusterInstance"),
 	AwsElb("AwsElb"),
 	AwsElbTargetGroup("AwsElbTargetGroup"),
+	
 	AwsHostedZone("AwsHostedZone"),
 	AwsHostedZoneRecordSet("AwsHostedZoneRecordSet"),
+	AwsInternetGateway("AwsInternetGateway"),
 	AwsLambdaFunction("AwsLambdaFunction"),
 	AwsLaunchConfig("AwsLaunchConfig"),
 	AwsLaunchTemplate("AwsLaunchTemplate"),
 	AwsRdsCluster("AwsRdsCluster"),
 	AwsRdsInstance("AwsRdsInstance"),
 	AwsRegion("AwsRegion"),
+	AwsRouteTable("AwsRouteTable"),
 	AwsSecurityGroup("AwsSecurityGroup"),
 	AwsSnsTopic("AwsSnsTopic"),
 	AwsSnsSubscription("AwsSnsSubscription"),
@@ -32,6 +36,9 @@ public enum AwsEntityType {
 	AwsS3Bucket("AwsS3Bucket"),
 	AwsSubnet("AwsSubnet"),
 	AwsVpc("AwsVpc"),
+	AwsVpcEndpoint("AwsVpcEndpoint"),
+	AwsVpcPeeringConnection("AwsVpcPeeringConnection"),
+	AwsVpnGateway("AwsVpnGateway"),
 	UNKNOWN("UNKNOWN");
 	
 	private String name;
