@@ -6,7 +6,7 @@ env | grep CIRCLE
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 cd $SCRIPT_DIR
 
-SOURCE_SHA1=`git rev-parse head`
+SOURCE_SHA1=${CIRCLE_SHA1-"unknown"}
 rm -rf ./tmp-clone ./site
 
 REMOTE_URL=git@github.com:rebar-cloud/rebar-cloud.git
