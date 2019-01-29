@@ -26,7 +26,7 @@ echo docs have not changed
 exit 0
 fi
 
-exit 0
+exit 1
 
 
 
