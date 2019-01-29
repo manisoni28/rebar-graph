@@ -1,5 +1,6 @@
 #!/bin/bash
 
+set -eo pipefail
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 cd $SCRIPT_DIR
@@ -7,7 +8,7 @@ cd $SCRIPT_DIR
 SOURCE_SHA1=${CIRCLE_SHA1-"unknown"}
 rm -rf ./tmp-clone ./site
 
-DOCS_DIGEST=$(find . -type f \( ! digest.txt \) -print0 | xargs -0 sha1sum | sha1sum | awk '{ print $1 }')
+DOCS_DIGEST=$(find . -type f \( ! -name digest.txt \) -print0 | xargs -0 sha1sum | sha1sum | awk '{ print $1 }')
 
 
 REMOTE_URL=git@github.com:rebar-cloud/rebar-cloud.git
@@ -34,9 +35,9 @@ sudo pip install mkdocs pygments mkdocs-material
 
 echo $DOCS_DIGEST >docs/digest.txt
 
-mkdocs build || exit 99
+mkdocs build 
 
-cp -r site/* tmp-clone || exit 99
+cp -r site/* tmp-clone 
 
 cd tmp-clone
 
