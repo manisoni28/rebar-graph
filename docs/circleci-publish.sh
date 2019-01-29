@@ -5,6 +5,12 @@ set -eo pipefail
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 cd $SCRIPT_DIR
 
+if [ ! "${CIRCLE_BRANCH}" = "master" ]; then
+    echo "branch $CIRCLE_BRANCH is not master ... will not push docs"
+    exit 0
+fi
+
+
 SOURCE_SHA1=${CIRCLE_SHA1-"unknown"}
 rm -rf ./tmp-clone ./site
 
@@ -33,7 +39,7 @@ fi
 sudo apt-get install python-pip
 sudo pip install mkdocs pygments mkdocs-material
 
-echo $DOCS_DIGEST >docs/digest.txt
+echo $DOCS_DIGEST >./docs/digest.txt
 
 mkdocs build 
 
@@ -46,11 +52,6 @@ cd tmp-clone
 
 git add .
 git commit -a -m "docs built from $SOURCE_SHA1" 
-
-if [ ! "${CIRCLE_BRANCH}" = "master" ]; then
-    echo "branch $CIRCLE_BRANCH is not master ... will not push docs"
-    exit 0
-fi
 
 
 git push || exit 99
