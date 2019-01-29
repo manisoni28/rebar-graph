@@ -1,0 +1,1278 @@
+
+
+
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      <meta http-equiv="x-ua-compatible" content="ie=edge">
+      
+      
+      
+      
+        <meta name="lang:clipboard.copy" content="Copy to clipboard">
+      
+        <meta name="lang:clipboard.copied" content="Copied to clipboard">
+      
+        <meta name="lang:search.language" content="en">
+      
+        <meta name="lang:search.pipeline.stopwords" content="True">
+      
+        <meta name="lang:search.pipeline.trimmer" content="True">
+      
+        <meta name="lang:search.result.none" content="No matching documents">
+      
+        <meta name="lang:search.result.one" content="1 matching document">
+      
+        <meta name="lang:search.result.other" content="# matching documents">
+      
+        <meta name="lang:search.tokenizer" content="[\s\-]+">
+      
+      <link rel="shortcut icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.0.4, mkdocs-material-3.2.0">
+    
+    
+      
+        <title>AWS Data Model</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/application.572ca0f0.css">
+      
+      
+    
+    
+      <script src="../assets/javascripts/modernizr.8c900955.js"></script>
+    
+    
+      
+        <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700|Roboto+Mono">
+        <style>body,input{font-family:"Roboto","Helvetica Neue",Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono","Courier New",Courier,monospace}</style>
+      
+    
+    <link rel="stylesheet" href="../assets/fonts/material-icons.css">
+    
+    
+    
+  </head>
+  
+    <body dir="ltr">
+  
+    <svg class="md-svg">
+      <defs>
+        
+        
+      </defs>
+    </svg>
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
+    
+      <a href="#data-model" tabindex="1" class="md-skip">
+        Skip to content
+      </a>
+    
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid">
+    <div class="md-flex">
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <a href=".." title="Rebar" class="md-header-nav__button md-logo">
+          
+            <i class="md-icon"></i>
+          
+        </a>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
+      </div>
+      <div class="md-flex__cell md-flex__cell--stretch">
+        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
+          
+            
+              <span class="md-header-nav__topic">
+                Rebar
+              </span>
+              <span class="md-header-nav__topic">
+                AWS Data Model
+              </span>
+            
+          
+        </div>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        
+          
+            <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
+            
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="query" data-md-state="active">
+      <label class="md-icon md-search__icon" for="__search"></label>
+      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
+        &#xE5CD;
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="result">
+          <div class="md-search-result__meta">
+            Type to start searching
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+          
+        
+      </div>
+      
+    </div>
+  </nav>
+</header>
+    
+    <div class="md-container">
+      
+        
+      
+      
+      <main class="md-main">
+        <div class="md-main__inner md-grid" data-md-component="container">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    <nav class="md-nav md-nav--primary" data-md-level="0">
+  <label class="md-nav__title md-nav__title--site" for="__drawer">
+    <a href=".." title="Rebar" class="md-nav__button md-logo">
+      
+        <i class="md-icon"></i>
+      
+    </a>
+    Rebar
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href=".." title="Overview" class="md-nav__link">
+      Overview
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../aws/" title="AWS Scanner" class="md-nav__link">
+      AWS Scanner
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../kubernetes/" title="Kubernetes Scanner" class="md-nav__link">
+      Kubernetes Scanner
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../faq/" title="FAQ" class="md-nav__link">
+      FAQ
+    </a>
+  </li>
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#awsaccount" title="AwsAccount" class="md-nav__link">
+    AwsAccount
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#awsasg" title="AwsAsg" class="md-nav__link">
+    AwsAsg
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#awsavailabilityzone" title="AwsAvailabilityZone" class="md-nav__link">
+    AwsAvailabilityZone
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#awsec2instance" title="AwsEc2Instance" class="md-nav__link">
+    AwsEc2Instance
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#awslambdafunction" title="AwsLambdaFunction" class="md-nav__link">
+    AwsLambdaFunction
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#awslaunchtemplate" title="AwsLaunchTemplate" class="md-nav__link">
+    AwsLaunchTemplate
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#awsregion" title="AwsRegion" class="md-nav__link">
+    AwsRegion
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#awssecuritygroup" title="AwsSecurityGroup" class="md-nav__link">
+    AwsSecurityGroup
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#awssubnet" title="AwsSubnet" class="md-nav__link">
+    AwsSubnet
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#awsvpc" title="AwsVpc" class="md-nav__link">
+    AwsVpc
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                <h1 id="data-model">Data Model</h1>
+<h2 id="awsaccount">AwsAccount</h2>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>account</strong></td>
+<td>string</td>
+<td>AWS Account that owns this Account</td>
+</tr>
+<tr>
+<td>graphEntityGroup</td>
+<td>string</td>
+<td>always <code>aws</code></td>
+</tr>
+<tr>
+<td>graphEntityType</td>
+<td>string</td>
+<td>always <code>AwsAccount</code></td>
+</tr>
+<tr>
+<td>graphUpdateTs</td>
+<td>number</td>
+<td>last time graph node was updated (millis since epoch)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="awsasg">AwsAsg</h2>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>account</strong></td>
+<td>string</td>
+<td>AWS Account that owns this Asg</td>
+</tr>
+<tr>
+<td><strong>arn</strong></td>
+<td>string</td>
+<td>Amazon Resource Name (ARN) of the Asg</td>
+</tr>
+<tr>
+<td><strong>name</strong></td>
+<td>string</td>
+<td>name of the Asg (qualified by <code>region</code> and <code>account</code>)</td>
+</tr>
+<tr>
+<td><strong>region</strong></td>
+<td>string</td>
+<td>Region (<code>us-east-1</code>, <code>us-west-2</code>, etc)</td>
+</tr>
+<tr>
+<td>autoScalingGroupARN</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td>autoScalingGroupName</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td>availabilityZones</td>
+<td>array</td>
+<td></td>
+</tr>
+<tr>
+<td>createdTime</td>
+<td>number</td>
+<td></td>
+</tr>
+<tr>
+<td>defaultCooldown</td>
+<td>number</td>
+<td></td>
+</tr>
+<tr>
+<td>desiredCapacity</td>
+<td>number</td>
+<td></td>
+</tr>
+<tr>
+<td>enabledMetrics</td>
+<td>array</td>
+<td></td>
+</tr>
+<tr>
+<td>graphEntityGroup</td>
+<td>string</td>
+<td>always <code>aws</code></td>
+</tr>
+<tr>
+<td>graphEntityType</td>
+<td>string</td>
+<td>always <code>AwsAsg</code></td>
+</tr>
+<tr>
+<td>graphUpdateTs</td>
+<td>number</td>
+<td>last time graph node was updated (millis since epoch)</td>
+</tr>
+<tr>
+<td>healthCheckGracePeriod</td>
+<td>number</td>
+<td></td>
+</tr>
+<tr>
+<td>healthCheckType</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td>instances</td>
+<td>array</td>
+<td></td>
+</tr>
+<tr>
+<td>launchTemplateId</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td>launchTemplateName</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td>launchTemplateVersion</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td>loadBalancerNames</td>
+<td>array</td>
+<td></td>
+</tr>
+<tr>
+<td>maxSize</td>
+<td>number</td>
+<td></td>
+</tr>
+<tr>
+<td>minSize</td>
+<td>number</td>
+<td></td>
+</tr>
+<tr>
+<td>newInstancesProtectedFromScaleIn</td>
+<td>boolean</td>
+<td></td>
+</tr>
+<tr>
+<td>serviceLinkedRoleARN</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td>suspendedProcesses</td>
+<td>array</td>
+<td></td>
+</tr>
+<tr>
+<td>tags</td>
+<td>array</td>
+<td></td>
+</tr>
+<tr>
+<td>targetGroupARNs</td>
+<td>array</td>
+<td></td>
+</tr>
+<tr>
+<td>terminationPolicies</td>
+<td>array</td>
+<td></td>
+</tr>
+<tr>
+<td>vpczoneIdentifier</td>
+<td>string</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h2 id="awsavailabilityzone">AwsAvailabilityZone</h2>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>name</strong></td>
+<td>string</td>
+<td>name of the AvailabilityZone (qualified by <code>region</code> and <code>account</code>)</td>
+</tr>
+<tr>
+<td><strong>region</strong></td>
+<td>string</td>
+<td>Region (<code>us-east-1</code>, <code>us-west-2</code>, etc)</td>
+</tr>
+<tr>
+<td>graphEntityGroup</td>
+<td>string</td>
+<td>always <code>aws</code></td>
+</tr>
+<tr>
+<td>graphEntityType</td>
+<td>string</td>
+<td>always <code>AwsAvailabilityZone</code></td>
+</tr>
+<tr>
+<td>graphUpdateTs</td>
+<td>number</td>
+<td>last time graph node was updated (millis since epoch)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="awsec2instance">AwsEc2Instance</h2>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>account</strong></td>
+<td>string</td>
+<td>AWS Account that owns this Ec2Instance</td>
+</tr>
+<tr>
+<td><strong>arn</strong></td>
+<td>string</td>
+<td>Amazon Resource Name (ARN) of the Ec2Instance</td>
+</tr>
+<tr>
+<td><strong>region</strong></td>
+<td>string</td>
+<td>Region (<code>us-east-1</code>, <code>us-west-2</code>, etc)</td>
+</tr>
+<tr>
+<td>amiLaunchIndex</td>
+<td>number</td>
+<td></td>
+</tr>
+<tr>
+<td>architecture</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td>clientToken</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td>ebsOptimized</td>
+<td>boolean</td>
+<td></td>
+</tr>
+<tr>
+<td>elasticGpuAssociations</td>
+<td>array</td>
+<td></td>
+</tr>
+<tr>
+<td>enaSupport</td>
+<td>boolean</td>
+<td></td>
+</tr>
+<tr>
+<td>graphEntityGroup</td>
+<td>string</td>
+<td>always <code>aws</code></td>
+</tr>
+<tr>
+<td>graphEntityType</td>
+<td>string</td>
+<td>always <code>AwsEc2Instance</code></td>
+</tr>
+<tr>
+<td>graphUpdateTs</td>
+<td>number</td>
+<td>last time graph node was updated (millis since epoch)</td>
+</tr>
+<tr>
+<td>hypervisor</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td>imageId</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td>instanceId</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td>instanceType</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td>keyName</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td>launchTime</td>
+<td>number</td>
+<td></td>
+</tr>
+<tr>
+<td>privateDnsName</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td>privateIpAddress</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td>publicDnsName</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td>publicIpAddress</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td>reservationId</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td>reservationOwnerId</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td>reservationRequesterId</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td>rootDeviceName</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td>rootDeviceType</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td>sourceDestCheck</td>
+<td>boolean</td>
+<td></td>
+</tr>
+<tr>
+<td>stateCode</td>
+<td>number</td>
+<td></td>
+</tr>
+<tr>
+<td>stateName</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td>stateTransitionReason</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td>subnetId</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td>virtualizationType</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td>vpcId</td>
+<td>string</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h2 id="awslambdafunction">AwsLambdaFunction</h2>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>account</strong></td>
+<td>string</td>
+<td>AWS Account that owns this LambdaFunction</td>
+</tr>
+<tr>
+<td><strong>arn</strong></td>
+<td>string</td>
+<td>Amazon Resource Name (ARN) of the LambdaFunction</td>
+</tr>
+<tr>
+<td><strong>name</strong></td>
+<td>string</td>
+<td>name of the LambdaFunction (qualified by <code>region</code> and <code>account</code>)</td>
+</tr>
+<tr>
+<td><strong>region</strong></td>
+<td>string</td>
+<td>Region (<code>us-east-1</code>, <code>us-west-2</code>, etc)</td>
+</tr>
+<tr>
+<td>codeSha256</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td>codeSize</td>
+<td>number</td>
+<td></td>
+</tr>
+<tr>
+<td>description</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td>functionArn</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td>functionName</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td>graphEntityGroup</td>
+<td>string</td>
+<td>always <code>aws</code></td>
+</tr>
+<tr>
+<td>graphEntityType</td>
+<td>string</td>
+<td>always <code>AwsLambdaFunction</code></td>
+</tr>
+<tr>
+<td>graphUpdateTs</td>
+<td>number</td>
+<td>last time graph node was updated (millis since epoch)</td>
+</tr>
+<tr>
+<td>handler</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td>lastModified</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td>memorySize</td>
+<td>number</td>
+<td></td>
+</tr>
+<tr>
+<td>revisionId</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td>role</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td>runtime</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td>timeout</td>
+<td>number</td>
+<td></td>
+</tr>
+<tr>
+<td>tracingConfigMode</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td>version</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td>vpcId</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td>vpcSubnetIds</td>
+<td>array</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h2 id="awslaunchtemplate">AwsLaunchTemplate</h2>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>account</strong></td>
+<td>string</td>
+<td>AWS Account that owns this LaunchTemplate</td>
+</tr>
+<tr>
+<td><strong>arn</strong></td>
+<td>string</td>
+<td>Amazon Resource Name (ARN) of the LaunchTemplate</td>
+</tr>
+<tr>
+<td><strong>name</strong></td>
+<td>string</td>
+<td>name of the LaunchTemplate (qualified by <code>region</code> and <code>account</code>)</td>
+</tr>
+<tr>
+<td><strong>region</strong></td>
+<td>string</td>
+<td>Region (<code>us-east-1</code>, <code>us-west-2</code>, etc)</td>
+</tr>
+<tr>
+<td>createTime</td>
+<td>number</td>
+<td></td>
+</tr>
+<tr>
+<td>createdBy</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td>defaultVersionNumber</td>
+<td>number</td>
+<td></td>
+</tr>
+<tr>
+<td>graphEntityGroup</td>
+<td>string</td>
+<td>always <code>aws</code></td>
+</tr>
+<tr>
+<td>graphEntityType</td>
+<td>string</td>
+<td>always <code>AwsLaunchTemplate</code></td>
+</tr>
+<tr>
+<td>graphUpdateTs</td>
+<td>number</td>
+<td>last time graph node was updated (millis since epoch)</td>
+</tr>
+<tr>
+<td>latestVersionNumber</td>
+<td>number</td>
+<td></td>
+</tr>
+<tr>
+<td>launchTemplateId</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td>launchTemplateName</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td>tags</td>
+<td>array</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h2 id="awsregion">AwsRegion</h2>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>region</strong></td>
+<td>string</td>
+<td>Region (<code>us-east-1</code>, <code>us-west-2</code>, etc)</td>
+</tr>
+<tr>
+<td>graphEntityGroup</td>
+<td>string</td>
+<td>always <code>aws</code></td>
+</tr>
+<tr>
+<td>graphEntityType</td>
+<td>string</td>
+<td>always <code>AwsRegion</code></td>
+</tr>
+<tr>
+<td>graphUpdateTs</td>
+<td>number</td>
+<td>last time graph node was updated (millis since epoch)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="awssecuritygroup">AwsSecurityGroup</h2>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>account</strong></td>
+<td>string</td>
+<td>AWS Account that owns this SecurityGroup</td>
+</tr>
+<tr>
+<td><strong>arn</strong></td>
+<td>string</td>
+<td>Amazon Resource Name (ARN) of the SecurityGroup</td>
+</tr>
+<tr>
+<td><strong>name</strong></td>
+<td>string</td>
+<td>name of the SecurityGroup (qualified by <code>region</code> and <code>account</code>)</td>
+</tr>
+<tr>
+<td><strong>region</strong></td>
+<td>string</td>
+<td>Region (<code>us-east-1</code>, <code>us-west-2</code>, etc)</td>
+</tr>
+<tr>
+<td>description</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td>graphEntityGroup</td>
+<td>string</td>
+<td>always <code>aws</code></td>
+</tr>
+<tr>
+<td>graphEntityType</td>
+<td>string</td>
+<td>always <code>AwsSecurityGroup</code></td>
+</tr>
+<tr>
+<td>graphUpdateTs</td>
+<td>number</td>
+<td>last time graph node was updated (millis since epoch)</td>
+</tr>
+<tr>
+<td>groupId</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td>groupName</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td>ipPermissionsEgress</td>
+<td>array</td>
+<td></td>
+</tr>
+<tr>
+<td>ownerId</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td>tags</td>
+<td>array</td>
+<td></td>
+</tr>
+<tr>
+<td>vpcId</td>
+<td>string</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h2 id="awssubnet">AwsSubnet</h2>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>account</strong></td>
+<td>string</td>
+<td>AWS Account that owns this Subnet</td>
+</tr>
+<tr>
+<td><strong>arn</strong></td>
+<td>string</td>
+<td>Amazon Resource Name (ARN) of the Subnet</td>
+</tr>
+<tr>
+<td><strong>region</strong></td>
+<td>string</td>
+<td>Region (<code>us-east-1</code>, <code>us-west-2</code>, etc)</td>
+</tr>
+<tr>
+<td>assignIpv6AddressOnCreation</td>
+<td>boolean</td>
+<td></td>
+</tr>
+<tr>
+<td>availabilityZone</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td>availableIpAddressCount</td>
+<td>number</td>
+<td></td>
+</tr>
+<tr>
+<td>cidrBlock</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td>defaultForAz</td>
+<td>boolean</td>
+<td></td>
+</tr>
+<tr>
+<td>graphEntityGroup</td>
+<td>string</td>
+<td>always <code>aws</code></td>
+</tr>
+<tr>
+<td>graphEntityType</td>
+<td>string</td>
+<td>always <code>AwsSubnet</code></td>
+</tr>
+<tr>
+<td>graphUpdateTs</td>
+<td>number</td>
+<td>last time graph node was updated (millis since epoch)</td>
+</tr>
+<tr>
+<td>ipv6CidrBlockAssociationSet</td>
+<td>array</td>
+<td></td>
+</tr>
+<tr>
+<td>mapPublicIpOnLaunch</td>
+<td>boolean</td>
+<td></td>
+</tr>
+<tr>
+<td>state</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td>subnetId</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td>vpcId</td>
+<td>string</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h2 id="awsvpc">AwsVpc</h2>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>account</strong></td>
+<td>string</td>
+<td>AWS Account that owns this Vpc</td>
+</tr>
+<tr>
+<td><strong>arn</strong></td>
+<td>string</td>
+<td>Amazon Resource Name (ARN) of the Vpc</td>
+</tr>
+<tr>
+<td><strong>region</strong></td>
+<td>string</td>
+<td>Region (<code>us-east-1</code>, <code>us-west-2</code>, etc)</td>
+</tr>
+<tr>
+<td>cidrBlock</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td>default</td>
+<td>boolean</td>
+<td></td>
+</tr>
+<tr>
+<td>dhcpOptionsId</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td>graphEntityGroup</td>
+<td>string</td>
+<td>always <code>aws</code></td>
+</tr>
+<tr>
+<td>graphEntityType</td>
+<td>string</td>
+<td>always <code>AwsVpc</code></td>
+</tr>
+<tr>
+<td>graphUpdateTs</td>
+<td>number</td>
+<td>last time graph node was updated (millis since epoch)</td>
+</tr>
+<tr>
+<td>instanceTenancy</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td>ipv6CidrBlockAssociationSet</td>
+<td>array</td>
+<td></td>
+</tr>
+<tr>
+<td>isDefault</td>
+<td>boolean</td>
+<td></td>
+</tr>
+<tr>
+<td>state</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td>vpcId</td>
+<td>string</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h1 id="other">Other</h1>
+                
+                  
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        powered by
+        <a href="https://www.mkdocs.org">MkDocs</a>
+        and
+        <a href="https://squidfunk.github.io/mkdocs-material/">
+          Material for MkDocs</a>
+      </div>
+      
+        
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../assets/javascripts/application.b41f3d20.js"></script>
+      
+      <script>app.initialize({version:"1.0.4",url:{base:".."}})</script>
+      
+    
+    
+      
+    
+  </body>
+</html>
