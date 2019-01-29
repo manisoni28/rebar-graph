@@ -1,6 +1,6 @@
 site_name: Rebar
-theme:
-  name: 'material'
+#theme:
+#  name: 'material'
 
 nav:
     - Overview: index.md

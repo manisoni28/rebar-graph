@@ -7,13 +7,15 @@ sidebar_label: AWS
 
 
 # Overview
-The rebar scanner is intended to be deployed exclusively via Docker.
+
+The aws-scanner is deployed as a docker container.  It connects to the AWS control plane and queries it to extract metadata.
+It then normalizes and projects that data into Neo4j, the graph database.
 
 # Getting Started 
 
 You will need a neo4j graph database instance to store the data that rebar will gather from AWS.  If you don't have neo4j installed already, skip down to [Install Neo4j](#install-neo4j).
 
-## AWS Credentials
+## Start AWS Scanner Image
 
 Now you can run `aws-scanner`:
 
