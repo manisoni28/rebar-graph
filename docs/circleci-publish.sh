@@ -15,6 +15,16 @@ REMOTE_URL=git@github.com:rebar-cloud/rebar-cloud.git
 
 git clone $REMOTE_URL tmp-clone || exit 99
 
+EXISTING_DIGEST=$(head -1 ./tmp-clone/digest.txt)
+
+if [ "$DOCS_DIGEST" = "$EXISTING_DIGEST" ]; then
+echo 
+echo docs have not changed
+exit 0
+fi
+
+
+
 sudo apt-get install python-pip
 sudo pip install mkdocs pygments mkdocs-material
 
