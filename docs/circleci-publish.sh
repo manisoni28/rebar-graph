@@ -24,11 +24,11 @@ cd tmp-clone
 
   git config --global user.email "robschoening@gmail.com"
   git config --global user.name "Circle CI"
-  
+
 git add .
-git commit -a -m "docs built from $SOURCE_SHA1"
+git commit -a -m "docs built from $SOURCE_SHA1" || exit 99
 
-git push 
+git push || exit 99
 
-exit 0
+
 
