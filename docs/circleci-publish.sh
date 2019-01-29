@@ -8,7 +8,7 @@ cd $SCRIPT_DIR
 SOURCE_SHA1=${CIRCLE_SHA1-"unknown"}
 rm -rf ./tmp-clone ./site
 
-DOCS_DIGEST=$(find . -type f -print0 | xargs -0 sha1sum | sha1sum | awk '{ print $1 }')
+DOCS_DIGEST=$(find . -type f \( ! digest.txt \) -print0 | xargs -0 sha1sum | sha1sum | awk '{ print $1 }')
 
 
 REMOTE_URL=git@github.com:rebar-cloud/rebar-cloud.git
