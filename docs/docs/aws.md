@@ -4,7 +4,7 @@ title: AWS
 sidebar_label: AWS
 ---
 
-Builds graph model of AWS infrastructure.
+Builds a graph model of AWS infrastructure.
 
 # Getting Started
 

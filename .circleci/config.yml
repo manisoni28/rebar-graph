@@ -28,6 +28,8 @@ jobs:
     steps:
       - checkout
 
+      - add_ssh_keys
+      
       # Download and cache dependencies
       - restore_cache:
           keys:
@@ -35,7 +37,10 @@ jobs:
           # fallback to using the latest cache if no exact match is found
           - v1-dependencies-
 
-        
+      - run:
+          name: Build docs
+          command: ./docs/circleci-publish.sh
+
       # run tests!
       - run: 
           name: Build and Test

@@ -20,4 +20,4 @@ git commit -a -m "update"
 
 git status
 
-#git push -f
+git push 
