@@ -63,48 +63,43 @@ The following options can be passed as environment variables.
 
 ## Supported Types
 
-
-| Type | Status | Notes |
-|------|-------|-------|
-| AwsRegion | ✅ |  |
-| AwsAvailabilityZone | ✅ |  |
-| AwsAccount | ✅ | |
-| AwsVpc | ✅ | |
-| AwsSubnet | ✅  | |
-| AwsSecurityGroup | ✅  | |
-| AwsAsg | ✅ |  |
-| AwsElb | ✅ | Classic, Network, and Application |
-| AwsEc2Instance | ✅ |  |
-| AwsLaunchConfig | ✅ | |
-| AwsLaunchTemplate | ✅ | |
-| AwsAmi | ✅ | |
-| AwsS3Bucket   | ✅ | |
-| AwsEksCluster | ✅ | |
-| AwsRdsCluster | ✅ | |
-| AwsRdsInstance | ✅ | |
-| AwsRoute53RecordSet | ✅ | |
-| AwsRoute53HostedZone   | ✅ | |
-| AwsTargetGroup| ✅ | |
-| AwsSqsQueue | ✅ | |
-| AwsSnsTopic | ✅ | |
-| AwsSnsSubscription | ✅ | |
-| AwsSes | ⛔ | |
-| AwsGlue | ⛔ | |
-| AwsKinesisStream | ⛔ | |
-| AwsRouteTable | ⛔ | |
-| AwsVpnGateway   | ✅ | |
-| AwsVpcPeeringConnection   | ✅| |
-| AwsVpcEndpoint   | ✅ | |
-| AwsInternetGateway | ✅ | |
-| AwsEgressOnlyInternetGateway | ✅ | |
-| AwsIamUser   | ⛔ | |
-| AwsIamInlinePolicy   | ⛔ | |
-| AwsIamRole | ⛔ | |
-| AwsIamPolicy | ⛔ | |
-| AwsIamManagedPolicy| ⛔ | |
-| AwsEc2NetworkInterface| ⛔ | |
-| AwsEcrRepository| ⛔ | |
-| AwsDynamoDbTable| ⛔ | |
+| Type | Scanner | |
+|------|-----|------|
+| AwsAccount |[AccountScanner](https://github.com/rebar-cloud/rebar-graph/blob/master/rebar-scanner-aws/src/main/java/rebar/graph/aws/AccountScanner.java) | |
+| AwsAmi | [AmiScanner](https://github.com/rebar-cloud/rebar-graph/blob/master/rebar-scanner-aws/src/main/java/rebar/graph/aws/AmiScanner.java)| |
+| AwsApiGatewayRestApi | [ApiGatewayRestApiScanner](https://github.com/rebar-cloud/rebar-graph/blob/master/rebar-scanner-aws/src/main/java/rebar/graph/aws/ApiGatewayRestApiScanner.java) | |
+| AwsAsg | [AsgScanner](https://github.com/rebar-cloud/rebar-graph/blob/master/rebar-scanner-aws/src/main/java/rebar/graph/aws/AsgScanner.java) | |
+| AwsAvailabilityZone | [AvailabilityZoneScanner](https://github.com/rebar-cloud/rebar-graph/blob/master/rebar-scanner-aws/src/main/java/rebar/graph/aws/AvailabilityZoneScanner.java) |  |
+| AwsCacheCluster | [ElastiCacheScanner](https://github.com/rebar-cloud/rebar-graph/blob/master/rebar-scanner-aws/src/main/java/rebar/graph/aws/ElastiCacheScanner.java) | |
+| AwsCacheClusterNode |[ElastiCacheScanner](https://github.com/rebar-cloud/rebar-graph/blob/master/rebar-scanner-aws/src/main/java/rebar/graph/aws/ElastiCacheScanner.java)   | |
+| AwsEc2Instance |[Ec2InstanceScanner](https://github.com/rebar-cloud/rebar-graph/blob/master/rebar-scanner-aws/src/main/java/rebar/graph/aws/Ec2InstanceScanner.java)   | |
+| AwsEgressOnlyInternetGateway | [EgressOnlyInternetGatewayScanner](https://github.com/rebar-cloud/rebar-graph/blob/master/rebar-scanner-aws/src/main/java/rebar/graph/aws/EgressOnlyInternetGatewayScanner.java)  | |
+| AwsEksCluster |[EksClusterScanner](https://github.com/rebar-cloud/rebar-graph/blob/master/rebar-scanner-aws/src/main/java/rebar/graph/aws/EksClusterScanner.java) | |
+| AwsEmrCluster |[ElasticMapReduceClusterScanner](https://github.com/rebar-cloud/rebar-graph/blob/master/rebar-scanner-aws/src/main/java/rebar/graph/aws/ElasticMapReduceClusterScanner.java) | |
+| AwsEmrClusterInstance |[ElasticMapReduceClusterScanner](https://github.com/rebar-cloud/rebar-graph/blob/master/rebar-scanner-aws/src/main/java/rebar/graph/aws/ElasticMapReduceClusterScanner.java) | |
+| AwsElb | [ElbClassicScanner](https://github.com/rebar-cloud/rebar-graph/blob/master/rebar-scanner-aws/src/main/java/rebar/graph/aws/ElbClassicScanner.java)| |
+| AwsElbTargetGroup | [ElbTargetGroupScanner](https://github.com/rebar-cloud/rebar-graph/blob/master/rebar-scanner-aws/src/main/java/rebar/graph/aws/ElbTargetGroupScanner.java) | |
+| AwsHostedZone |[Route53Scanner](https://github.com/rebar-cloud/rebar-graph/blob/master/rebar-scanner-aws/src/main/java/rebar/graph/aws/Route53Scanner.java)  | |
+| AwsHostedZoneRecordSet |[Route53Scanner](https://github.com/rebar-cloud/rebar-graph/blob/master/rebar-scanner-aws/src/main/java/rebar/graph/aws/Route53Scanner.java)  | |
+| AwsInternetGateway | [AwsInternetGatewayScanner](https://github.com/rebar-cloud/rebar-graph/blob/master/rebar-scanner-aws/src/main/java/rebar/graph/aws/InternetGatewayScanner.java)  | |
+| AwsLambdaFunction | [LambdaFunction](https://github.com/rebar-cloud/rebar-graph/blob/master/rebar-scanner-aws/src/main/java/rebar/graph/aws/LambdaFunctionScanner.java)  | |
+| AwsLaunchConfig | [LaunchConfigScanner](https://github.com/rebar-cloud/rebar-graph/blob/master/rebar-scanner-aws/src/main/java/rebar/graph/aws/LaunchConfigScanner.java) | |
+| AwsLaunchTemplate |[LaunchTemplateScanner](https://github.com/rebar-cloud/rebar-graph/blob/master/rebar-scanner-aws/src/main/java/rebar/graph/aws/LaunchTemplateScanner.java)  | |
+| AwsRdsCluster | [RdsCluster](https://github.com/rebar-cloud/rebar-graph/blob/master/rebar-scanner-aws/src/main/java/rebar/graph/aws/RdsCluster.java) | |
+| AwsRdsInstance | [RdsInstanceScanner](https://github.com/rebar-cloud/rebar-graph/blob/master/rebar-scanner-aws/src/main/java/rebar/graph/aws/RdsInstanceScanner.java) | |
+| AwsRegion |[RegionScanner](https://github.com/rebar-cloud/rebar-graph/blob/master/rebar-scanner-aws/src/main/java/rebar/graph/aws/RegionScanner.java)  | |
+| AwsRouteTable | [RouteTable](https://github.com/rebar-cloud/rebar-graph/blob/master/rebar-scanner-aws/src/main/java/rebar/graph/aws/RouteTableScanner.java) | |
+| AwsSecurityGroup |[SecurityGroupScanner](https://github.com/rebar-cloud/rebar-graph/blob/master/rebar-scanner-aws/src/main/java/rebar/graph/aws/SecurityGroupScanner.java)  | |
+| AwsSnsTopic |[SnsScanner](https://github.com/rebar-cloud/rebar-graph/blob/master/rebar-scanner-aws/src/main/java/rebar/graph/aws/SnsScanner.java)  | |
+| AwsSnsSubscription |[SnsScanner](https://github.com/rebar-cloud/rebar-graph/blob/master/rebar-scanner-aws/src/main/java/rebar/graph/aws/SnsScanner.java)  | |
+| AwsSqsQueue |[SqsScanner](https://github.com/rebar-cloud/rebar-graph/blob/master/rebar-scanner-aws/src/main/java/rebar/graph/aws/SqsScanner.java) | |
+| AwsElbListener | [ElbListenerScanner](https://github.com/rebar-cloud/rebar-graph/blob/master/rebar-scanner-aws/src/main/java/rebar/graph/aws/ElbListenerScanner.java) | |
+| AwsS3Bucket | [S3Scanner](https://github.com/rebar-cloud/rebar-graph/blob/master/rebar-scanner-aws/src/main/java/rebar/graph/aws/S3Scanner.java)| |
+| AwsSubnet |[SubnetScanner](https://github.com/rebar-cloud/rebar-graph/blob/master/rebar-scanner-aws/src/main/java/rebar/graph/aws/SubnetScanner.java) | |
+| AwsVpc |[VpcScanner](https://github.com/rebar-cloud/rebar-graph/blob/master/rebar-scanner-aws/src/main/java/rebar/graph/aws/VpcScanner.java) | |
+| AwsVpcEndpoint |[VpcEndpointScanner](https://github.com/rebar-cloud/rebar-graph/blob/master/rebar-scanner-aws/src/main/java/rebar/graph/aws/VpcEndpointScanner.java) | |
+| AwsVpcPeeringConnection |[VpcPeeringConnectionScanner](https://github.com/rebar-cloud/rebar-graph/blob/master/rebar-scanner-aws/src/main/java/rebar/graph/aws/VpcPeeringConnectionScanner.java) | |
+| AwsVpnGateway |[VpnGatewayScanner](https://github.com/rebar-cloud/rebar-graph/blob/master/rebar-scanner-aws/src/main/java/rebar/graph/aws/VpnGatewayScanner.java) | |
 
 
 ## Naming Conventions
