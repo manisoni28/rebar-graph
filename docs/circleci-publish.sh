@@ -17,16 +17,16 @@ git clone $REMOTE_URL tmp-clone || exit 99
 
 EXISTING_DIGEST=$(head -1 ./tmp-clone/digest.txt)
 
-cat ./tmp-clone/digest.txt
+echo ${EXISTING_DIGEST}
 echo $DOCS_DIGEST
 
-if [ "$DOCS_DIGEST" = "$EXISTING_DIGEST" ]; then
+if [ "${DOCS_DIGEST}" = "${EXISTING_DIGEST}" ]; then
 echo 
 echo docs have not changed
 exit 0
 fi
 
-exit 1
+
 
 
 
@@ -51,3 +51,4 @@ git push || exit 99
 
 
 
+exit 1
