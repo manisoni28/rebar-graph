@@ -1,7 +1,6 @@
 #!/bin/bash
 
 
-env | grep CIRCLE
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 cd $SCRIPT_DIR
@@ -9,12 +8,17 @@ cd $SCRIPT_DIR
 SOURCE_SHA1=${CIRCLE_SHA1-"unknown"}
 rm -rf ./tmp-clone ./site
 
+DOCS_DIGEST=$(find . -type f -print0 | xargs -0 sha1sum | sha1sum | awk '{ print $1 }')
+
+
 REMOTE_URL=git@github.com:rebar-cloud/rebar-cloud.git
 
 git clone $REMOTE_URL tmp-clone || exit 99
 
 sudo apt-get install python-pip
 sudo pip install mkdocs pygments mkdocs-material
+
+echo $DOCS_DIGEST >docs/digest.txt
 
 mkdocs build || exit 99
 
