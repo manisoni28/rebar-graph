@@ -55,7 +55,7 @@ public abstract class AwsIntegrationTest extends AbstractIntegrationTest {
 
 
 	boolean hasNodesOfType(AwsEntityType entityType) {
-		return getNeo4jDriver().cypher("match (a:"+entityType+") return count(a) as count").findFirst().get().path("count").asInt()>0;
+		return getGraphDriver().cypher("match (a:"+entityType+") return count(a) as count").findFirst().get().path("count").asInt()>0;
 	}
 	@BeforeEach
 	public void __setupAws() {

@@ -41,9 +41,10 @@ class Neo4jTemplateImpl extends CypherTemplate  {
 	Driver driver;
 	String cypher;
 	Map<String, Object> params = new HashMap<>();
-
+	GraphDriver graphDriver;
+	
 	protected Neo4jTemplateImpl copy() {
-		Neo4jTemplateImpl c = new Neo4jTemplateImpl(driver);
+		Neo4jTemplateImpl c = new Neo4jTemplateImpl(graphDriver);
 		c.resultLimit = this.resultLimit;
 		c.attributeMode = this.attributeMode;
 		c.cypher = this.cypher;
@@ -51,8 +52,9 @@ class Neo4jTemplateImpl extends CypherTemplate  {
 		return c;
 	}
 
-	Neo4jTemplateImpl(Driver driver) {
-		this.driver = driver;
+	Neo4jTemplateImpl(GraphDriver driver) {
+		this.graphDriver = driver;
+		this.driver = driver.getDriver();
 	}
 
 	/* (non-Javadoc)
@@ -165,6 +167,8 @@ class Neo4jTemplateImpl extends CypherTemplate  {
 	}
 
 	private Neo4jStatementResultImpl doExec() {
+		
+		long ts = System.currentTimeMillis();
 		try (Session session = driver.session()) {
 
 			
@@ -187,7 +191,8 @@ class Neo4jTemplateImpl extends CypherTemplate  {
 			StatementResult sr = session.run(finalTemplate.cypher, finalTemplate.params);
 			Neo4jStatementResultImpl nsr = new Neo4jStatementResultImpl(finalTemplate);
 			nsr.consume(sr);
-
+			long totalTime = System.currentTimeMillis()-ts;
+			graphDriver.metrics().recordStatementExecution(finalTemplate.cypher, totalTime);
 			return nsr;
 		}
 

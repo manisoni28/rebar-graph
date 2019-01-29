@@ -58,7 +58,7 @@ public class ClusterScannerTest extends KubeIntegrationTest {
 			Assertions.assertThat(it.path("kind").asText()).isEqualTo("Namespace");
 		});
 		
-		getNeo4jDriver().cypher("match (a:KubeCluster)-[r]-(n:KubeNamespace) return a,r,n").forEach(it->{
+		getGraphDriver().cypher("match (a:KubeCluster)-[r]-(n:KubeNamespace) return a,r,n").forEach(it->{
 			System.out.println(it);
 		});
 		
@@ -77,17 +77,17 @@ public class ClusterScannerTest extends KubeIntegrationTest {
 	public void testCleanup() throws InterruptedException {
 
 		Assertions.assertThat(
-				getNeo4jDriver().cypher("match (a) where a.graphEntityGroup='kubernetes' return count(a) as count")
+				getGraphDriver().cypher("match (a) where a.graphEntityGroup='kubernetes' return count(a) as count")
 						.stream().findFirst().get().path("count").asInt())
 				.isEqualTo(0);
 
-		Assertions.assertThat(getNeo4jDriver().cypher("match (a) where labels(a)[0]=~'Kube.*' return count(a) as count")
+		Assertions.assertThat(getGraphDriver().cypher("match (a) where labels(a)[0]=~'Kube.*' return count(a) as count")
 				.stream().findFirst().get().path("count").asInt()).isEqualTo(0);
 	}
 
 	@Test
 	public void testEntityAttributes() {
-		getNeo4jDriver().cypher("match (a) where labels(a)[0] =~ 'Kube.*' return labels(a)[0] as label,a").stream()
+		getGraphDriver().cypher("match (a) where labels(a)[0] =~ 'Kube.*' return labels(a)[0] as label,a").stream()
 		.forEach(it -> {
 		
 			Assertions.assertThat(it.path("a").path("clusterId").asText()).isEqualTo(getKubeScanner().getClusterId());
@@ -101,7 +101,7 @@ public class ClusterScannerTest extends KubeIntegrationTest {
 
 		getKubeScanner().scan();
 
-		List<JsonNode> list = getNeo4jDriver().cypher("match (a:KubeCluster) return a").list();
+		List<JsonNode> list = getGraphDriver().cypher("match (a:KubeCluster) return a").list();
 
 		Assertions.assertThat(list).isNotEmpty();
 

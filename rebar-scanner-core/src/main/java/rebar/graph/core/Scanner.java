@@ -24,6 +24,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Stopwatch;
 
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.Metrics;
+import io.micrometer.core.instrument.composite.CompositeMeterRegistry;
 import rebar.graph.neo4j.GraphDriver;
 import rebar.graph.neo4j.GraphException;
 import rebar.util.RebarException;
@@ -38,11 +41,17 @@ public abstract class Scanner {
 	
 	private boolean constraintsApplied=false;
 	
+	MeterRegistry meterRegistry = Metrics.globalRegistry; 
+	
 	public Scanner(ScannerBuilder<? extends Scanner> builder) {
 		this.scannerBuilder = builder;
+		
+		
 	}
 
-	
+	public MeterRegistry metrics() {
+		return meterRegistry;
+	}
 
 
 	private GraphOperation getOperation(Class<? extends GraphOperation> operationClass) {

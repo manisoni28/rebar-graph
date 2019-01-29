@@ -54,7 +54,7 @@ class Neo4jDriverImpl extends GraphDriver {
 	}
 
 	public CypherTemplate newTemplate() {
-		return new Neo4jTemplateImpl(driver);
+		return new Neo4jTemplateImpl(this);
 	}
 
 	public GraphSchema schema() {

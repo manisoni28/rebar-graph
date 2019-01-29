@@ -28,9 +28,9 @@ public class VpcScannerGroupTest extends AwsIntegrationTest {
 	public void testAccount() {
 		
 		Assertions.assertThat(
-				getNeo4jDriver().cypher("match (a:AwsAccount) return a").findFirst().get().path("account").asText())
+				getGraphDriver().cypher("match (a:AwsAccount) return a").findFirst().get().path("account").asText())
 				.isEqualTo(getAwsScanner().getAccount());
-		getNeo4jDriver().cypher("match (a:AwsAccount) return a").forEach(it -> {
+		getGraphDriver().cypher("match (a:AwsAccount) return a").forEach(it -> {
 			Json.logger().info(it);
 			Assertions.assertThat(it.has("graphEntityDigest")).isTrue();
 			Assertions.assertThat(it.path("graphEntityType").asText()).isEqualTo("AwsAccount");

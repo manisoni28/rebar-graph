@@ -27,10 +27,15 @@ import org.neo4j.driver.v1.AuthTokens;
 import org.neo4j.driver.v1.Config;
 import org.neo4j.driver.v1.Config.ConfigBuilder;
 
+import com.google.common.base.Preconditions;
+
 import rebar.util.EnvConfig;
 
 import org.neo4j.driver.v1.Driver;
 import org.neo4j.driver.v1.GraphDatabase;
+
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.Metrics;
 
 
 public abstract class GraphDriver {
@@ -39,6 +44,7 @@ public abstract class GraphDriver {
 	public static final String GRAPH_USERNAME="GRAPH_USERNAME";
 	public static final String GRAPH_PASSWORD="GRAPH_PASSWORD";
 	
+	CypherMetrics cypherMetrics;
 	public static class Builder {
 		
 		EnvConfig env = new EnvConfig();
@@ -46,6 +52,7 @@ public abstract class GraphDriver {
 
 		List<Consumer<ConfigBuilder>> configConsumers = new LinkedList<>();
 		
+		MeterRegistry builderMeterRegistry = Metrics.globalRegistry; // default
 		private Config.ConfigBuilder applyOptions(Config.ConfigBuilder b) {
 			
 			
@@ -95,6 +102,7 @@ public abstract class GraphDriver {
 			for (Consumer<ConfigBuilder> config: configConsumers) {
 				config.accept(b);
 			}
+		
 			return b;
 		}
 		public Optional<String> getEnv(String s) {
@@ -122,7 +130,10 @@ public abstract class GraphDriver {
 		public Builder withPassword(String password) {
 			return withEnv(GRAPH_PASSWORD,password);
 		}
-		
+		public Builder withMetricsRegistry(MeterRegistry reg) {
+			builderMeterRegistry = reg;
+			return this;
+		}
 		public Builder withEnv(String key, String val) {
 			env = env.withEnv(key, val);
 			return this;
@@ -138,8 +149,9 @@ public abstract class GraphDriver {
 				
 				
 				
+				Neo4jDriverImpl d = null;
 				if (bDriver != null) {
-					return new Neo4jDriverImpl(this.bDriver);
+					d = new Neo4jDriverImpl(this.bDriver);
 				} else {
 					
 					if (!url.isPresent()) {
@@ -150,13 +162,17 @@ public abstract class GraphDriver {
 					
 					if ((getUsername().isPresent() && getPassword().isPresent())) {
 
-						return new Neo4jDriverImpl(GraphDatabase.driver(url.get(),
+						d = new Neo4jDriverImpl(GraphDatabase.driver(url.get(),
 								AuthTokens.basic(getUsername().get(), getPassword().get()), config));
+						
 					} else {
-						return new Neo4jDriverImpl(GraphDatabase.driver(url.get(), config));
+						d = new Neo4jDriverImpl(GraphDatabase.driver(url.get(), config));
 					}
 				}
-				
+				d.cypherMetrics = new CypherMetrics(d,builderMeterRegistry);
+			
+			
+				return d;
 			}
 			catch (GraphException e) {
 				throw e;
@@ -173,4 +189,8 @@ public abstract class GraphDriver {
 	public abstract GraphSchema schema();
 	
 	public abstract Driver getDriver();
+	
+	public final CypherMetrics metrics() {
+		return cypherMetrics;
+	}
 }

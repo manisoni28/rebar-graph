@@ -15,6 +15,8 @@
  */
 package rebar.graph.test;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,15 +25,19 @@ import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.micrometer.core.instrument.Metrics;
+import io.micrometer.core.instrument.logging.LoggingMeterRegistry;
 import rebar.graph.core.RebarGraph;
 import rebar.graph.neo4j.GraphDriver;
 import rebar.util.EnvConfig;
 
 
+
 @TestInstance(Lifecycle.PER_CLASS)
 public abstract class AbstractIntegrationTest {
 
-	Logger logger = LoggerFactory.getLogger(getClass());
+	static AtomicBoolean loggingRegistryAdded = new AtomicBoolean(false);
+	Logger logger = LoggerFactory.getLogger(AbstractIntegrationTest.class);
 
 	
 	private static RebarGraph rebarGraph;
@@ -39,9 +45,29 @@ public abstract class AbstractIntegrationTest {
 	static Boolean integrationTestEnabled=null;
 	static String reason=null;
 	
-
+	/**
+	 * Adds logging registry, used primarily for testing.
+	 */
+	public static void enableLoggingRegistry() {
+		Logger logger = LoggerFactory.getLogger(AbstractIntegrationTest.class);
+		synchronized(Metrics.globalRegistry) {
+			long logRegCount = Metrics.globalRegistry.getRegistries().stream().filter(p->p instanceof LoggingMeterRegistry).count();
+			if (logRegCount==0) {
+				logger.info("adding LoggingMeterRegistry to micrometer...");
+			
+				Metrics.addRegistry(new LoggingMeterRegistry());
+			
+			}
+		}
+	}
 	public AbstractIntegrationTest() {
 
+		
+	
+		enableLoggingRegistry();
+			
+			
+	
 	}
 	@BeforeAll
 	public final void __beforeAll() {
@@ -107,7 +133,7 @@ public abstract class AbstractIntegrationTest {
 
 	
 			rebarGraph = graph;
-		
+			
 			cleanupTestData();
 			integrationTestEnabled=true;
 		} catch (RuntimeException e) {
@@ -122,7 +148,7 @@ public abstract class AbstractIntegrationTest {
 		return rebarGraph;
 	}
 	
-	public final GraphDriver getNeo4jDriver() {
+	public final GraphDriver getGraphDriver() {
 		return getRebarGraph().getGraphDB().getNeo4jDriver();
 	}
 

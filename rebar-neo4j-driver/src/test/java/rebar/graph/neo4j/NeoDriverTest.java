@@ -181,5 +181,10 @@ public class NeoDriverTest extends IntegrationTest {
 		Assertions.assertThat(Json.objectMapper().convertValue(result.path("array"),String[].class)).containsExactly("a","b","c");
 		
 		Assertions.assertThat(Json.objectMapper().convertValue(result.path("list"),Object[].class)).containsExactly("x","y","z");
+		getNeo4jDriver().metrics().getStatementStats().forEach(it->{
+			System.out.println(it.toJson());
+		});
 	}
+	
+	
 }

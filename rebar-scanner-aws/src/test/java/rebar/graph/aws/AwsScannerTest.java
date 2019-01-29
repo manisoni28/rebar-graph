@@ -86,7 +86,7 @@ public class AwsScannerTest extends AwsIntegrationTest {
 
 	
 		long ts = System.currentTimeMillis();
-		getNeo4jDriver().cypher("match (a) where labels(a)[0]=~'Aws.*' return a,labels(a)[0] as label").stream()
+		getGraphDriver().cypher("match (a) where labels(a)[0]=~'Aws.*' return a,labels(a)[0] as label").stream()
 				.forEach(x -> {
 					String label = x.path("label").asText();
 					JsonNode it = x.path("a");
@@ -133,7 +133,7 @@ public class AwsScannerTest extends AwsIntegrationTest {
 				});
 
 
-		getNeo4jDriver().cypher(
+		getGraphDriver().cypher(
 				"match (a) where labels(a)[0]=~'Aws.*' return labels(a)[0] as label,a.graphEntityType as graphEntityType")
 				.forEach(it -> {
 					Assertions.assertThat(it.path("graphEntityType").asText()).isEqualTo(it.path("label").asText());
@@ -142,7 +142,7 @@ public class AwsScannerTest extends AwsIntegrationTest {
 
 
 		Set<String> uniqueIndexes = Sets.newHashSet();
-		getNeo4jDriver().cypher("CALL db.indexes()").stream()
+		getGraphDriver().cypher("CALL db.indexes()").stream()
 				.filter(p -> p.path("type").asText().equals("node_unique_property")).forEach(it -> {
 
 					String label = it.path("tokenNames").path(0).asText();
@@ -152,7 +152,7 @@ public class AwsScannerTest extends AwsIntegrationTest {
 
 				});
 
-		getNeo4jDriver().cypher(
+		getGraphDriver().cypher(
 				"match (a) where labels(a)[0]=~'Aws.*' and exists (a.arn) return distinct labels(a)[0] as label")
 				.forEach(it -> {
 					String n = it.path("label").asText() + ".arn";
@@ -217,7 +217,7 @@ public class AwsScannerTest extends AwsIntegrationTest {
 
 		validRelationships.add("AwsVpcEndpoint RESIDES_IN AwsSubnet");
 		validRelationships.add("AwsVpcEndpoint USES AwsSecurityGroup");
-		getNeo4jDriver().cypher(
+		getGraphDriver().cypher(
 				"match (a)-[r]->(b) where labels(a)[0]=~'Aws.*' return a.graphEntityType as fromLabel,r,b.graphEntityType as toLabel,type(r) as relType")
 				.forEach(it -> {
 					String rel = it.path("fromLabel").asText() + " " + it.path("relType").asText() + " "
@@ -229,7 +229,7 @@ public class AwsScannerTest extends AwsIntegrationTest {
 	@Test
 	public void testArn() {
 		
-		Set<String> typesWithoutArn = getNeo4jDriver().cypher("match (a) where (NOT exists(a.arn)) and labels(a)[0]=~'Aws.*' return a.arn as arn,labels(a)[0] as label").stream().map(it->it.path("label").asText()).collect(Collectors.toSet());
+		Set<String> typesWithoutArn = getGraphDriver().cypher("match (a) where (NOT exists(a.arn)) and labels(a)[0]=~'Aws.*' return a.arn as arn,labels(a)[0] as label").stream().map(it->it.path("label").asText()).collect(Collectors.toSet());
 		
 		Assertions.assertThat(typesWithoutArn).contains(AwsEntityType.AwsAccount.name(),"AwsRegion","AwsAvailabilityZone");
 		Set<String> validEntitiesWithoutArn = ImmutableSet.of(AwsEntityType.AwsApiGatewayRestApi.name(),
@@ -238,5 +238,8 @@ public class AwsScannerTest extends AwsIntegrationTest {
 				AwsEntityType.AwsHostedZoneRecordSet.name());
 
 		Assertions.assertThat(Sets.difference(typesWithoutArn, validEntitiesWithoutArn)).isEmpty();
+		getGraphDriver().metrics().getStatementStats().forEach(it->{
+			System.out.println(it.toJson());
+		});
 	}
 }
