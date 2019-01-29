@@ -1,4 +1,7 @@
 
+
+# Rebar
+
 Rebar is a discovery tool that builds a graph model of your cloud infrastructure.  Rebar integrates with your infrastructure control plane to extract 
 important metadata, which it then replicates into a graph database.
 
