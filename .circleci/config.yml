@@ -28,6 +28,8 @@ jobs:
     steps:
       - checkout
 
+      - add_ssh_keys
+      
       # Download and cache dependencies
       - restore_cache:
           keys:
@@ -38,7 +40,7 @@ jobs:
       - run:
           name: Build docs
           command: ./docs/circleci-publish.sh
-          
+
       # run tests!
       - run: 
           name: Build and Test
