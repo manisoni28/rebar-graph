@@ -47,8 +47,13 @@ cd tmp-clone
 git add .
 git commit -a -m "docs built from $SOURCE_SHA1" 
 
+if [ ! "${CIRCLE_BRANCH}" = "master" ]; then
+    echo "branch $CIRCLE_BRANCH is not master ... will not push docs"
+    exit 0
+fi
+
+
 git push || exit 99
 
 
 
-exit 1
