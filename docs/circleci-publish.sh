@@ -26,7 +26,7 @@ cd tmp-clone
   git config --global user.name "Circle CI"
 
 git add .
-git commit -a -m "docs built from $SOURCE_SHA1" || exit 99
+git commit -a -m "docs built from $SOURCE_SHA1" 
 
 git push || exit 99
 
