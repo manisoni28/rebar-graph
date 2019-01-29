@@ -18,7 +18,7 @@ sudo pip install mkdocs pygments mkdocs-material
 
 mkdocs build || exit 99
 
-cp -r site/ tmp-clone
+cp -r site/* tmp-clone || exit 99
 
 cd tmp-clone
 
