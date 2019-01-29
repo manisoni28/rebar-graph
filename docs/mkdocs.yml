@@ -1,0 +1,12 @@
+site_name: Rebar
+theme:
+  name: 'material'
+
+nav:
+    - Overview: index.md
+    - AWS Scanner: aws.md
+    - Kubernetes Scanner: kubernetes.md
+    - FAQ: faq.md
+
+markdown_extensions:
+  - codehilite
