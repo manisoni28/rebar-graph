@@ -13,6 +13,9 @@ REMOTE_URL=git@github.com:rebar-cloud/rebar-cloud.git
 
 git clone $REMOTE_URL tmp-clone || exit 99
 
+sudo apt-get install python-pip
+sudo pip install mkdocs pygments mkdocs-material
+
 mkdocs build || exit 99
 
 cp -r site/ tmp-clone
