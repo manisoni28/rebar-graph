@@ -62,6 +62,7 @@ public class SubnetScanner extends AwsEntityScanner<Subnet> {
 	}
 
 	public void scanById(String subnetId) {
+		checkScanArgument(subnetId);
 		try {
 			AmazonEC2 ec2 = getClient(AmazonEC2ClientBuilder.class);
 			DescribeSubnetsResult subnetResult = ec2
@@ -97,7 +98,7 @@ public class SubnetScanner extends AwsEntityScanner<Subnet> {
 	}
 
 	@Override
-	public void scan(JsonNode entity) {
+	public void doScan(JsonNode entity) {
 		if (isEntityType(entity)) {
 			scanById(entity.path("subnetId").asText());
 		}
@@ -105,12 +106,19 @@ public class SubnetScanner extends AwsEntityScanner<Subnet> {
 	}
 
 	@Override
-	public void scan(String id) {
+	public void doScan(String id) {
+		checkScanArgument(id);
 		scanById(id);
 		
 	}
 	@Override
 	public AwsEntityType getEntityType() {
 		return AwsEntityType.AwsSubnet;
+	}
+
+	@Override
+	protected void doMergeRelationships() {
+		// TODO Auto-generated method stub
+		
 	}
 }

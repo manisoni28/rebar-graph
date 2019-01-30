@@ -38,7 +38,7 @@ public class LaunchTemplateScanner extends AwsEntityScanner<LaunchTemplate> {
 	}
 
 	@Override
-	public void scan(JsonNode entity) {
+	public void doScan(JsonNode entity) {
 		if (isEntityType(entity, "AwsLaunchTemplate")) {
 			scanLaunchTemplateByName(entity.path("name").asText());
 		}
@@ -104,7 +104,8 @@ public class LaunchTemplateScanner extends AwsEntityScanner<LaunchTemplate> {
 	}
 
 	@Override
-	public void scan(String id) {
+	public void doScan(String id) {
+		checkScanArgument(id);
 		scanLaunchTemplateByName(id);
 		
 	}
@@ -112,5 +113,11 @@ public class LaunchTemplateScanner extends AwsEntityScanner<LaunchTemplate> {
 	@Override
 	public AwsEntityType getEntityType() {
 		return AwsEntityType.AwsLaunchTemplate;
+	}
+
+	@Override
+	protected void doMergeRelationships() {
+		// TODO Auto-generated method stub
+		
 	}
 }

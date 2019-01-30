@@ -15,7 +15,7 @@ public class Route53ScannerTest extends AwsIntegrationTest {
 		Route53Scanner scanner = getAwsScanner().getEntityScanner(Route53Scanner.class);
 		scanner.scan();
 		
-		scanner.scan("foz");
+		scanner.doScan("foz");
 	}
 
 }

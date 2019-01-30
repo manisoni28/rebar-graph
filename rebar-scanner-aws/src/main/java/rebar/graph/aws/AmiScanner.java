@@ -66,7 +66,7 @@ public class AmiScanner extends AwsEntityScanner<Image> {
 				.id("region", getRegion().getName()).match().forEach(it -> {
 					Exceptions.log(logger).run(() -> {
 						logger.info("running gc on {}", it.path(GraphDB.ENTITY_TYPE).asText());
-						scan(it);
+						doScan(it);
 					});
 				});
 
@@ -124,6 +124,7 @@ public class AmiScanner extends AwsEntityScanner<Image> {
 	}
 
 	public void scanImageId(String imageId) {
+		checkScanArgument(imageId);
 		try {
 			AmazonEC2 ec2 = getClient(AmazonEC2ClientBuilder.class);
 			DescribeImagesRequest request = new DescribeImagesRequest().withImageIds(imageId);
@@ -139,7 +140,7 @@ public class AmiScanner extends AwsEntityScanner<Image> {
 		}
 	}
 	@Override
-	public void scan(JsonNode entity) {
+	public void doScan(JsonNode entity) {
 
 		String imageId = entity.path("imageId").asText();
 		
@@ -147,13 +148,19 @@ public class AmiScanner extends AwsEntityScanner<Image> {
 
 	}
 	
-	public void scan(String id) {
+	public void doScan(String id) {
 		scanImageId(id);
 	}
 
 	@Override
 	public AwsEntityType getEntityType() {
 		return AwsEntityType.AwsAmi;
+	}
+
+	@Override
+	protected void doMergeRelationships() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

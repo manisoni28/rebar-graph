@@ -86,7 +86,7 @@ public class ElastiCacheScanner extends AwsEntityScanner<CacheCluster> {
 	}
 
 	@Override
-	public void scan(JsonNode entity) {
+	public void doScan(JsonNode entity) {
 		Json.logger().info("gc", entity);
 
 	}
@@ -165,8 +165,8 @@ public class ElastiCacheScanner extends AwsEntityScanner<CacheCluster> {
 	}
 
 	@Override
-	public void scan(String id) {
-
+	public void doScan(String id) {
+		checkScanArgument(id);
 		DescribeCacheClustersResult result = getClient()
 				.describeCacheClusters(new DescribeCacheClustersRequest().withCacheClusterId(id));
 		result.getCacheClusters().forEach(it -> {
@@ -177,6 +177,12 @@ public class ElastiCacheScanner extends AwsEntityScanner<CacheCluster> {
 	@Override
 	public AwsEntityType getEntityType() {
 		return AwsEntityType.AwsCacheCluster;
+	}
+
+	@Override
+	protected void doMergeRelationships() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

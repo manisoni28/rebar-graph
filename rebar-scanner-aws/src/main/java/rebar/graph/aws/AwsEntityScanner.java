@@ -48,6 +48,7 @@ import rebar.util.Json;
 
 public abstract class AwsEntityScanner<A extends Object> {
 
+	public static final String WILDCARD="*";
 	Logger logger = LoggerFactory.getLogger(getClass());
 	AwsScanner scanner;
 
@@ -121,7 +122,7 @@ public abstract class AwsEntityScanner<A extends Object> {
 				count.incrementAndGet();
 
 				logger.info("running gc on {}", it.path(GraphDB.ENTITY_TYPE).asText());
-				scan(it);
+				doScan(it);
 			});
 		});
 
@@ -152,7 +153,7 @@ public abstract class AwsEntityScanner<A extends Object> {
 				count.incrementAndGet();
 
 				logger.info("running gc on {}", it.path(GraphDB.ENTITY_TYPE).asText());
-				scan(it);
+				doScan(it);
 			});
 		});
 
@@ -223,9 +224,21 @@ public abstract class AwsEntityScanner<A extends Object> {
 
 	protected abstract void doScan();
 
-	public abstract void scan(JsonNode entity);
+	
+	public final void scan(JsonNode entity) {
+		doScan(entity);
+	}
+	abstract void doScan(JsonNode entity);
 
-	public abstract void scan(String id);
+	protected void checkScanArgument(String n) {
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(n),"wildcard (*) must be used if you intend to scan all");
+	}
+	public final void scan(String id) {
+		checkScanArgument(id);
+		
+		doScan(id);
+	}
+	abstract void doScan(String id);
 
 	public void tryExecute(Runnable r) {
 		scanner.tryExecute(r);
@@ -354,5 +367,23 @@ public abstract class AwsEntityScanner<A extends Object> {
 		}
 		
 		return false;
+	}
+	
+	protected final void mergeRelationships() {
+		doMergeRelationships();
+	}
+	protected abstract void doMergeRelationships();
+	 
+	/**
+	 * With *some* apis the "scan all" and "scan one" method is the same call.  In these situations, it is nice to minimize the duplication of code.
+	 * However, using a null argument is problematic because it might be a legitimate error.  So in this minority of cases, we force the use of "*"
+	 * so that there is no ambiguity.
+	 * 
+	 * @param id
+	 * @return
+	 */
+	protected boolean isWildcard(String id) {
+		checkScanArgument(id);
+		return id.equals("*");
 	}
 }

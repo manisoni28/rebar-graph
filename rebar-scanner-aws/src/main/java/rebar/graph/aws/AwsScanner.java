@@ -229,7 +229,7 @@ public final class AwsScanner extends Scanner {
 			if (Strings.isNullOrEmpty(id)) {
 				scanner.scan();
 			} else {
-				scanner.scan(id);
+				scanner.doScan(id);
 			}
 		} catch (IllegalArgumentException e) {
 			logger.warn("unsupported entity type: {}", type);

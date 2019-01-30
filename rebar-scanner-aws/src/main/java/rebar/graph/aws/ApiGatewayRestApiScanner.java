@@ -60,7 +60,7 @@ public class ApiGatewayRestApiScanner extends AwsEntityScanner<RestApi> {
 			result.getItems().forEach(it -> {
 
 				tryExecute(() -> project(it));
-				tryExecute(() -> scan(it.getId()));
+				tryExecute(() -> doScan(it.getId()));
 			});
 			request.setPosition(result.getPosition());
 		} while (!Strings.isNullOrEmpty(request.getPosition()));
@@ -69,16 +69,17 @@ public class ApiGatewayRestApiScanner extends AwsEntityScanner<RestApi> {
 	}
 
 	@Override
-	public void scan(JsonNode entity) {
+	public void doScan(JsonNode entity) {
 
 		if (isEntityOwner(entity)) {
 			String id = entity.path("id").asText();
-			scan(id);
+			doScan(id);
 		}
 	}
 
 	@Override
-	public void scan(String id) {
+	public void doScan(String id) {
+		checkScanArgument(id);
 		logger.info("scan id={}", id);
 		try {
 			GetRestApiRequest request = new GetRestApiRequest().withRestApiId(id);
@@ -99,6 +100,12 @@ public class ApiGatewayRestApiScanner extends AwsEntityScanner<RestApi> {
 	public AwsEntityType getEntityType() {
 		// TODO Auto-generated method stub
 		return AwsEntityType.AwsApiGatewayRestApi;
+	}
+
+	@Override
+	protected void doMergeRelationships() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

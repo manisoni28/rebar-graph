@@ -38,7 +38,7 @@ public class SqsScanner extends AwsEntityScanner<Map<String, String>> {
 	}
 
 	@Override
-	public void scan(JsonNode entity) {
+	public void doScan(JsonNode entity) {
 		if (isEntityOwner(entity)) {
 
 			String queueUrl = entity.path("url").asText();
@@ -68,6 +68,7 @@ public class SqsScanner extends AwsEntityScanner<Map<String, String>> {
 	public void scanQueueUrl(String url) {
 
 		try {
+			checkScanArgument(url);
 			AmazonSQS client = getClient(AmazonSQSClientBuilder.class);
 			GetQueueAttributesResult result = client.getQueueAttributes(url, Lists.newArrayList("All"));
 
@@ -82,7 +83,8 @@ public class SqsScanner extends AwsEntityScanner<Map<String, String>> {
 	}
 
 	@Override
-	public void scan(String id) {
+	public void doScan(String id) {
+		checkScanArgument(id);
 		if (id.startsWith("arn")) {
 			throw new IllegalArgumentException("arn not supported");
 		}
@@ -128,6 +130,12 @@ public class SqsScanner extends AwsEntityScanner<Map<String, String>> {
 			n.put("name", name);
 		}
 		return n;
+	}
+
+	@Override
+	protected void doMergeRelationships() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

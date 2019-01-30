@@ -41,8 +41,8 @@ public class IamPolicyScanner extends AwsEntityScanner<Policy> {
 		awsGraphNodesWithoutRegion().idKey("arn").properties(n).merge();
 
 	}
-
-	private void mergeRelationships() {
+	@Override
+	protected void doMergeRelationships() {
 		mergeAccountOwner();
 	}
 
@@ -72,27 +72,28 @@ public class IamPolicyScanner extends AwsEntityScanner<Policy> {
 		} while (!Strings.isNullOrEmpty(request.getMarker()));
 		gcWithoutRegion(AwsEntityType.AwsIamPolicy.name(),ts); // do not match on region
 
-		mergeRelationships();
+		doMergeRelationships();
 	}
 
 	@Override
-	public void scan(JsonNode entity) {
+	public void doScan(JsonNode entity) {
 		if (isEntityType(entity)) {
 
 		
 			String name = entity.path("arn").asText();
 		
-			scan(name);
+			doScan(name);
 		}
 
 	}
 
 	@Override
-	public void scan(String arn) {
+	public void doScan(String arn) {
+		checkScanArgument(arn);
 		try {
 			GetPolicyResult result = getClient().getPolicy(new GetPolicyRequest().withPolicyArn(arn));
 			project(result.getPolicy());
-			mergeRelationships();
+			doMergeRelationships();
 		} catch (NoSuchEntityException e) {
 			deleteByArn(arn);
 		}

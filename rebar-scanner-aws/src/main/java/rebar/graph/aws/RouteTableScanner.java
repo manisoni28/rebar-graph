@@ -55,15 +55,20 @@ public class RouteTableScanner extends AbstractNetworkScanner<RouteTable> {
 
 	@Override
 	protected void doScan() {
-		doScan(null);
-		mergeRelationships();
+		doScan(WILDCARD);
+		doMergeRelationships();
 	}
 
-	private void doScan(String id) {
-
+	protected void doScan(String id) {
+		checkScanArgument(id);
+		try {
 		long ts = getGraphDB().getTimestamp();
 		DescribeRouteTablesRequest req = new DescribeRouteTablesRequest();
-		if (!Strings.isNullOrEmpty(id)) {
+		
+		if (isWildcard(id)) {
+			// set nothing
+		}
+		else {
 			req.withRouteTableIds(id);
 		}
 		do {
@@ -77,9 +82,19 @@ public class RouteTableScanner extends AbstractNetworkScanner<RouteTable> {
 		if (Strings.isNullOrEmpty(id)) {
 			gc(AwsEntityType.AwsRouteTable,ts);
 		}
+		}
+		catch(AmazonEC2Exception e) {
+			if (isNotFoundException(e)) {
+				deleteById(id);
+				return;
+			}
+			throw e;
+			
+		}
 	}
 
-	private void mergeRelationships() {
+	@Override
+	protected void doMergeRelationships() {
 
 		awsRelationships(AwsEntityType.AwsVpc.name()).relationship("HAS").on("vpcId", "vpcId")
 				.to(getEntityType().name()).merge();
@@ -95,10 +110,10 @@ public class RouteTableScanner extends AbstractNetworkScanner<RouteTable> {
 	}
 
 	@Override
-	public void scan(JsonNode entity) {
+	public void doScan(JsonNode entity) {
 		if (isEntityOwner(entity)) {
 			String id = entity.path("routeTableId").asText();
-			scan(id);
+			doScan(id);
 		}
 
 	}
@@ -110,22 +125,6 @@ public class RouteTableScanner extends AbstractNetworkScanner<RouteTable> {
 
 	}
 
-	@Override
-	public void scan(String id) {
-		try {
-		doScan(id);
-		mergeRelationships();
-		
-		}
-		catch(AmazonEC2Exception e) {
-			if (isNotFoundException(e)) {
-				deleteById(id);
-				return;
-			}
-			throw e;
-			
-		}
-	}
 
 	private void deleteById(String id) {
 		logger.info("deleting route table: {}",id);

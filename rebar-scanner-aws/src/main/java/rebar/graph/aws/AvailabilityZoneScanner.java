@@ -36,7 +36,7 @@ public class AvailabilityZoneScanner extends AwsEntityScanner<AvailabilityZone> 
 	}
 
 	@Override
-	public void scan(JsonNode entity) {
+	public void doScan(JsonNode entity) {
 		scan();
 	}
 
@@ -58,14 +58,20 @@ public class AvailabilityZoneScanner extends AwsEntityScanner<AvailabilityZone> 
 	}
 
 	@Override
-	public void scan(String id) {
-		// TODO Auto-generated method stub
+	public void doScan(String id) {
+		checkScanArgument(id);
 		
 	}
 	
 	@Override
 	public AwsEntityType getEntityType() {
 		return AwsEntityType.AwsAvailabilityZone;
+	}
+
+	@Override
+	protected void doMergeRelationships() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

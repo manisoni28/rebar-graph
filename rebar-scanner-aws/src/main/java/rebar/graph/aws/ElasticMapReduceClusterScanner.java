@@ -38,7 +38,7 @@ public class ElasticMapReduceClusterScanner extends AwsEntityScanner<Cluster> {
 			result.getClusters().forEach(it -> {
 				tryExecute(() -> {
 					project(it);
-					scan(it.getId());
+					doScan(it.getId());
 				});
 			});
 		} while (!Strings.isNullOrEmpty(request.getMarker()));
@@ -129,16 +129,17 @@ public class ElasticMapReduceClusterScanner extends AwsEntityScanner<Cluster> {
 	}
 
 	@Override
-	public void scan(JsonNode entity) {
+	public void doScan(JsonNode entity) {
 		if (isEntityOwner(entity)) {
 			String id = entity.path("id").asText();
-			scan(id);
+			doScan(id);
 		}
 
 	}
 
 	@Override
-	public void scan(String id) {
+	public void doScan(String id) {
+		checkScanArgument(id);
 		Preconditions.checkArgument(!id.startsWith("arn:"),"arn not yet supported");
 		try {
 			DescribeClusterResult result = getClient().describeCluster(new DescribeClusterRequest().withClusterId(id));
@@ -160,5 +161,11 @@ public class ElasticMapReduceClusterScanner extends AwsEntityScanner<Cluster> {
 	@Override
 	public AwsEntityType getEntityType() {
 		return AwsEntityType.AwsEmrCluster;
+	}
+
+	@Override
+	protected void doMergeRelationships() {
+		// TODO Auto-generated method stub
+		
 	}
 }

@@ -41,7 +41,8 @@ public class EgressOnlyInternetGatewayScanner extends AbstractNetworkScanner<Egr
 		
 	}
 
-	private void mergeRelationships() {
+	@Override
+	protected void doMergeRelationships() {
 		// do not merge account owner
 		awsRelationships().relationship("ATTACHED_TO").on("vpcIds","vpcId",Cardinality.MANY).to(AwsEntityType.AwsVpc.name()).merge();
 	}
@@ -61,12 +62,12 @@ public class EgressOnlyInternetGatewayScanner extends AbstractNetworkScanner<Egr
 		while (!Strings.isNullOrEmpty(request.getNextToken()));
 		
 		gc("AwsEgressOnlyInternetGateway",ts);
-		mergeRelationships();
+		doMergeRelationships();
 	}
 
 	
 	@Override
-	public void scan(JsonNode entity) {
+	public void doScan(JsonNode entity) {
 		if (isEntityOwner(entity)) {
 			String id = entity.path("egressOnlyInternetGatewayId").asText(null);
 			
@@ -76,7 +77,8 @@ public class EgressOnlyInternetGatewayScanner extends AbstractNetworkScanner<Egr
 	}
 
 	@Override
-	public void scan(String id) {
+	public void doScan(String id) {
+		checkScanArgument(id);
 		DescribeEgressOnlyInternetGatewaysRequest request = new DescribeEgressOnlyInternetGatewaysRequest().withEgressOnlyInternetGatewayIds(id);
 		try {
 			DescribeEgressOnlyInternetGatewaysResult result = getClient().describeEgressOnlyInternetGateways(request);
@@ -93,7 +95,7 @@ public class EgressOnlyInternetGatewayScanner extends AbstractNetworkScanner<Egr
 			throw e;
 		}
 		
-		mergeRelationships();
+		doMergeRelationships();
 	}
 
 	private void deleteById(String id) {

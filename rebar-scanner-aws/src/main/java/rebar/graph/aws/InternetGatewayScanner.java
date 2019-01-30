@@ -27,7 +27,7 @@ public class InternetGatewayScanner extends AbstractNetworkScanner<InternetGatew
 			
 		}
 		gc(AwsEntityType.AwsInternetGateway.name(),ts);
-		mergeRelationships();
+		doMergeRelationships();
 	}
 
 	void project(InternetGateway igw) {
@@ -36,22 +36,23 @@ public class InternetGatewayScanner extends AbstractNetworkScanner<InternetGatew
 		awsGraphNodes(AwsEntityType.AwsInternetGateway.name()).idKey("arn").withTagPrefixes(TAG_PREFIXES).properties(n).merge();
 	}
 	
-	protected void mergeRelationships() {
+	protected void doMergeRelationships() {
 		
 		awsRelationships().relationship("ATTACHED_TO").on("vpcIds", "vpcId",Cardinality.MANY).to("AwsVpc").merge();
 	}
 	@Override
-	public void scan(JsonNode entity) {
+	public void doScan(JsonNode entity) {
 		if (isEntityOwner(entity)) {
 			String id = entity.path("internetGatewayId").asText();
 			scan(id);
-			mergeRelationships();
+			doMergeRelationships();
 		}
 		
 	}
 
 	@Override
-	public void scan(String id) {
+	public void doScan(String id) {
+		checkScanArgument(id);
 		try {
 		getClient().describeInternetGateways(new DescribeInternetGatewaysRequest().withInternetGatewayIds(id)).getInternetGateways().forEach(it->{
 			project(it);

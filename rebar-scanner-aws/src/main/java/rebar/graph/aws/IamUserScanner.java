@@ -36,7 +36,8 @@ public class IamUserScanner extends AwsEntityScanner<User> {
 
 	}
 
-	private void mergeRelationships() {
+	@Override
+	protected void doMergeRelationships() {
 		mergeAccountOwner();
 	}
 
@@ -63,22 +64,23 @@ public class IamUserScanner extends AwsEntityScanner<User> {
 		} while (!Strings.isNullOrEmpty(request.getMarker()));
 		gcWithoutRegion(AwsEntityType.AwsIamUser.name(), ts + 1000); // do not match on region
 
-		mergeRelationships();
+		doMergeRelationships();
 	}
 
 	@Override
-	public void scan(JsonNode entity) {
+	public void doScan(JsonNode entity) {
 		if (isEntityType(entity)) {
 
 			String name = entity.path("userName").asText();
 		
-			scan(name);
+			doScan(name);
 		}
 
 	}
 
 	@Override
-	public void scan(String name) {
+	public void doScan(String name) {
+		checkScanArgument(name);
 		try {
 			Preconditions.checkArgument(!Strings.isNullOrEmpty(name), "name must be specified");
 			GetUserResult result = getClient().getUser(new GetUserRequest().withUserName(name));

@@ -21,7 +21,7 @@ public class RouteTableScannerTest extends AwsIntegrationTest {
 	public void testIt() {
 
 
-			getAwsScanner().getEntityScanner(RouteTableScanner.class).scan("fizz");
+			getAwsScanner().getEntityScanner(RouteTableScanner.class).doScan("fizz");
 
 		
 	}

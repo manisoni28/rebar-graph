@@ -47,64 +47,67 @@ public class VpcEndpointScanner extends AbstractNetworkScanner<VpcEndpoint> {
 	protected void doScan() {
 
 		long ts = getGraphDB().getTimestamp();
-		doScan(null);
+		scan((String) WILDCARD);
 		gc(getEntityType(), ts);
-		mergeRelationships();
+		doMergeRelationships();
 
 	}
 
-	private void doScan(String id) {
-		DescribeVpcEndpointsRequest request = new DescribeVpcEndpointsRequest();
-		if (!Strings.isNullOrEmpty(id)) {
-			request.setVpcEndpointIds(ImmutableList.of(id));
-		}
-		do {
-			DescribeVpcEndpointsResult result = getClient().describeVpcEndpoints(request);
-			request.setNextToken(result.getNextToken());
-			result.getVpcEndpoints().forEach(it -> {
-				tryExecute(() -> project(it));
-			});
-		} while (!Strings.isNullOrEmpty(request.getNextToken()));
-	}
-
-	private void project(VpcEndpoint endpoint) {
-		ObjectNode n = toJson(endpoint);
-
-
-
-		awsGraphNodes().idKey("vpcEndpointId").withTagPrefixes(TAG_PREFIXES).properties(n).merge();
-	}
-
-	@Override
-	public void scan(JsonNode entity) {
-		if (isEntityOwner(entity)) {
-			String id = entity.path("vpcEndpointId").asText();
-			scan(id);
-		}
-
-	}
-
-	@Override
-	public void scan(String id) {
+	void doScan(String id) {
+		checkScanArgument(id);
 		try {
-			Preconditions.checkArgument(!Strings.isNullOrEmpty(id));
-			doScan(id);
-			mergeRelationships();
+			DescribeVpcEndpointsRequest request = new DescribeVpcEndpointsRequest();
+
+			if (!isWildcard(id)) {
+				request.setVpcEndpointIds(ImmutableList.of(id));
+			}
+			do {
+				DescribeVpcEndpointsResult result = getClient().describeVpcEndpoints(request);
+				request.setNextToken(result.getNextToken());
+				result.getVpcEndpoints().forEach(it -> {
+					if (isWildcard(id)) {
+						tryExecute(() -> project(it));
+					} else {
+						project(it);
+					}
+				});
+			} while (!Strings.isNullOrEmpty(request.getNextToken()));
 		} catch (AmazonEC2Exception e) {
-		
+
 			if (isNotFoundException(e)) {
 				deleteById(id);
 				return;
 			}
 			throw e;
 		}
+		mergeRelationships();
+	}
+
+	private void project(VpcEndpoint endpoint) {
+		ObjectNode n = toJson(endpoint);
+
+		awsGraphNodes().idKey("vpcEndpointId").withTagPrefixes(TAG_PREFIXES).properties(n).merge();
+	}
+
+	@Override
+	public void doScan(JsonNode entity) {
+		if (isEntityOwner(entity)) {
+			String id = entity.path("vpcEndpointId").asText();
+			if (!Strings.isNullOrEmpty(id)) {
+				scan(id);
+			}
+		}
+
 	}
 
 	private void deleteById(String id) {
-		Preconditions.checkArgument(!Strings.isNullOrEmpty(id));
-		awsGraphNodes().id("vpcEndpointId",id).delete();
+		checkScanArgument(id);
+
+		awsGraphNodes().id("vpcEndpointId", id).delete();
 	}
-	private void mergeRelationships() {
+
+	@Override
+	protected void doMergeRelationships() {
 
 		awsRelationships(AwsEntityType.AwsVpc).relationship("HAS").on("vpcId", "vpcId").to(getEntityTypeName()).merge();
 		awsRelationships().relationship("USES").on("securityGroupIds", "groupId", Cardinality.MANY)

@@ -34,7 +34,7 @@ public class Route53Scanner extends AwsEntityScanner<HostedZone> {
 		awsGraphNodes(AwsEntityType.AwsHostedZone.name()).idKey("arn").properties(n).merge();
 	}
 
-	protected void mergeRelationships() {
+	protected void doMergeRelationships() {
 		
 		// Do not use awsGraphNodes here since hosted zones are not regional.  The selector predicates on region will 
 		// cause things to not relate properly.
@@ -48,6 +48,7 @@ public class Route53Scanner extends AwsEntityScanner<HostedZone> {
 	}
 
 	public void scanRecordSets(String z) {
+		checkScanArgument(z);
 		AmazonRoute53 r53 = getAwsScanner().getClient(AmazonRoute53ClientBuilder.class);
 		ListResourceRecordSetsRequest request = new ListResourceRecordSetsRequest(z);
 		do {
@@ -63,7 +64,7 @@ public class Route53Scanner extends AwsEntityScanner<HostedZone> {
 				project(z, it);
 			});
 		} while (!Strings.isNullOrEmpty(request.getStartRecordName()));
-		mergeRelationships();
+		doMergeRelationships();
 	}
 
 	@Override
@@ -91,23 +92,24 @@ public class Route53Scanner extends AwsEntityScanner<HostedZone> {
 				request.setMarker(null);
 			}
 		} while (!Strings.isNullOrEmpty(request.getMarker()));
-		mergeRelationships();
+		doMergeRelationships();
 		gc(AwsEntityType.AwsHostedZone.name(), ts);
 	}
 
 	@Override
-	public void scan(JsonNode entity) {
+	public void doScan(JsonNode entity) {
 		String account = entity.path("account").asText();
 		String hostedZoneId = entity.path("id").asText();
 
 		// Make sure that we own the account
 		if (getAccount().equals(account)) {
-			scan(hostedZoneId);
+			doScan(hostedZoneId);
 		}
 	}
 
 	@Override
-	public void scan(String id) {
+	public void doScan(String id) {
+		checkScanArgument(id);
 		try {
 			AmazonRoute53 r53 = getAwsScanner().getClient(AmazonRoute53ClientBuilder.class);
 

@@ -73,13 +73,13 @@ public class ParallelScanner extends AwsEntityScanner {
 	}
 
 	@Override
-	public void scan(JsonNode entity) {
+	public void doScan(JsonNode entity) {
 		
 
 	}
 
 	@Override
-	public void scan(String id) {
+	public void doScan(String id) {
 	
 
 	}
@@ -104,5 +104,10 @@ public class ParallelScanner extends AwsEntityScanner {
 			
 		}
 		return executor;
+	}
+	@Override
+	protected void doMergeRelationships() {
+		// TODO Auto-generated method stub
+		
 	}
 }

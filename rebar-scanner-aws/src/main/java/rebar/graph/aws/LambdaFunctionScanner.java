@@ -62,12 +62,13 @@ public class LambdaFunctionScanner extends AwsEntityScanner<FunctionConfiguratio
 
 		gc("AwsLambdaFunction", ts);
 		
-		mergeRelationships();
+		doMergeRelationships();
 		
 		getGraphDB().nodes("AwsLambdaFunction").id("region",getRegionName()).id("account",getAccount()).relationship("RESIDES_IN").on("vpcId", "vpcId").to("AwsVpc").id("region",getRegionName()).merge();
 	}
 
-	private void mergeRelationships() {
+	@Override
+	protected void doMergeRelationships() {
 		mergeResidesInRegionRelationship();
 		mergeAccountOwner();
 		
@@ -115,11 +116,11 @@ public class LambdaFunctionScanner extends AwsEntityScanner<FunctionConfiguratio
 		} catch (ResourceNotFoundException e) {
 			getGraphDB().nodes("AwsLambdaFunction").id("account",getAccount()).id("region",getRegionName()).id("name",name).delete();
 		}
-		mergeRelationships();
+		doMergeRelationships();
 	}
 
 	@Override
-	public void scan(JsonNode entity) {
+	public void doScan(JsonNode entity) {
 		if (isEntityType(entity)) {
 			scanByName(entity.path("functionName").asText());
 		}
@@ -147,7 +148,8 @@ public class LambdaFunctionScanner extends AwsEntityScanner<FunctionConfiguratio
 	}
 
 	@Override
-	public void scan(String id) {
+	public void doScan(String id) {
+		checkScanArgument(id);
 		scanByName(id);
 		
 	}

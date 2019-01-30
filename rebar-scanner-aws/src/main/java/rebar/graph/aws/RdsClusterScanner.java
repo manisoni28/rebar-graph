@@ -91,12 +91,13 @@ public class RdsClusterScanner extends AwsEntityScanner<DBCluster> {
 	}
 
 	@Override
-	public void scan(JsonNode entity) {
-		scan(entity.path("dbClusterIdentifier").asText());
+	public void doScan(JsonNode entity) {
+		doScan(entity.path("dbClusterIdentifier").asText());
 	}
 
 	@Override
-	public void scan(String dbClusterIdentifier) {
+	public void doScan(String dbClusterIdentifier) {
+		checkScanArgument(dbClusterIdentifier);
 		try {
 			AmazonRDSClient rds = getClient(AmazonRDSClientBuilder.class);
 			DescribeDBClustersRequest request = new DescribeDBClustersRequest();
@@ -117,6 +118,12 @@ public class RdsClusterScanner extends AwsEntityScanner<DBCluster> {
 	@Override
 	public AwsEntityType getEntityType() {
 		return AwsEntityType.AwsRdsCluster;
+	}
+
+	@Override
+	protected void doMergeRelationships() {
+		// TODO Auto-generated method stub
+		
 	}
 	
 

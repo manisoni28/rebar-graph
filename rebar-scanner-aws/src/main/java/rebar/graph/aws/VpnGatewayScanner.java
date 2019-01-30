@@ -18,84 +18,83 @@ import rebar.util.Json;
 
 public class VpnGatewayScanner extends AbstractNetworkScanner<VpnGateway> {
 
-
-
 	@Override
 	protected void doScan() {
 		long ts = getGraphDB().getTimestamp();
-		doScan(null);
-		mergeRelationships();
-		gc(getEntityType(),ts);
+		scan((String) WILDCARD);
+		doMergeRelationships();
+		gc(getEntityType(), ts);
 	}
 
-	private void doScan(String id) {
-		DescribeVpnGatewaysRequest request = new DescribeVpnGatewaysRequest();
-		if (!Strings.isNullOrEmpty(id)) {
-			request.setVpnGatewayIds(ImmutableList.of(id));
-		}
-		DescribeVpnGatewaysResult result = getClient().describeVpnGateways(request);
-		result.getVpnGateways().forEach(it->{
-			tryExecute(()->project(it));
-		});
-	}
-	@Override
-	public void scan(JsonNode entity) {
-		if (isEntityOwner(entity)) {
-			String id = entity.path("vpnGatewayId").asText();
-			scan(id);
-		}
-		
-	}
-
-	@Override
-	public void scan(String id) {
+	void doScan(String id) {
+		checkScanArgument(id);
 		try {
-		Preconditions.checkArgument(!Strings.isNullOrEmpty(id));
-		doScan(id);
-		}
-		catch (AmazonEC2Exception e) {
+
+			DescribeVpnGatewaysRequest request = new DescribeVpnGatewaysRequest();
+			if (!Strings.isNullOrEmpty(id)) {
+				request.setVpnGatewayIds(ImmutableList.of(id));
+			}
+			DescribeVpnGatewaysResult result = getClient().describeVpnGateways(request);
+			result.getVpnGateways().forEach(it -> {
+				project(it);
+			});
+		} catch (AmazonEC2Exception e) {
 			if (isNotFoundException(e)) {
 				deleteById(id);
 				return;
 			}
 			throw e;
 		}
-		mergeRelationships();
+		doMergeRelationships();
 	}
 
-	private void deleteById(String id) {
-		logger.info("deleting {} id={}",getEntityType().name(),id);
-		awsGraphNodes().id("vpnGatewayId",id).delete();
+	@Override
+	public void doScan(JsonNode entity) {
+		if (isEntityOwner(entity)) {
+			String id = entity.path("vpnGatewayId").asText();
+			if (!Strings.isNullOrEmpty(id)) {
+			scan(id);
+			}
+		}
+
 	}
+
+
+	private void deleteById(String id) {
+		logger.info("deleting {} id={}", getEntityType().name(), id);
+		awsGraphNodes().id("vpnGatewayId", id).delete();
+	}
+
 	@Override
 	public AwsEntityType getEntityType() {
-	
+
 		return AwsEntityType.AwsVpnGateway;
 	}
 
-	private void mergeRelationships() {
-		
-		awsRelationships().relationship("ATTACHED_TO").on("vpcAttachments","vpcId",Cardinality.MANY).to(AwsEntityType.AwsVpc.name()).merge();
+	@Override
+	protected void doMergeRelationships() {
+
+		awsRelationships().relationship("ATTACHED_TO").on("vpcAttachments", "vpcId", Cardinality.MANY)
+				.to(AwsEntityType.AwsVpc.name()).merge();
 	}
-	
+
 	private void project(VpnGateway gw) {
 		ObjectNode n = toJson(gw);
-		
-		
+
 		awsGraphNodes().idKey("vpnGatewayId").withTagPrefixes(TAG_PREFIXES).properties(n).merge();
 	}
-	
+
 	@Override
 	protected ObjectNode toJson(VpnGateway awsObject) {
-		
-		ObjectNode n =  super.toJson(awsObject);
-		awsObject.getTags().forEach(it->{
-			n.put(TAG_PREFIX+it.getKey(), it.getValue());
+
+		ObjectNode n = super.toJson(awsObject);
+		awsObject.getTags().forEach(it -> {
+			n.put(TAG_PREFIX + it.getKey(), it.getValue());
 		});
 		n.remove("tags");
-		
+
 		ArrayNode vpcAttachments = Json.arrayNode();
-		awsObject.getVpcAttachments().forEach(it->{
+		awsObject.getVpcAttachments().forEach(it -> {
 			vpcAttachments.add(it.getVpcId());
 		});
 		n.remove("vpcAttachments");

@@ -44,7 +44,7 @@ public class RegionScanner extends AwsEntityScanner<Regions> {
 
 	}
 	@Override
-	public void scan(JsonNode entity) {
+	public void doScan(JsonNode entity) {
 		// do nothing
 
 	}
@@ -54,7 +54,7 @@ public class RegionScanner extends AwsEntityScanner<Regions> {
 	}
 
 	@Override
-	public void scan(String id) {
+	public void doScan(String id) {
 		// do nothing
 		
 	}
@@ -62,6 +62,11 @@ public class RegionScanner extends AwsEntityScanner<Regions> {
 	@Override
 	public AwsEntityType getEntityType() {
 		return AwsEntityType.AwsRegion;
+	}
+	@Override
+	protected void doMergeRelationships() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

@@ -69,11 +69,12 @@ public class ElbListenerScanner extends AwsEntityScanner<Listener> {
 				});
 
 		gc(AwsEntityType.AwsElbListener, ts);
-		mergeRelationships();
+		doMergeRelationships();
 	
 	}
 
-	private void mergeRelationships() {
+	@Override
+	protected void doMergeRelationships() {
 		
 		// listeners can be detached from load balancers and thus have not relationships. 
 		// Make sure it has an owner
@@ -108,7 +109,7 @@ public class ElbListenerScanner extends AwsEntityScanner<Listener> {
 	}
 
 	@Override
-	public void scan(JsonNode entity) {
+	public void doScan(JsonNode entity) {
 		try {
 			String arn = entity.path("arn").asText();
 			String type = entity.path("type").asText();
@@ -133,7 +134,7 @@ public class ElbListenerScanner extends AwsEntityScanner<Listener> {
 	}
 
 	@Override
-	public void scan(String id) {
+	public void doScan(String id) {
 		logger.warn("scanning elb listener not yet supported");
 		
 	}

@@ -51,7 +51,8 @@ public class IamRoleScanner extends AwsEntityScanner<Role> {
 
 	}
 
-	private void mergeRelationships() {
+	@Override
+	protected void doMergeRelationships() {
 		mergeAccountOwner();
 	}
 
@@ -82,23 +83,23 @@ public class IamRoleScanner extends AwsEntityScanner<Role> {
 		} while (!Strings.isNullOrEmpty(request.getMarker()));
 		gcWithoutRegion(AwsEntityType.AwsIamRole.name(),ts); // do not match on region
 
-		mergeRelationships();
+		doMergeRelationships();
 	}
 
 	@Override
-	public void scan(JsonNode entity) {
+	public void doScan(JsonNode entity) {
 		if (isEntityType(entity)) {
 
 			String name = entity.path("roleName").asText();
 		
-			scan(name);
+			doScan(name);
 		
 		}
 
 	}
 
 	@Override
-	public void scan(String name) {
+	public void doScan(String name) {
 		try {
 			Preconditions.checkArgument(!Strings.isNullOrEmpty(name), "name must be specified");
 			GetRoleResult result = getClient().getRole(new GetRoleRequest().withRoleName(name));
@@ -106,7 +107,7 @@ public class IamRoleScanner extends AwsEntityScanner<Role> {
 		} catch (NoSuchEntityException e) {
 			deleteByName(name);
 		}
-		mergeRelationships();
+		doMergeRelationships();
 	}
 
 	private void deleteByName(String name) {

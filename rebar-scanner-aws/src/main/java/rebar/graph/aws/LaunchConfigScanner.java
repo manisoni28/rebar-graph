@@ -30,25 +30,20 @@ public class LaunchConfigScanner extends AwsEntityScanner<LaunchConfiguration> {
 
 	
 
-	@Override
-	public void doScan() {
-		scanLaunchConfigs();
-
-	}
 
 	protected Optional<String> toArn(LaunchConfiguration lc) {
 		return Optional.ofNullable(lc.getLaunchConfigurationARN());
 	}
 
 	@Override
-	public void scan(JsonNode entity) {
+	public void doScan(JsonNode entity) {
 		if (isEntityType(entity, AwsEntityType.AwsLaunchConfig.name())) {
 			scanLaunchConfigByName(entity.path("name").asText());
 		}
 
 	}
 
-	public void scanLaunchConfigs() {
+	public void doScan() {
 		long ts = getGraphDB().getTimestamp();
 		AmazonAutoScalingClient client = getClient(AmazonAutoScalingClientBuilder.class);
 
@@ -57,7 +52,7 @@ public class LaunchConfigScanner extends AwsEntityScanner<LaunchConfiguration> {
 		do {
 			DescribeLaunchConfigurationsResult result = client.describeLaunchConfigurations(request);
 			result.getLaunchConfigurations().forEach(lc -> {
-				project(lc);
+				tryExecute(()->project(lc));
 			});
 			request.setNextToken(result.getNextToken());
 		} while (!Strings.isNullOrEmpty(request.getNextToken()));
@@ -66,6 +61,7 @@ public class LaunchConfigScanner extends AwsEntityScanner<LaunchConfiguration> {
 	}
 	
 	public void scanLaunchConfigByName(String name) {
+		checkScanArgument(name);
 		AmazonAutoScalingClient client = getClient(AmazonAutoScalingClientBuilder.class);
 
 		DescribeLaunchConfigurationsRequest request = new DescribeLaunchConfigurationsRequest();
@@ -90,7 +86,8 @@ public class LaunchConfigScanner extends AwsEntityScanner<LaunchConfiguration> {
 	}
 
 	@Override
-	public void scan(String id) {
+	public void doScan(String id) {
+		checkScanArgument(id);
 		scanLaunchConfigByName(id);
 		
 	}
@@ -98,6 +95,12 @@ public class LaunchConfigScanner extends AwsEntityScanner<LaunchConfiguration> {
 	@Override
 	public AwsEntityType getEntityType() {
 		return AwsEntityType.AwsLaunchConfig;
+	}
+
+	@Override
+	protected void doMergeRelationships() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

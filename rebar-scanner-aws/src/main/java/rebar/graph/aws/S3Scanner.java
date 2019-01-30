@@ -109,18 +109,19 @@ public class S3Scanner extends AwsEntityScanner<Bucket> {
 	}
 
 	@Override
-	public void scan(JsonNode entity) {
+	public void doScan(JsonNode entity) {
 		String type = entity.path("graphEntityType").asText();
 		String account = entity.path("account").asText();
 	
 		if (type.equals("AwsS3Bucket") && account.equals(getAccount())) {
-			scan(entity.path("name").asText());
+			doScan(entity.path("name").asText());
 		}
 
 	}
 
 	@Override
-	public void scan(String id) {
+	public void doScan(String id) {
+		checkScanArgument(id);
 		String name = id;
 		ObjectNode n = Json.objectNode();
 		n.put("name", name);
@@ -155,6 +156,12 @@ public class S3Scanner extends AwsEntityScanner<Bucket> {
 
 		return Optional.ofNullable(toArn( awsObject.getName()));
 
+	}
+
+	@Override
+	protected void doMergeRelationships() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

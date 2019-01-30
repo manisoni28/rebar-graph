@@ -130,6 +130,7 @@ public class Ec2InstanceScanner extends AwsEntityScanner<Instance> {
 	}
 
 	public void scanInstance(String instanceId) {
+		checkScanArgument(instanceId);
 		try {
 			AmazonEC2 ec2 = getClient(AmazonEC2ClientBuilder.class);
 			DescribeInstancesRequest request = new DescribeInstancesRequest();
@@ -179,7 +180,7 @@ public class Ec2InstanceScanner extends AwsEntityScanner<Instance> {
 	}
 
 	@Override
-	public void scan(JsonNode entity) {
+	public void doScan(JsonNode entity) {
 		assertEntityOwner(entity);
 
 		if (isEntityType(entity, "AwsEc2Instance")) {
@@ -194,7 +195,8 @@ public class Ec2InstanceScanner extends AwsEntityScanner<Instance> {
 
 
 	@Override
-	public void scan(String id) {
+	public void doScan(String id) {
+		checkScanArgument(id);
 		scanInstance(id);
 		
 	}
@@ -202,5 +204,13 @@ public class Ec2InstanceScanner extends AwsEntityScanner<Instance> {
 	@Override
 	public AwsEntityType getEntityType() {
 		return AwsEntityType.AwsEc2Instance;
+	}
+
+
+
+	@Override
+	protected void doMergeRelationships() {
+		// TODO Auto-generated method stub
+		
 	}
 }

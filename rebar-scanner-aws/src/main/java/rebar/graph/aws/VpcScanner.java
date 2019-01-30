@@ -99,7 +99,7 @@ public class VpcScanner extends AwsEntityScanner<Vpc> {
 
 
 	@Override
-	public void scan(JsonNode entity) {
+	public void doScan(JsonNode entity) {
 		
 		
 		if (isEntityType(entity)) {
@@ -114,7 +114,7 @@ public class VpcScanner extends AwsEntityScanner<Vpc> {
 
 
 	@Override
-	public void scan(String id) {
+	public void doScan(String id) {
 		scanVPC(id);
 	}
 	
@@ -132,6 +132,12 @@ public class VpcScanner extends AwsEntityScanner<Vpc> {
 		});
 		n.remove("tags");
 		return n;
+	}
+
+	@Override
+	protected void doMergeRelationships() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

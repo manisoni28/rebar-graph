@@ -34,7 +34,7 @@ public class AccountScanner extends AwsEntityScanner {
 	}
 
 	@Override
-	public void scan(JsonNode entity) {
+	public void doScan(JsonNode entity) {
 		scan();
 	}
 	
@@ -43,13 +43,20 @@ public class AccountScanner extends AwsEntityScanner {
 	}
 
 	@Override
-	public void scan(String id) {
+	public void doScan(String id) {
+		checkScanArgument(id);
 		scan();	
 	}
 
 	@Override
 	public AwsEntityType getEntityType() {
 		return AwsEntityType.AwsAccount;
+	}
+
+	@Override
+	protected void doMergeRelationships() {
+		
+		
 	}
 	
 	

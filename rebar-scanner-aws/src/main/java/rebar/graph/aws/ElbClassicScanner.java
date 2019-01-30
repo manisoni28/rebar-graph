@@ -86,7 +86,7 @@ public class ElbClassicScanner extends AwsEntityScanner<LoadBalancerDescription>
 	@Override
 	protected void doScan() {
 
-		scanElbByName("foo");
+		
 		long ts = System.currentTimeMillis();
 
 		AmazonElasticLoadBalancingClient client = getClient(AmazonElasticLoadBalancingClientBuilder.class);
@@ -168,7 +168,7 @@ public class ElbClassicScanner extends AwsEntityScanner<LoadBalancerDescription>
 	}
 
 	@Override
-	public void scan(JsonNode entity) {
+	public void doScan(JsonNode entity) {
 		assertEntityOwner(entity);
 
 		if (isEntityType(entity, "AwsElb") && "classic".equals(entity.path("type").asText())) {
@@ -257,7 +257,7 @@ public class ElbClassicScanner extends AwsEntityScanner<LoadBalancerDescription>
 	}
 
 	@Override
-	public void scan(String id) {
+	public void doScan(String id) {
 		scanElbByName(id);
 		
 	}
@@ -265,5 +265,11 @@ public class ElbClassicScanner extends AwsEntityScanner<LoadBalancerDescription>
 	@Override
 	public AwsEntityType getEntityType() {
 		return AwsEntityType.AwsElb;
+	}
+
+	@Override
+	protected void doMergeRelationships() {
+		// TODO Auto-generated method stub
+		
 	}
 }

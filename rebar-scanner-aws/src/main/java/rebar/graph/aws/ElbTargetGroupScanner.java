@@ -89,10 +89,11 @@ public class ElbTargetGroupScanner extends AwsEntityScanner<TargetGroup> {
 		getAwsScanner().execGraphOperation(TargetGroupGraphOperation.class, Json.objectNode());
 		gc("AwsElbTargetGroup", ts);
 		
-		mergeRelationships();
+		doMergeRelationships();
 	}
 
-	private void mergeRelationships() {
+	@Override
+	protected void doMergeRelationships() {
 		
 		// target groups when not attached to elbs end up free floating.
 		// make sure it is attached to vpc
@@ -135,14 +136,14 @@ public class ElbTargetGroupScanner extends AwsEntityScanner<TargetGroup> {
 	}
 
 	@Override
-	public void scan(JsonNode entity) {
+	public void doScan(JsonNode entity) {
 		String name = entity.path("name").asText();
 		scanTargetGroupByName(name);
 
 	}
 
 	@Override
-	public void scan(String id) {
+	public void doScan(String id) {
 		scanTargetGroupByName(id);	
 	}
 	

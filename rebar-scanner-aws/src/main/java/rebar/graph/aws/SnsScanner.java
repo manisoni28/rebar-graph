@@ -86,7 +86,7 @@ public class SnsScanner extends AwsEntityScanner<Topic> {
 	}
 
 	@Override
-	public void scan(JsonNode entity) {
+	public void doScan(JsonNode entity) {
 
 		Json.logger().info("gc", entity);
 		if (isEntityOwner(entity)) {
@@ -95,7 +95,7 @@ public class SnsScanner extends AwsEntityScanner<Topic> {
 			if (entityType.equals(AwsEntityType.AwsSnsSubscription.name())) {
 
 			} else if (entityType.equals(AwsEntityType.AwsSnsTopic.name())) {
-				scan(arn);
+				doScan(arn);
 			}
 		}
 	}
@@ -106,6 +106,7 @@ public class SnsScanner extends AwsEntityScanner<Topic> {
 	}
 
 	protected void scanTopicArn(String arn) {
+		checkScanArgument(arn);
 		try {
 
 			GetTopicAttributesResult result = getClient().getTopicAttributes(arn);
@@ -119,7 +120,8 @@ public class SnsScanner extends AwsEntityScanner<Topic> {
 	}
 
 	@Override
-	public void scan(String id) {
+	public void doScan(String id) {
+		checkScanArgument(id);
 
 		if (SUBSCRIPTION_ARN_REGEX.matcher(id).matches()) {
 			logger.warn("cannot scan by subscription arn: {}", id);
@@ -212,6 +214,12 @@ public class SnsScanner extends AwsEntityScanner<Topic> {
 		getGraphDB().getNeo4jDriver().cypher(cypher).param("subscriptionArn", subscription.getSubscriptionArn())
 				.param("topicArn", topic.getTopicArn()).exec();
 
+		
+	}
+
+	@Override
+	protected void doMergeRelationships() {
+		// TODO Auto-generated method stub
 		
 	}
 }

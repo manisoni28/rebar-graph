@@ -172,6 +172,7 @@ public class AsgScanner extends AwsEntityScanner<AutoScalingGroup> {
 
 	public void scanByName(String name) {
 
+		checkScanArgument(name);
 		AmazonAutoScalingClient client = getClient(AmazonAutoScalingClientBuilder.class);
 
 		DescribeAutoScalingGroupsRequest r = new DescribeAutoScalingGroupsRequest().withAutoScalingGroupNames(name);
@@ -216,7 +217,7 @@ public class AsgScanner extends AwsEntityScanner<AutoScalingGroup> {
 	}
 
 	@Override
-	public void scan(JsonNode entity) {
+	public void doScan(JsonNode entity) {
 		assertEntityOwner(entity);
 
 		if (isEntityType(entity, getEntityTypeName())) {
@@ -241,12 +242,21 @@ public class AsgScanner extends AwsEntityScanner<AutoScalingGroup> {
 
 
 	@Override
-	public void scan(String id) {
+	public void doScan(String id) {
+		checkScanArgument(id);
 		scanByName(id);	
 	}
 	
 	@Override
 	public AwsEntityType getEntityType() {
 		return AwsEntityType.AwsAsg;
+	}
+
+
+
+	@Override
+	protected void doMergeRelationships() {
+		// TODO Auto-generated method stub
+		
 	}
 }

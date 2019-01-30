@@ -75,18 +75,24 @@ public class SerialScanner extends AwsEntityScanner {
 	}
 
 	@Override
-	public void scan(JsonNode entity) {
+	public void doScan(JsonNode entity) {
 		// do nothing
 
 	}
 
 	@Override
-	public void scan(String id) {
+	public void doScan(String id) {
 		// do nothing
 		
 	}
 	@Override
 	public AwsEntityType getEntityType() {
 		return AwsEntityType.UNKNOWN;
+	}
+
+	@Override
+	protected void doMergeRelationships() {
+		// TODO Auto-generated method stub
+		
 	}
 }

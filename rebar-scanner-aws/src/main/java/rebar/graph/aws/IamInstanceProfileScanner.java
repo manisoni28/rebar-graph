@@ -43,7 +43,8 @@ public class IamInstanceProfileScanner extends AwsEntityScanner<InstanceProfile>
 
 	}
 
-	private void mergeRelationships() {
+	@Override
+	protected void doMergeRelationships() {
 		mergeAccountOwner();
 
 		getGraphDB().nodes(getEntityTypeName()).id("account", getAccount()).relationship("USES")
@@ -93,22 +94,23 @@ public class IamInstanceProfileScanner extends AwsEntityScanner<InstanceProfile>
 		} while (!Strings.isNullOrEmpty(request.getMarker()));
 		gcWithoutRegion(AwsEntityType.AwsIamInstanceProfile.name(), ts); // do not match on region
 
-		mergeRelationships();
+		doMergeRelationships();
 	}
 
 	@Override
-	public void scan(JsonNode entity) {
+	public void doScan(JsonNode entity) {
 		if (isEntityType(entity)) {
 
 			String name = entity.path("instanceProfileName").asText();
 
-			scan(name);
+			doScan(name);
 		}
 
 	}
 
 	@Override
-	public void scan(String name) {
+	public void doScan(String name) {
+		checkScanArgument(name);
 		try {
 			Preconditions.checkArgument(!Strings.isNullOrEmpty(name), "instanceProfileName must be specified");
 			GetInstanceProfileResult result = getClient()

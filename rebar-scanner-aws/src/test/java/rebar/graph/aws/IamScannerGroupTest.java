@@ -16,7 +16,7 @@ public class IamScannerGroupTest extends AwsIntegrationTest {
 	@Test
 	public void testIt() {
 		
-		getAwsScanner().getEntityScanner(IamUserScanner.class).scan("fizz");
+		getAwsScanner().getEntityScanner(IamUserScanner.class).doScan("fizz");
 	}
 
 }

@@ -165,7 +165,7 @@ public class ElbScanner extends AwsEntityScanner<LoadBalancer> {
 	}
 
 	@Override
-	public void scan(JsonNode entity) {
+	public void doScan(JsonNode entity) {
 
 		assertEntityOwner(entity);
 
@@ -224,12 +224,19 @@ public class ElbScanner extends AwsEntityScanner<LoadBalancer> {
 	}
 
 	@Override
-	public void scan(String id) {
+	public void doScan(String id) {
+		checkScanArgument(id);
 		scanLoadBalancerByName(id);
 		
 	}
 	@Override
 	public AwsEntityType getEntityType() {
 		return AwsEntityType.AwsElb;
+	}
+
+	@Override
+	protected void doMergeRelationships() {
+		// TODO Auto-generated method stub
+		
 	}
 }

@@ -50,7 +50,7 @@ public class VpcPeeringConnectionScanner extends AbstractNetworkScanner<VpcPeeri
 				});
 				n.set("requesterIpv6CidrBlockSet", requesterIpv6CidrBlockSet);
 			}
-			
+
 			n.set("requesterVpcId", n.path("requesterVpcInfo").path("vpcId"));
 			n.set("requesterRegion", n.path("requesterVpcInfo").path("region"));
 			n.set("requesterOwnerId", n.path("requesterVpcInfo").path("ownerId"));
@@ -83,20 +83,32 @@ public class VpcPeeringConnectionScanner extends AbstractNetworkScanner<VpcPeeri
 	protected void doScan() {
 
 		long ts = getGraphDB().getTimestamp();
-		doScan(null);
+		scan((String) WILDCARD);
 
 		gc(AwsEntityType.AwsVpcPeeringConnection, ts);
 	}
 
-	private void doScan(String id) {
-		DescribeVpcPeeringConnectionsRequest request = new DescribeVpcPeeringConnectionsRequest();
-		if (!Strings.isNullOrEmpty(id)) {
-			request.withVpcPeeringConnectionIds(id);
+	void doScan(String id) {
+		try {
+
+			DescribeVpcPeeringConnectionsRequest request = new DescribeVpcPeeringConnectionsRequest();
+			if (isWildcard(id)) {
+				// do nothing
+			}
+			else {
+				request.withVpcPeeringConnectionIds(id);
+			}
+			DescribeVpcPeeringConnectionsResult result = getClient().describeVpcPeeringConnections(request);
+			result.getVpcPeeringConnections().forEach(it -> {
+				tryExecute(() -> project(it));
+			});
+		} catch (AmazonEC2Exception e) {
+			if (isNotFoundException(e)) {
+				deleteById(id);
+				return;
+			}
+			throw e;
 		}
-		DescribeVpcPeeringConnectionsResult result = getClient().describeVpcPeeringConnections(request);
-		result.getVpcPeeringConnections().forEach(it -> {
-			tryExecute(() -> project(it));
-		});
 	}
 
 	void project(VpcPeeringConnection c) {
@@ -106,7 +118,7 @@ public class VpcPeeringConnectionScanner extends AbstractNetworkScanner<VpcPeeri
 	}
 
 	@Override
-	public void scan(JsonNode entity) {
+	public void doScan(JsonNode entity) {
 		if (isEntityOwner(entity)) {
 			String id = entity.path("vpcPeeringConnectionId").asText();
 			scan(id);
@@ -114,31 +126,22 @@ public class VpcPeeringConnectionScanner extends AbstractNetworkScanner<VpcPeeri
 
 	}
 
-	@Override
-	public void scan(String id) {
-		
-		try {
-		if (!Strings.isNullOrEmpty(id)) {
-			doScan(id);
-		}
-		}
-		catch (AmazonEC2Exception e) {
-			if (isNotFoundException(e)) {
-				deleteById(id);
-				return;
-			}
-			throw e;
-		}
-
-	}
 
 	private void deleteById(String id) {
-		Preconditions.checkArgument(!Strings.isNullOrEmpty(id));
-		awsGraphNodes().id("vpcPeeringConnectionId",id).delete();
+		checkScanArgument(id);
+
+		awsGraphNodes().id("vpcPeeringConnectionId", id).delete();
 	}
+
 	@Override
 	public AwsEntityType getEntityType() {
 		return AwsEntityType.AwsVpcPeeringConnection;
+	}
+
+	@Override
+	protected void doMergeRelationships() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

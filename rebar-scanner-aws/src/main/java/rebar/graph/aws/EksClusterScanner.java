@@ -31,7 +31,7 @@ public class EksClusterScanner extends AwsEntityScanner<Cluster> {
 		do {
 			ListClustersResult result = eks.listClusters(request);
 			result.getClusters().forEach(cluster -> {
-				tryExecute(() -> scan(cluster));
+				tryExecute(() -> doScan(cluster));
 			});
 
 			request.setNextToken(result.getNextToken());
@@ -67,14 +67,16 @@ public class EksClusterScanner extends AwsEntityScanner<Cluster> {
 	}
 
 	@Override
-	public void scan(JsonNode entity) {
-		scan(entity.path("name").asText());
+	public void doScan(JsonNode entity) {
+		doScan(entity.path("name").asText());
 	}
 
 
 	
 	@Override
-	public void scan(String clusterName) {
+	public void doScan(String clusterName) {
+		
+		checkScanArgument(clusterName);
 		try {
 			AmazonEKS eks = getClient(AmazonEKSClientBuilder.class);
 
@@ -95,6 +97,12 @@ public class EksClusterScanner extends AwsEntityScanner<Cluster> {
 	@Override
 	public AwsEntityType getEntityType() {
 		return AwsEntityType.AwsEksCluster;
+	}
+
+	@Override
+	protected void doMergeRelationships() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

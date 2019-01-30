@@ -78,13 +78,14 @@ public class RdsInstanceScanner extends AwsEntityScanner<DBInstance> {
 	}
 
 	@Override
-	public void scan(JsonNode entity) {
+	public void doScan(JsonNode entity) {
 		
-		scan(entity.path("dbInstanceIdentifier").asText());
+		doScan(entity.path("dbInstanceIdentifier").asText());
 	}
 
 	@Override
-	public void scan(String id) {
+	public void doScan(String id) {
+		doScan(id);
 		try {
 			AmazonRDSClient rds = getClient(AmazonRDSClientBuilder.class);
 			DescribeDBInstancesRequest request = new DescribeDBInstancesRequest();
@@ -110,5 +111,11 @@ public class RdsInstanceScanner extends AwsEntityScanner<DBInstance> {
 	@Override
 	public AwsEntityType getEntityType() {
 		return AwsEntityType.AwsRdsInstance;
+	}
+
+	@Override
+	protected void doMergeRelationships() {
+		// TODO Auto-generated method stub
+		
 	}
 }

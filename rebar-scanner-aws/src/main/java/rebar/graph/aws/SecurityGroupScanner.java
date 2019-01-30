@@ -41,7 +41,7 @@ public class SecurityGroupScanner extends AwsEntityScanner<SecurityGroup> {
 	}
 
 	@Override
-	public void scan(JsonNode entity) {
+	public void doScan(JsonNode entity) {
 		if (isEntityType(entity)) {
 			scanById(entity.path("groupId").asText());
 		}
@@ -52,7 +52,7 @@ public class SecurityGroupScanner extends AwsEntityScanner<SecurityGroup> {
 	}
 
 	public void scanById(String id) {
-
+		checkScanArgument(id);
 		try {
 			DescribeSecurityGroupsRequest request = new DescribeSecurityGroupsRequest();
 			request.withGroupIds(id);
@@ -149,7 +149,8 @@ public class SecurityGroupScanner extends AwsEntityScanner<SecurityGroup> {
 	}
 
 	@Override
-	public void scan(String id) {
+	public void doScan(String id) {
+		checkScanArgument(id);
 		scanById(id);
 		
 	}
@@ -157,6 +158,12 @@ public class SecurityGroupScanner extends AwsEntityScanner<SecurityGroup> {
 	@Override
 	public AwsEntityType getEntityType() {
 		return AwsEntityType.AwsSecurityGroup;
+	}
+
+	@Override
+	protected void doMergeRelationships() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
