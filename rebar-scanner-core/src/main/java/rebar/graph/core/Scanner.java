@@ -29,6 +29,7 @@ import io.micrometer.core.instrument.Metrics;
 import io.micrometer.core.instrument.composite.CompositeMeterRegistry;
 import rebar.graph.neo4j.GraphDriver;
 import rebar.graph.neo4j.GraphException;
+import rebar.util.EnvConfig;
 import rebar.util.RebarException;
 
 public abstract class Scanner {
@@ -53,6 +54,9 @@ public abstract class Scanner {
 		return meterRegistry;
 	}
 
+	public final EnvConfig getEnvConfig() {
+		return getRebarGraph().getEnvConfig();
+	}
 
 	private GraphOperation getOperation(Class<? extends GraphOperation> operationClass) {
 

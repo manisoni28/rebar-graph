@@ -211,4 +211,8 @@ public class RebarGraph {
 	public ScanQueue getScanQueue() {
 		return queue;
 	}
+	
+	public final EnvConfig getEnvConfig() {
+		return env;
+	}
 }

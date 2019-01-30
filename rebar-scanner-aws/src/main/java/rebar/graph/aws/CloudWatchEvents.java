@@ -1,5 +1,6 @@
 package rebar.graph.aws;
 
+import java.util.Iterator;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
@@ -22,6 +23,9 @@ public class CloudWatchEvents implements Consumer<JsonNode> {
 	AwsScanner scanner;
 	SqsConsumer consumer;
 
+	public static final String CLOUDWATCH_QUEUE = "CLOUDWATCH_QUEUE";
+	public static final String DEFAULT_CLOUDWATCH_QUEUE_NAME = "rebar-cloudwatch";
+
 	public CloudWatchEvents(AwsScanner scanner) {
 		this.scanner = scanner;
 
@@ -38,9 +42,9 @@ public class CloudWatchEvents implements Consumer<JsonNode> {
 			logger.warn("already started");
 			return;
 		}
-		
-		String queueName = new EnvConfig().get("AWS_CLOUDWATCH_QUEUE").orElse("rebar-events");
-		logger.info("starting CloudWatch event queue monitor on queue name={}",queueName);
+
+		String queueName = scanner.getEnvConfig().get(CLOUDWATCH_QUEUE).orElse(DEFAULT_CLOUDWATCH_QUEUE_NAME);
+		logger.info("starting CloudWatch event queue monitor on queue name={}", queueName);
 		consumer = new SqsConsumer().withQueueName(queueName).withAwsScanner(scanner);
 		consumer.addConsumer(this);
 		consumer.start();
@@ -66,7 +70,7 @@ public class CloudWatchEvents implements Consumer<JsonNode> {
 		return Optional.empty();
 	}
 
-	Optional<String> extractInstanceId(JsonNode n) {
+	static Optional<String> extractInstanceId(JsonNode n) {
 		String instanceId = n.path("detail").path("instance-id").asText(null);
 		if (!Strings.isNullOrEmpty(instanceId)) {
 			return Optional.of(instanceId);
@@ -75,10 +79,70 @@ public class CloudWatchEvents implements Consumer<JsonNode> {
 		if (!Strings.isNullOrEmpty(instanceId)) {
 			return Optional.ofNullable(instanceId);
 		}
-		instanceId = n.path("EC2InstanceId").asText();
+		instanceId = n.path("EC2InstanceId").asText(null);
 		if (!Strings.isNullOrEmpty(instanceId)) {
+			return Optional.of(instanceId);
+		}
+
+		instanceId = n.path("detail").path("requestParameters").path("instanceId").asText();
+		if (instanceId.startsWith("i-")) {
 			return Optional.ofNullable(instanceId);
 		}
+		Iterator<JsonNode> t = n.path("detail").path("requestParameters").path("instancesSet").path("items").elements();
+		while (t.hasNext()) {
+			instanceId = t.next().path("instanceId").asText();
+			if (!Strings.isNullOrEmpty(instanceId)) {
+				return Optional.ofNullable(instanceId);
+			}
+		}
+
+		t = n.path("detail").path("requestParameters").path("instances").elements();
+		while (t.hasNext()) {
+			instanceId = t.next().path("instanceId").asText();
+			if (!Strings.isNullOrEmpty(instanceId)) {
+				return Optional.ofNullable(instanceId);
+			}
+		}
+
+		t = n.path("detail").path("requestParameters").path("targets").elements();
+		while (t.hasNext()) {
+			instanceId = t.next().path("id").asText();
+			if (!Strings.isNullOrEmpty(instanceId)) {
+				return Optional.ofNullable(instanceId);
+			}
+		}
+		
+		
+		if (n.path("detail").path("eventName").asText().equals("DeregisterTargets")) {
+			t = n.path("detail").path("requestParameters").path("targets").elements();
+			while (t.hasNext()) {
+				instanceId = t.next().path("id").asText();
+				if ((!Strings.isNullOrEmpty(instanceId)) && instanceId.startsWith("i-")) {
+					return Optional.ofNullable(instanceId);
+				}
+			}
+		}
+		
+		JsonNode items = n.path("detail").path("responseElements").path("instancesSet").path("items");
+		if (items.isArray()) {
+			t = items.elements();
+			while (t.hasNext()) {
+				instanceId = t.next().path("instanceId").asText();
+				if (!Strings.isNullOrEmpty(instanceId)) {
+					return Optional.ofNullable(instanceId);
+				}
+			}
+		}
+		
+		t = n.path("detail").path("requestParameters").path("resourcesSet").path("items").elements();
+		while (t.hasNext()) {
+			instanceId = t.next().path("resourceId").asText();
+			if (instanceId.startsWith("i-")) {
+				return Optional.ofNullable(instanceId);
+			}
+		}
+
+		
 		String source = n.path("source").asText();
 		if (source.equals("aws.s3") || source.equals("aws.ecr") || source.equals("aws.kms")) {
 			return Optional.empty();
@@ -104,6 +168,12 @@ public class CloudWatchEvents implements Consumer<JsonNode> {
 			return Optional.ofNullable(instanceId);
 		}
 
+		instanceId = n.path("detail").path("requestParameters").path("instanceId").asText();
+
+		if (!Strings.isNullOrEmpty(instanceId)) {
+			return Optional.ofNullable(instanceId);
+		}
+		
 		return Optional.empty();
 	}
 
