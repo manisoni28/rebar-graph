@@ -31,7 +31,9 @@ public class Route53Scanner extends AwsEntityScanner<HostedZone> {
 	void project(HostedZone z) {
 
 		ObjectNode n = toJson(z);
-		awsGraphNodes(AwsEntityType.AwsHostedZone.name()).idKey("arn").properties(n).merge();
+		
+		// globally unique
+		getGraphDB().nodes(AwsEntityType.AwsHostedZone.name()).idKey("arn").properties(n).merge(); 
 	}
 
 	protected void doMergeRelationships() {
