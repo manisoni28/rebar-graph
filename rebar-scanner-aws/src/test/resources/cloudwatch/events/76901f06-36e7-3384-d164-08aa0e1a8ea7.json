@@ -1,0 +1,54 @@
+{
+  "version" : "0",
+  "id" : "76901f06-36e7-3384-d164-08aa0e1a8ea7",
+  "detail-type" : "AWS API Call via CloudTrail",
+  "source" : "aws.s3",
+  "account" : "550534291128",
+  "time" : "2019-01-30T08:30:51Z",
+  "region" : "us-west-2",
+  "resources" : [ ],
+  "detail" : {
+    "eventVersion" : "1.05",
+    "userIdentity" : {
+      "type" : "AWSService",
+      "invokedBy" : "cloudtrail.amazonaws.com"
+    },
+    "eventTime" : "2019-01-30T08:30:51Z",
+    "eventSource" : "s3.amazonaws.com",
+    "eventName" : "PutObject",
+    "awsRegion" : "us-west-2",
+    "sourceIPAddress" : "cloudtrail.amazonaws.com",
+    "userAgent" : "cloudtrail.amazonaws.com",
+    "requestParameters" : {
+      "bucketName" : "rebar-cloudwatch",
+      "Host" : "rebar-cloudwatch.s3.us-west-2.amazonaws.com",
+      "x-amz-acl" : "bucket-owner-full-control",
+      "x-amz-server-side-encryption" : "AES256",
+      "key" : "AWSLogs/550534291128/CloudTrail/us-west-2/2019/01/30/550534291128_CloudTrail_us-west-2_20190130T0830Z_OHL4n7aDZqd4pjm6.json.gz"
+    },
+    "responseElements" : {
+      "x-amz-server-side-encryption" : "AES256"
+    },
+    "additionalEventData" : {
+      "SignatureVersion" : "SigV4",
+      "CipherSuite" : "ECDHE-RSA-AES128-GCM-SHA256",
+      "SSEApplied" : "SSE_S3",
+      "AuthenticationMethod" : "AuthHeader",
+      "x-amz-id-2" : "Fu8MeX82AQuoAzRkkmrEGOpKo2/VU7793rsJN/6FIdwwqfvL7WK1ju08xWMK8rIOEJ15pI9odBc="
+    },
+    "requestID" : "243458F396009889",
+    "eventID" : "3e12a6ac-cc85-4696-95b8-5de68b633b2f",
+    "readOnly" : false,
+    "resources" : [ {
+      "type" : "AWS::S3::Object",
+      "ARN" : "arn:aws:s3:::rebar-cloudwatch/AWSLogs/550534291128/CloudTrail/us-west-2/2019/01/30/550534291128_CloudTrail_us-west-2_20190130T0830Z_OHL4n7aDZqd4pjm6.json.gz"
+    }, {
+      "accountId" : "550534291128",
+      "type" : "AWS::S3::Bucket",
+      "ARN" : "arn:aws:s3:::rebar-cloudwatch"
+    } ],
+    "eventType" : "AwsApiCall",
+    "recipientAccountId" : "550534291128",
+    "sharedEventID" : "8c496d24-346e-40e9-a776-565247397031"
+  }
+}

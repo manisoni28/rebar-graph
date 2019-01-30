@@ -1,0 +1,53 @@
+{
+  "version" : "0",
+  "id" : "c3b7983f-3cf2-af26-a54c-071011a9aeeb",
+  "detail-type" : "AWS API Call via CloudTrail",
+  "source" : "aws.ec2",
+  "account" : "550534291128",
+  "time" : "2019-01-30T08:13:38Z",
+  "region" : "us-west-2",
+  "resources" : [ ],
+  "detail" : {
+    "eventVersion" : "1.05",
+    "userIdentity" : {
+      "type" : "IAMUser",
+      "principalId" : "AIDAJQ25LHVLO36YRJDT6",
+      "arn" : "arn:aws:iam::550534291128:user/rob",
+      "accountId" : "550534291128",
+      "accessKeyId" : "ASIAYALTGT24MUGGP675",
+      "userName" : "rob",
+      "sessionContext" : {
+        "attributes" : {
+          "mfaAuthenticated" : "true",
+          "creationDate" : "2019-01-30T00:09:44Z"
+        }
+      },
+      "invokedBy" : "signin.amazonaws.com"
+    },
+    "eventTime" : "2019-01-30T08:13:38Z",
+    "eventSource" : "ec2.amazonaws.com",
+    "eventName" : "CancelSpotInstanceRequests",
+    "awsRegion" : "us-west-2",
+    "sourceIPAddress" : "73.15.72.105",
+    "userAgent" : "signin.amazonaws.com",
+    "requestParameters" : {
+      "spotInstanceRequestIdSet" : {
+        "items" : [ {
+          "spotInstanceRequestId" : "sir-g5ngb4dm"
+        } ]
+      }
+    },
+    "responseElements" : {
+      "requestId" : "931d649e-84c5-4017-b064-e0b19c2750c2",
+      "spotInstanceRequestSet" : {
+        "items" : [ {
+          "spotInstanceRequestId" : "sir-g5ngb4dm",
+          "state" : "cancelled"
+        } ]
+      }
+    },
+    "requestID" : "931d649e-84c5-4017-b064-e0b19c2750c2",
+    "eventID" : "4d7376f0-c333-4660-89d3-90a86972d110",
+    "eventType" : "AwsApiCall"
+  }
+}

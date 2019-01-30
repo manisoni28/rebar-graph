@@ -1,0 +1,51 @@
+{
+  "version" : "0",
+  "id" : "3abd489c-eb79-6968-cfc5-2b9457544727",
+  "detail-type" : "AWS API Call via CloudTrail",
+  "source" : "aws.ec2",
+  "account" : "550534291128",
+  "time" : "2019-01-30T07:41:40Z",
+  "region" : "us-west-2",
+  "resources" : [ ],
+  "detail" : {
+    "eventVersion" : "1.05",
+    "userIdentity" : {
+      "type" : "AssumedRole",
+      "principalId" : "AROAIBNM22D3F3OK2VKAK:i-00de046fe4a9977c7",
+      "arn" : "arn:aws:sts::550534291128:assumed-role/test-NodeInstanceRole-1FHKUZ5GSBUE2/i-00de046fe4a9977c7",
+      "accountId" : "550534291128",
+      "accessKeyId" : "ASIAYALTGT24BJNXJL2R",
+      "sessionContext" : {
+        "attributes" : {
+          "mfaAuthenticated" : "false",
+          "creationDate" : "2019-01-30T07:39:56Z"
+        },
+        "sessionIssuer" : {
+          "type" : "Role",
+          "principalId" : "AROAIBNM22D3F3OK2VKAK",
+          "arn" : "arn:aws:iam::550534291128:role/test-NodeInstanceRole-1FHKUZ5GSBUE2",
+          "accountId" : "550534291128",
+          "userName" : "test-NodeInstanceRole-1FHKUZ5GSBUE2"
+        }
+      }
+    },
+    "eventTime" : "2019-01-30T07:41:40Z",
+    "eventSource" : "ec2.amazonaws.com",
+    "eventName" : "AssignPrivateIpAddresses",
+    "awsRegion" : "us-west-2",
+    "sourceIPAddress" : "54.212.191.209",
+    "userAgent" : "aws-sdk-go/1.15.22 (go1.10.2; linux; amd64)",
+    "requestParameters" : {
+      "networkInterfaceId" : "eni-09d625f700f0667a6",
+      "privateIpAddressesSet" : { },
+      "secondaryPrivateIpAddressCount" : 5
+    },
+    "responseElements" : {
+      "requestId" : "b0cef6bb-10bf-44e7-90e2-fbb9b54fcdfe",
+      "_return" : true
+    },
+    "requestID" : "b0cef6bb-10bf-44e7-90e2-fbb9b54fcdfe",
+    "eventID" : "d26bf075-ec22-4e38-9daa-cc903f8bb013",
+    "eventType" : "AwsApiCall"
+  }
+}

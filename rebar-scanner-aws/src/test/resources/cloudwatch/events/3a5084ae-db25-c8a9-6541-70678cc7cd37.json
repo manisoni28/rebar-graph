@@ -1,0 +1,48 @@
+{
+  "version" : "0",
+  "id" : "3a5084ae-db25-c8a9-6541-70678cc7cd37",
+  "detail-type" : "AWS API Call via CloudTrail",
+  "source" : "aws.ec2",
+  "account" : "550534291128",
+  "time" : "2019-01-30T08:04:51Z",
+  "region" : "us-west-2",
+  "resources" : [ ],
+  "detail" : {
+    "eventVersion" : "1.05",
+    "userIdentity" : {
+      "type" : "IAMUser",
+      "principalId" : "AIDAJQ25LHVLO36YRJDT6",
+      "arn" : "arn:aws:iam::550534291128:user/rob",
+      "accountId" : "550534291128",
+      "accessKeyId" : "ASIAYALTGT24BVSSG654",
+      "userName" : "rob",
+      "sessionContext" : {
+        "attributes" : {
+          "mfaAuthenticated" : "true",
+          "creationDate" : "2019-01-30T00:09:44Z"
+        }
+      },
+      "invokedBy" : "signin.amazonaws.com"
+    },
+    "eventTime" : "2019-01-30T08:04:51Z",
+    "eventSource" : "ec2.amazonaws.com",
+    "eventName" : "RebootInstances",
+    "awsRegion" : "us-west-2",
+    "sourceIPAddress" : "73.15.72.105",
+    "userAgent" : "signin.amazonaws.com",
+    "requestParameters" : {
+      "instancesSet" : {
+        "items" : [ {
+          "instanceId" : "i-0a31f3e4db12a461b"
+        } ]
+      }
+    },
+    "responseElements" : {
+      "requestId" : "60d1c337-a62e-4ddb-ad8e-2dc6aec0d800",
+      "_return" : true
+    },
+    "requestID" : "60d1c337-a62e-4ddb-ad8e-2dc6aec0d800",
+    "eventID" : "7df42ca6-0f69-437f-9a6e-73acd27115d7",
+    "eventType" : "AwsApiCall"
+  }
+}

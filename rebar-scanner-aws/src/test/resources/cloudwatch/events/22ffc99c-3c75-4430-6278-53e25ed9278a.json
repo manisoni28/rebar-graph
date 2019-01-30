@@ -1,0 +1,56 @@
+{
+  "version" : "0",
+  "id" : "22ffc99c-3c75-4430-6278-53e25ed9278a",
+  "detail-type" : "AWS API Call via CloudTrail",
+  "source" : "aws.ecr",
+  "account" : "550534291128",
+  "time" : "2019-01-30T07:40:57Z",
+  "region" : "us-west-2",
+  "resources" : [ ],
+  "detail" : {
+    "eventVersion" : "1.04",
+    "userIdentity" : {
+      "type" : "AssumedRole",
+      "principalId" : "AROAIBNM22D3F3OK2VKAK:i-00de046fe4a9977c7",
+      "arn" : "arn:aws:sts::550534291128:assumed-role/test-NodeInstanceRole-1FHKUZ5GSBUE2/i-00de046fe4a9977c7",
+      "accountId" : "550534291128",
+      "accessKeyId" : "ASIAJ43GIQQV4KX2R5UA",
+      "sessionContext" : {
+        "attributes" : {
+          "mfaAuthenticated" : "false",
+          "creationDate" : "2019-01-30T07:39:56Z"
+        },
+        "sessionIssuer" : {
+          "type" : "Role",
+          "principalId" : "AROAIBNM22D3F3OK2VKAK",
+          "arn" : "arn:aws:iam::550534291128:role/test-NodeInstanceRole-1FHKUZ5GSBUE2",
+          "accountId" : "550534291128",
+          "userName" : "test-NodeInstanceRole-1FHKUZ5GSBUE2"
+        }
+      },
+      "invokedBy" : "AWS Internal"
+    },
+    "eventTime" : "2019-01-30T07:40:57Z",
+    "eventSource" : "ecr.amazonaws.com",
+    "eventName" : "BatchGetImage",
+    "awsRegion" : "us-west-2",
+    "sourceIPAddress" : "AWS Internal",
+    "userAgent" : "AWS Internal",
+    "requestParameters" : {
+      "imageIds" : [ {
+        "imageTag" : "v1.10.3"
+      } ],
+      "acceptedMediaTypes" : [ "application/vnd.docker.distribution.manifest.list.v2+json", "application/vnd.docker.distribution.manifest.v1+prettyjws", "application/json", "application/vnd.docker.distribution.manifest.v2+json" ],
+      "repositoryName" : "eks/kube-proxy",
+      "registryId" : "602401143452"
+    },
+    "responseElements" : null,
+    "requestID" : "6153d6b9-2462-11e9-afd2-c9bbcd1e14fb",
+    "eventID" : "3578237c-c30d-49e8-b311-c76f16e04801",
+    "resources" : [ {
+      "ARN" : "arn:aws:ecr:us-west-2:602401143452:repository/eks/kube-proxy",
+      "accountId" : "602401143452"
+    } ],
+    "eventType" : "AwsApiCall"
+  }
+}

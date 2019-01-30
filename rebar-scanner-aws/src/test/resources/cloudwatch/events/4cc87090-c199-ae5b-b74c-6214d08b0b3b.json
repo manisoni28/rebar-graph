@@ -1,0 +1,54 @@
+{
+  "version" : "0",
+  "id" : "4cc87090-c199-ae5b-b74c-6214d08b0b3b",
+  "detail-type" : "AWS API Call via CloudTrail",
+  "source" : "aws.s3",
+  "account" : "550534291128",
+  "time" : "2019-01-30T09:06:15Z",
+  "region" : "us-west-2",
+  "resources" : [ ],
+  "detail" : {
+    "eventVersion" : "1.05",
+    "userIdentity" : {
+      "type" : "AWSService",
+      "invokedBy" : "cloudtrail.amazonaws.com"
+    },
+    "eventTime" : "2019-01-30T09:06:15Z",
+    "eventSource" : "s3.amazonaws.com",
+    "eventName" : "PutObject",
+    "awsRegion" : "us-west-2",
+    "sourceIPAddress" : "cloudtrail.amazonaws.com",
+    "userAgent" : "cloudtrail.amazonaws.com",
+    "requestParameters" : {
+      "bucketName" : "rebar-cloudwatch",
+      "Host" : "rebar-cloudwatch.s3.us-west-2.amazonaws.com",
+      "x-amz-acl" : "bucket-owner-full-control",
+      "x-amz-server-side-encryption" : "AES256",
+      "key" : "AWSLogs/550534291128/CloudTrail-Digest/ap-south-1/2019/01/30/550534291128_CloudTrail-Digest_ap-south-1_test_us-west-2_20190130T085901Z.json.gz"
+    },
+    "responseElements" : {
+      "x-amz-server-side-encryption" : "AES256"
+    },
+    "additionalEventData" : {
+      "SignatureVersion" : "SigV4",
+      "CipherSuite" : "ECDHE-RSA-AES128-SHA",
+      "SSEApplied" : "SSE_S3",
+      "AuthenticationMethod" : "AuthHeader",
+      "x-amz-id-2" : "apMYelUgguXdJXeX4V02tw5lkhXfOULgIWc1RwfSFUg4gBAacy7PiA9Jl2mzp0zdmSV3qZazz38="
+    },
+    "requestID" : "0548B44E79B6C5E1",
+    "eventID" : "58223414-7987-4544-a033-aa750439549b",
+    "readOnly" : false,
+    "resources" : [ {
+      "type" : "AWS::S3::Object",
+      "ARN" : "arn:aws:s3:::rebar-cloudwatch/AWSLogs/550534291128/CloudTrail-Digest/ap-south-1/2019/01/30/550534291128_CloudTrail-Digest_ap-south-1_test_us-west-2_20190130T085901Z.json.gz"
+    }, {
+      "accountId" : "550534291128",
+      "type" : "AWS::S3::Bucket",
+      "ARN" : "arn:aws:s3:::rebar-cloudwatch"
+    } ],
+    "eventType" : "AwsApiCall",
+    "recipientAccountId" : "550534291128",
+    "sharedEventID" : "fc4cc422-15ca-4844-9e75-d61c839b6437"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "version" : "0",
+  "id" : "ae429484-4f44-b8d1-86fc-49e1ca8c7c60",
+  "detail-type" : "Tag Change on Resource",
+  "source" : "aws.tag",
+  "account" : "550534291128",
+  "time" : "2019-01-30T07:40:19Z",
+  "region" : "us-west-2",
+  "resources" : [ "arn:aws:ec2:us-west-2:550534291128:instance/i-00de046fe4a9977c7" ],
+  "detail" : {
+    "changed-tag-keys" : [ "aws:autoscaling:groupName" ],
+    "service" : "ec2",
+    "resource-type" : "instance",
+    "version" : 3.0,
+    "tags" : {
+      "aws:autoscaling:groupName" : "test-NodeGroup-QV2M2YLQACA2",
+      "aws:cloudformation:stack-name" : "test",
+      "aws:cloudformation:stack-id" : "arn:aws:cloudformation:us-west-2:550534291128:stack/test/7587bac0-d58b-11e8-89b3-503ac9316829",
+      "aws:cloudformation:logical-id" : "NodeGroup",
+      "kubernetes.io/cluster/test" : "owned",
+      "Name" : "test-test-Node"
+    }
+  }
+}

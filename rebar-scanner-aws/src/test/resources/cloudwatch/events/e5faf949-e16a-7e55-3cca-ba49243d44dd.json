@@ -1,0 +1,54 @@
+{
+  "version" : "0",
+  "id" : "e5faf949-e16a-7e55-3cca-ba49243d44dd",
+  "detail-type" : "AWS API Call via CloudTrail",
+  "source" : "aws.s3",
+  "account" : "550534291128",
+  "time" : "2019-01-30T07:05:23Z",
+  "region" : "us-west-2",
+  "resources" : [ ],
+  "detail" : {
+    "eventVersion" : "1.05",
+    "userIdentity" : {
+      "type" : "AWSService",
+      "invokedBy" : "cloudtrail.amazonaws.com"
+    },
+    "eventTime" : "2019-01-30T07:05:23Z",
+    "eventSource" : "s3.amazonaws.com",
+    "eventName" : "PutObject",
+    "awsRegion" : "us-west-2",
+    "sourceIPAddress" : "cloudtrail.amazonaws.com",
+    "userAgent" : "cloudtrail.amazonaws.com",
+    "requestParameters" : {
+      "bucketName" : "rebar-cloudwatch",
+      "Host" : "rebar-cloudwatch.s3.us-west-2.amazonaws.com",
+      "x-amz-acl" : "bucket-owner-full-control",
+      "x-amz-server-side-encryption" : "AES256",
+      "key" : "AWSLogs/550534291128/CloudTrail-Digest/eu-west-1/2019/01/30/550534291128_CloudTrail-Digest_eu-west-1_test_us-west-2_20190130T065901Z.json.gz"
+    },
+    "responseElements" : {
+      "x-amz-server-side-encryption" : "AES256"
+    },
+    "additionalEventData" : {
+      "SignatureVersion" : "SigV4",
+      "CipherSuite" : "ECDHE-RSA-AES128-SHA",
+      "SSEApplied" : "SSE_S3",
+      "AuthenticationMethod" : "AuthHeader",
+      "x-amz-id-2" : "gRJqOvV0GFuctbMD7KYJs1fgNT9kILrcMzFuzpCD4UeD3omAszPRWAvbt7BV3I9hjG/+e7Vwjlg="
+    },
+    "requestID" : "349710DD7894F28F",
+    "eventID" : "606b0f7b-dbe2-4790-96a7-865d6d56cf98",
+    "readOnly" : false,
+    "resources" : [ {
+      "type" : "AWS::S3::Object",
+      "ARN" : "arn:aws:s3:::rebar-cloudwatch/AWSLogs/550534291128/CloudTrail-Digest/eu-west-1/2019/01/30/550534291128_CloudTrail-Digest_eu-west-1_test_us-west-2_20190130T065901Z.json.gz"
+    }, {
+      "accountId" : "550534291128",
+      "type" : "AWS::S3::Bucket",
+      "ARN" : "arn:aws:s3:::rebar-cloudwatch"
+    } ],
+    "eventType" : "AwsApiCall",
+    "recipientAccountId" : "550534291128",
+    "sharedEventID" : "ef8c038a-af72-4f94-bed6-a64e19b7bace"
+  }
+}

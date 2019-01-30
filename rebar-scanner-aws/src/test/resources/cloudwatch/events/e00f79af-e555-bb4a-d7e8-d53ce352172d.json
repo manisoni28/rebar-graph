@@ -1,0 +1,54 @@
+{
+  "version" : "0",
+  "id" : "e00f79af-e555-bb4a-d7e8-d53ce352172d",
+  "detail-type" : "AWS API Call via CloudTrail",
+  "source" : "aws.s3",
+  "account" : "550534291128",
+  "time" : "2019-01-30T06:34:04Z",
+  "region" : "us-west-2",
+  "resources" : [ ],
+  "detail" : {
+    "eventVersion" : "1.05",
+    "userIdentity" : {
+      "type" : "AWSService",
+      "invokedBy" : "cloudtrail.amazonaws.com"
+    },
+    "eventTime" : "2019-01-30T06:34:04Z",
+    "eventSource" : "s3.amazonaws.com",
+    "eventName" : "PutObject",
+    "awsRegion" : "us-west-2",
+    "sourceIPAddress" : "cloudtrail.amazonaws.com",
+    "userAgent" : "cloudtrail.amazonaws.com",
+    "requestParameters" : {
+      "bucketName" : "rebar-cloudwatch",
+      "Host" : "rebar-cloudwatch.s3.us-west-2.amazonaws.com",
+      "x-amz-acl" : "bucket-owner-full-control",
+      "x-amz-server-side-encryption" : "AES256",
+      "key" : "AWSLogs/550534291128/CloudTrail/us-west-2/2019/01/30/550534291128_CloudTrail_us-west-2_20190130T0635Z_W3U5R30MHJlUqbrQ.json.gz"
+    },
+    "responseElements" : {
+      "x-amz-server-side-encryption" : "AES256"
+    },
+    "additionalEventData" : {
+      "SignatureVersion" : "SigV4",
+      "CipherSuite" : "ECDHE-RSA-AES128-SHA",
+      "SSEApplied" : "SSE_S3",
+      "AuthenticationMethod" : "AuthHeader",
+      "x-amz-id-2" : "Zgr5WWhuZp5CgCCz1KKoHyq6lDqoR92ay1Yj2kLSrn3ITlSJzfMsEzqWcoEn4CB5WyBxLaey4xg="
+    },
+    "requestID" : "F1F77EC37102DD01",
+    "eventID" : "4b6ee6ec-1092-4fff-bfd8-f37f6cb3b37f",
+    "readOnly" : false,
+    "resources" : [ {
+      "type" : "AWS::S3::Object",
+      "ARN" : "arn:aws:s3:::rebar-cloudwatch/AWSLogs/550534291128/CloudTrail/us-west-2/2019/01/30/550534291128_CloudTrail_us-west-2_20190130T0635Z_W3U5R30MHJlUqbrQ.json.gz"
+    }, {
+      "accountId" : "550534291128",
+      "type" : "AWS::S3::Bucket",
+      "ARN" : "arn:aws:s3:::rebar-cloudwatch"
+    } ],
+    "eventType" : "AwsApiCall",
+    "recipientAccountId" : "550534291128",
+    "sharedEventID" : "74f3aa58-3c64-4cd0-b4f2-c4ac3b079ec0"
+  }
+}

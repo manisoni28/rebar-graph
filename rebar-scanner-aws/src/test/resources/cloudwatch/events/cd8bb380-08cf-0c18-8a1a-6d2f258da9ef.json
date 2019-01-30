@@ -1,0 +1,59 @@
+{
+  "version" : "0",
+  "id" : "cd8bb380-08cf-0c18-8a1a-6d2f258da9ef",
+  "detail-type" : "AWS API Call via CloudTrail",
+  "source" : "aws.ec2",
+  "account" : "550534291128",
+  "time" : "2019-01-30T08:58:06Z",
+  "region" : "us-west-2",
+  "resources" : [ ],
+  "detail" : {
+    "eventVersion" : "1.05",
+    "userIdentity" : {
+      "type" : "AssumedRole",
+      "principalId" : "AROAIALDRXZZNSY6DHK3M:AutoScaling",
+      "arn" : "arn:aws:sts::550534291128:assumed-role/AWSServiceRoleForAutoScaling/AutoScaling",
+      "accountId" : "550534291128",
+      "sessionContext" : {
+        "attributes" : {
+          "mfaAuthenticated" : "false",
+          "creationDate" : "2019-01-30T08:57:05Z"
+        },
+        "sessionIssuer" : {
+          "type" : "Role",
+          "principalId" : "AROAIALDRXZZNSY6DHK3M",
+          "arn" : "arn:aws:iam::550534291128:role/aws-service-role/autoscaling.amazonaws.com/AWSServiceRoleForAutoScaling",
+          "accountId" : "550534291128",
+          "userName" : "AWSServiceRoleForAutoScaling"
+        }
+      },
+      "invokedBy" : "autoscaling.amazonaws.com"
+    },
+    "eventTime" : "2019-01-30T08:58:06Z",
+    "eventSource" : "ec2.amazonaws.com",
+    "eventName" : "CreateTags",
+    "awsRegion" : "us-west-2",
+    "sourceIPAddress" : "autoscaling.amazonaws.com",
+    "userAgent" : "autoscaling.amazonaws.com",
+    "requestParameters" : {
+      "resourcesSet" : {
+        "items" : [ {
+          "resourceId" : "i-0a667c3cd4129dbbc"
+        } ]
+      },
+      "tagSet" : {
+        "items" : [ {
+          "key" : "aws:autoscaling:groupName",
+          "value" : "bastion"
+        } ]
+      }
+    },
+    "responseElements" : {
+      "requestId" : "ad85363e-de22-4ea2-8dce-b7cbbe1de740",
+      "_return" : true
+    },
+    "requestID" : "ad85363e-de22-4ea2-8dce-b7cbbe1de740",
+    "eventID" : "96adb0ca-cee4-4231-9a67-bab9c519b2a7",
+    "eventType" : "AwsApiCall"
+  }
+}

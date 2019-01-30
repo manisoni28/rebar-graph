@@ -1,0 +1,53 @@
+{
+  "version" : "0",
+  "id" : "df64f17f-020b-00fd-b5cd-497330164c13",
+  "detail-type" : "AWS API Call via CloudTrail",
+  "source" : "aws.ec2",
+  "account" : "550534291128",
+  "time" : "2019-01-30T07:41:46Z",
+  "region" : "us-west-2",
+  "resources" : [ ],
+  "detail" : {
+    "eventVersion" : "1.05",
+    "userIdentity" : {
+      "type" : "AssumedRole",
+      "principalId" : "AROAIBNM22D3F3OK2VKAK:i-00de046fe4a9977c7",
+      "arn" : "arn:aws:sts::550534291128:assumed-role/test-NodeInstanceRole-1FHKUZ5GSBUE2/i-00de046fe4a9977c7",
+      "accountId" : "550534291128",
+      "accessKeyId" : "ASIAYALTGT24BJNXJL2R",
+      "sessionContext" : {
+        "attributes" : {
+          "mfaAuthenticated" : "false",
+          "creationDate" : "2019-01-30T07:39:56Z"
+        },
+        "sessionIssuer" : {
+          "type" : "Role",
+          "principalId" : "AROAIBNM22D3F3OK2VKAK",
+          "arn" : "arn:aws:iam::550534291128:role/test-NodeInstanceRole-1FHKUZ5GSBUE2",
+          "accountId" : "550534291128",
+          "userName" : "test-NodeInstanceRole-1FHKUZ5GSBUE2"
+        }
+      }
+    },
+    "eventTime" : "2019-01-30T07:41:46Z",
+    "eventSource" : "ec2.amazonaws.com",
+    "eventName" : "ModifyNetworkInterfaceAttribute",
+    "awsRegion" : "us-west-2",
+    "sourceIPAddress" : "54.212.191.209",
+    "userAgent" : "aws-sdk-go/1.15.22 (go1.10.2; linux; amd64)",
+    "requestParameters" : {
+      "networkInterfaceId" : "eni-0e738c3d8cf6cfab5",
+      "attachment" : {
+        "attachmentId" : "eni-attach-0431145eddcc2821f",
+        "deleteOnTermination" : true
+      }
+    },
+    "responseElements" : {
+      "requestId" : "997bbf3f-8b87-41e4-b223-58810dda0262",
+      "_return" : true
+    },
+    "requestID" : "997bbf3f-8b87-41e4-b223-58810dda0262",
+    "eventID" : "134e7148-bad3-4915-a696-ed927816b674",
+    "eventType" : "AwsApiCall"
+  }
+}

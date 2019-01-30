@@ -1,0 +1,16 @@
+{
+  "version" : "0",
+  "id" : "75096be1-cf32-b6ec-5a27-167fa465adbe",
+  "detail-type" : "EBS Volume Notification",
+  "source" : "aws.ec2",
+  "account" : "550534291128",
+  "time" : "2019-01-30T07:39:19Z",
+  "region" : "us-west-2",
+  "resources" : [ "arn:aws:ec2:us-west-2:550534291128:volume/vol-04df02090b72f79d4" ],
+  "detail" : {
+    "result" : "deleted",
+    "cause" : "",
+    "event" : "deleteVolume",
+    "request-id" : "8a3b27d3-73b4-42dc-a3a1-f55ecb9256a0"
+  }
+}

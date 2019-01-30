@@ -1,0 +1,26 @@
+{
+  "version" : "0",
+  "id" : "f3620d13-fb64-5486-b511-2f97d08e3845",
+  "detail-type" : "EC2 Instance Terminate Successful",
+  "source" : "aws.autoscaling",
+  "account" : "550534291128",
+  "time" : "2019-01-30T07:11:09Z",
+  "region" : "us-west-2",
+  "resources" : [ "arn:aws:autoscaling:us-west-2:550534291128:autoScalingGroup:faf7c885-d0bf-4d85-93f7-5b0ebd2a60e2:autoScalingGroupName/buildkite", "arn:aws:ec2:us-west-2:550534291128:instance/i-0e8561485cbce2232" ],
+  "detail" : {
+    "Description" : "Terminating EC2 instance: i-0e8561485cbce2232",
+    "Details" : {
+      "Subnet ID" : "subnet-01dd658c63cbbf1ba",
+      "Availability Zone" : "us-west-2c"
+    },
+    "EndTime" : "2019-01-30T07:11:09.956Z",
+    "RequestId" : "5485a275-87aa-8e1d-219c-344539bef981",
+    "ActivityId" : "5485a275-87aa-8e1d-219c-344539bef981",
+    "Cause" : "At 2019-01-30T06:11:06Z an instance was taken out of service in response to a launch failure.",
+    "AutoScalingGroupName" : "buildkite",
+    "StartTime" : "2019-01-30T06:11:06.531Z",
+    "EC2InstanceId" : "i-0e8561485cbce2232",
+    "StatusCode" : "MidTerminatingLifecycleAction",
+    "StatusMessage" : ""
+  }
+}

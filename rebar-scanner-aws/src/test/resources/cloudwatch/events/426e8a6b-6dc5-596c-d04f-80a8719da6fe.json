@@ -1,0 +1,64 @@
+{
+  "version" : "0",
+  "id" : "426e8a6b-6dc5-596c-d04f-80a8719da6fe",
+  "detail-type" : "AWS API Call via CloudTrail",
+  "source" : "aws.ec2",
+  "account" : "550534291128",
+  "time" : "2019-01-30T08:06:40Z",
+  "region" : "us-west-2",
+  "resources" : [ ],
+  "detail" : {
+    "eventVersion" : "1.05",
+    "userIdentity" : {
+      "type" : "AssumedRole",
+      "principalId" : "AROAIALDRXZZNSY6DHK3M:AutoScaling",
+      "arn" : "arn:aws:sts::550534291128:assumed-role/AWSServiceRoleForAutoScaling/AutoScaling",
+      "accountId" : "550534291128",
+      "sessionContext" : {
+        "attributes" : {
+          "mfaAuthenticated" : "false",
+          "creationDate" : "2019-01-30T08:06:40Z"
+        },
+        "sessionIssuer" : {
+          "type" : "Role",
+          "principalId" : "AROAIALDRXZZNSY6DHK3M",
+          "arn" : "arn:aws:iam::550534291128:role/aws-service-role/autoscaling.amazonaws.com/AWSServiceRoleForAutoScaling",
+          "accountId" : "550534291128",
+          "userName" : "AWSServiceRoleForAutoScaling"
+        }
+      },
+      "invokedBy" : "autoscaling.amazonaws.com"
+    },
+    "eventTime" : "2019-01-30T08:06:40Z",
+    "eventSource" : "ec2.amazonaws.com",
+    "eventName" : "TerminateInstances",
+    "awsRegion" : "us-west-2",
+    "sourceIPAddress" : "autoscaling.amazonaws.com",
+    "userAgent" : "autoscaling.amazonaws.com",
+    "requestParameters" : {
+      "instancesSet" : {
+        "items" : [ {
+          "instanceId" : "i-0a31f3e4db12a461b"
+        } ]
+      }
+    },
+    "responseElements" : {
+      "instancesSet" : {
+        "items" : [ {
+          "instanceId" : "i-0a31f3e4db12a461b",
+          "currentState" : {
+            "code" : 48,
+            "name" : "terminated"
+          },
+          "previousState" : {
+            "code" : 48,
+            "name" : "terminated"
+          }
+        } ]
+      }
+    },
+    "requestID" : "6e3f97f9-b523-4664-8023-4570e17ec39d",
+    "eventID" : "51b8bb3d-6b9a-406d-ac3e-a31f201c13b0",
+    "eventType" : "AwsApiCall"
+  }
+}

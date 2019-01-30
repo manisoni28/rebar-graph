@@ -1,0 +1,71 @@
+{
+  "version" : "0",
+  "id" : "0c71be75-e288-41ed-1105-eba0f608153c",
+  "detail-type" : "AWS API Call via CloudTrail",
+  "source" : "aws.ec2",
+  "account" : "550534291128",
+  "time" : "2019-01-30T07:40:19Z",
+  "region" : "us-west-2",
+  "resources" : [ ],
+  "detail" : {
+    "eventVersion" : "1.05",
+    "userIdentity" : {
+      "type" : "AssumedRole",
+      "principalId" : "AROAIALDRXZZNSY6DHK3M:AutoScaling",
+      "arn" : "arn:aws:sts::550534291128:assumed-role/AWSServiceRoleForAutoScaling/AutoScaling",
+      "accountId" : "550534291128",
+      "sessionContext" : {
+        "attributes" : {
+          "mfaAuthenticated" : "false",
+          "creationDate" : "2019-01-30T07:39:46Z"
+        },
+        "sessionIssuer" : {
+          "type" : "Role",
+          "principalId" : "AROAIALDRXZZNSY6DHK3M",
+          "arn" : "arn:aws:iam::550534291128:role/aws-service-role/autoscaling.amazonaws.com/AWSServiceRoleForAutoScaling",
+          "accountId" : "550534291128",
+          "userName" : "AWSServiceRoleForAutoScaling"
+        }
+      },
+      "invokedBy" : "autoscaling.amazonaws.com"
+    },
+    "eventTime" : "2019-01-30T07:40:19Z",
+    "eventSource" : "ec2.amazonaws.com",
+    "eventName" : "CreateTags",
+    "awsRegion" : "us-west-2",
+    "sourceIPAddress" : "autoscaling.amazonaws.com",
+    "userAgent" : "autoscaling.amazonaws.com",
+    "requestParameters" : {
+      "resourcesSet" : {
+        "items" : [ {
+          "resourceId" : "i-00de046fe4a9977c7"
+        } ]
+      },
+      "tagSet" : {
+        "items" : [ {
+          "key" : "aws:cloudformation:stack-name",
+          "value" : "test"
+        }, {
+          "key" : "aws:cloudformation:stack-id",
+          "value" : "arn:aws:cloudformation:us-west-2:550534291128:stack/test/7587bac0-d58b-11e8-89b3-503ac9316829"
+        }, {
+          "key" : "aws:cloudformation:logical-id",
+          "value" : "NodeGroup"
+        }, {
+          "key" : "kubernetes.io/cluster/test",
+          "value" : "owned"
+        }, {
+          "key" : "Name",
+          "value" : "test-test-Node"
+        } ]
+      }
+    },
+    "responseElements" : {
+      "requestId" : "7e2f9da6-a0fa-4932-a374-f34762b87083",
+      "_return" : true
+    },
+    "requestID" : "7e2f9da6-a0fa-4932-a374-f34762b87083",
+    "eventID" : "e0845077-4562-4f26-b420-0a3c61406615",
+    "eventType" : "AwsApiCall"
+  }
+}

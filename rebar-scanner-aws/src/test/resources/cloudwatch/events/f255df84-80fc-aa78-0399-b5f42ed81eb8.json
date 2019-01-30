@@ -1,0 +1,54 @@
+{
+  "version" : "0",
+  "id" : "f255df84-80fc-aa78-0399-b5f42ed81eb8",
+  "detail-type" : "AWS API Call via CloudTrail",
+  "source" : "aws.kms",
+  "account" : "550534291128",
+  "time" : "2019-01-30T06:57:40Z",
+  "region" : "us-west-2",
+  "resources" : [ ],
+  "detail" : {
+    "eventVersion" : "1.05",
+    "userIdentity" : {
+      "type" : "AssumedRole",
+      "principalId" : "AROAITAB2ANZVUN3C6PXS:mig-prod-proxypost",
+      "arn" : "arn:aws:sts::550534291128:assumed-role/mig-prod-us-west-2-lambdaRole/mig-prod-proxypost",
+      "accountId" : "550534291128",
+      "accessKeyId" : "ASIAYALTGT24CQSX5UNT",
+      "sessionContext" : {
+        "attributes" : {
+          "mfaAuthenticated" : "false",
+          "creationDate" : "2019-01-30T05:38:28Z"
+        },
+        "sessionIssuer" : {
+          "type" : "Role",
+          "principalId" : "AROAITAB2ANZVUN3C6PXS",
+          "arn" : "arn:aws:iam::550534291128:role/mig-prod-us-west-2-lambdaRole",
+          "accountId" : "550534291128",
+          "userName" : "mig-prod-us-west-2-lambdaRole"
+        }
+      }
+    },
+    "eventTime" : "2019-01-30T06:57:40Z",
+    "eventSource" : "kms.amazonaws.com",
+    "eventName" : "Decrypt",
+    "awsRegion" : "us-west-2",
+    "sourceIPAddress" : "52.10.226.241",
+    "userAgent" : "aws-internal/3 aws-sdk-java/1.11.479 Linux/4.14.88-72.76.amzn1.x86_64 Java_HotSpot(TM)_64-Bit_Server_VM/25.192-b12 java/1.8.0_192",
+    "requestParameters" : {
+      "encryptionContext" : {
+        "aws:lambda:FunctionArn" : "arn:aws:lambda:us-west-2:550534291128:function:mig-prod-proxypost"
+      }
+    },
+    "responseElements" : null,
+    "requestID" : "7ebf4fa4-4c01-4b7a-a8fa-d865c32a95e8",
+    "eventID" : "7e4b94da-e3e3-45ff-b5a0-27af55772239",
+    "readOnly" : true,
+    "resources" : [ {
+      "ARN" : "arn:aws:kms:us-west-2:550534291128:key/61ff0ad3-2945-46cc-8be5-44e99ae19a7c",
+      "accountId" : "550534291128",
+      "type" : "AWS::KMS::Key"
+    } ],
+    "eventType" : "AwsApiCall"
+  }
+}

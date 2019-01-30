@@ -1,0 +1,22 @@
+{
+  "Progress" : 50,
+  "AccountId" : "550534291128",
+  "Description" : "Terminating EC2 instance: i-0a31f3e4db12a461b",
+  "RequestId" : "3dc5a277-2ec8-b0ba-6cb5-1974a4fb9f5b",
+  "EndTime" : "2019-01-30T08:06:41.191Z",
+  "AutoScalingGroupARN" : "arn:aws:autoscaling:us-west-2:550534291128:autoScalingGroup:e2a1c8e2-ad54-4625-8250-0c0a55653fcd:autoScalingGroupName/bastion",
+  "ActivityId" : "3dc5a277-2ec8-b0ba-6cb5-1974a4fb9f5b",
+  "StartTime" : "2019-01-30T08:06:38.892Z",
+  "Service" : "AWS Auto Scaling",
+  "Time" : "2019-01-30T08:06:41.191Z",
+  "EC2InstanceId" : "i-0a31f3e4db12a461b",
+  "StatusCode" : "InProgress",
+  "StatusMessage" : "",
+  "Details" : {
+    "Subnet ID" : "subnet-0317e0fbd082da242",
+    "Availability Zone" : "us-west-2a"
+  },
+  "AutoScalingGroupName" : "bastion",
+  "Cause" : "At 2019-01-30T08:06:38Z an instance was taken out of service in response to a EC2 health check indicating it has been terminated or stopped.",
+  "Event" : "autoscaling:EC2_INSTANCE_TERMINATE"
+}

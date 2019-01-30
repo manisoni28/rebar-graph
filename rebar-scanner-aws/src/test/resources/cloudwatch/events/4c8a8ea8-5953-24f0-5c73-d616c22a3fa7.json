@@ -1,0 +1,52 @@
+{
+  "version" : "0",
+  "id" : "4c8a8ea8-5953-24f0-5c73-d616c22a3fa7",
+  "detail-type" : "AWS API Call via CloudTrail",
+  "source" : "aws.ec2",
+  "account" : "550534291128",
+  "time" : "2019-01-30T07:11:09Z",
+  "region" : "us-west-2",
+  "resources" : [ ],
+  "detail" : {
+    "eventVersion" : "1.05",
+    "userIdentity" : {
+      "type" : "AssumedRole",
+      "principalId" : "AROAIALDRXZZNSY6DHK3M:AutoScaling",
+      "arn" : "arn:aws:sts::550534291128:assumed-role/AWSServiceRoleForAutoScaling/AutoScaling",
+      "accountId" : "550534291128",
+      "sessionContext" : {
+        "attributes" : {
+          "mfaAuthenticated" : "false",
+          "creationDate" : "2019-01-30T07:11:09Z"
+        },
+        "sessionIssuer" : {
+          "type" : "Role",
+          "principalId" : "AROAIALDRXZZNSY6DHK3M",
+          "arn" : "arn:aws:iam::550534291128:role/aws-service-role/autoscaling.amazonaws.com/AWSServiceRoleForAutoScaling",
+          "accountId" : "550534291128",
+          "userName" : "AWSServiceRoleForAutoScaling"
+        }
+      },
+      "invokedBy" : "autoscaling.amazonaws.com"
+    },
+    "eventTime" : "2019-01-30T07:11:09Z",
+    "eventSource" : "ec2.amazonaws.com",
+    "eventName" : "TerminateInstances",
+    "awsRegion" : "us-west-2",
+    "sourceIPAddress" : "autoscaling.amazonaws.com",
+    "userAgent" : "autoscaling.amazonaws.com",
+    "errorCode" : "Client.InvalidInstanceID.NotFound",
+    "errorMessage" : "The instance ID 'i-0e8561485cbce2232' does not exist",
+    "requestParameters" : {
+      "instancesSet" : {
+        "items" : [ {
+          "instanceId" : "i-0e8561485cbce2232"
+        } ]
+      }
+    },
+    "responseElements" : null,
+    "requestID" : "87318b01-307e-407d-9521-627248a4f810",
+    "eventID" : "bce89f6e-b9cc-4839-94c8-3f81ed096e84",
+    "eventType" : "AwsApiCall"
+  }
+}

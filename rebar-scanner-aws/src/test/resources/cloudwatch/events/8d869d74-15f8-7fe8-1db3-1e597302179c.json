@@ -1,0 +1,23 @@
+{
+  "version" : "0",
+  "id" : "8d869d74-15f8-7fe8-1db3-1e597302179c",
+  "detail-type" : "Tag Change on Resource",
+  "source" : "aws.tag",
+  "account" : "550534291128",
+  "time" : "2019-01-30T07:40:19Z",
+  "region" : "us-west-2",
+  "resources" : [ "arn:aws:ec2:us-west-2:550534291128:instance/i-00de046fe4a9977c7" ],
+  "detail" : {
+    "changed-tag-keys" : [ "kubernetes.io/cluster/test", "Name" ],
+    "service" : "ec2",
+    "resource-type" : "instance",
+    "version" : 2.0,
+    "tags" : {
+      "aws:cloudformation:stack-name" : "test",
+      "aws:cloudformation:stack-id" : "arn:aws:cloudformation:us-west-2:550534291128:stack/test/7587bac0-d58b-11e8-89b3-503ac9316829",
+      "aws:cloudformation:logical-id" : "NodeGroup",
+      "kubernetes.io/cluster/test" : "owned",
+      "Name" : "test-test-Node"
+    }
+  }
+}

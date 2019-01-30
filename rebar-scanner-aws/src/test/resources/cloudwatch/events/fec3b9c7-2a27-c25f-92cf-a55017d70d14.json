@@ -1,0 +1,56 @@
+{
+  "version" : "0",
+  "id" : "fec3b9c7-2a27-c25f-92cf-a55017d70d14",
+  "detail-type" : "AWS API Call via CloudTrail",
+  "source" : "aws.ecr",
+  "account" : "550534291128",
+  "time" : "2019-01-30T07:40:47Z",
+  "region" : "us-west-2",
+  "resources" : [ ],
+  "detail" : {
+    "eventVersion" : "1.04",
+    "userIdentity" : {
+      "type" : "AssumedRole",
+      "principalId" : "AROAIBNM22D3F3OK2VKAK:i-00de046fe4a9977c7",
+      "arn" : "arn:aws:sts::550534291128:assumed-role/test-NodeInstanceRole-1FHKUZ5GSBUE2/i-00de046fe4a9977c7",
+      "accountId" : "550534291128",
+      "accessKeyId" : "ASIAJ43GIQQV4KX2R5UA",
+      "sessionContext" : {
+        "attributes" : {
+          "mfaAuthenticated" : "false",
+          "creationDate" : "2019-01-30T07:39:56Z"
+        },
+        "sessionIssuer" : {
+          "type" : "Role",
+          "principalId" : "AROAIBNM22D3F3OK2VKAK",
+          "arn" : "arn:aws:iam::550534291128:role/test-NodeInstanceRole-1FHKUZ5GSBUE2",
+          "accountId" : "550534291128",
+          "userName" : "test-NodeInstanceRole-1FHKUZ5GSBUE2"
+        }
+      },
+      "invokedBy" : "AWS Internal"
+    },
+    "eventTime" : "2019-01-30T07:40:47Z",
+    "eventSource" : "ecr.amazonaws.com",
+    "eventName" : "BatchGetImage",
+    "awsRegion" : "us-west-2",
+    "sourceIPAddress" : "AWS Internal",
+    "userAgent" : "AWS Internal",
+    "requestParameters" : {
+      "imageIds" : [ {
+        "imageTag" : "3.1"
+      } ],
+      "acceptedMediaTypes" : [ "application/json", "application/vnd.docker.distribution.manifest.v2+json", "application/vnd.docker.distribution.manifest.list.v2+json", "application/vnd.docker.distribution.manifest.v1+prettyjws" ],
+      "repositoryName" : "eks/pause-amd64",
+      "registryId" : "602401143452"
+    },
+    "responseElements" : null,
+    "requestID" : "5bb4efce-2462-11e9-8c40-ff48de4f7a37",
+    "eventID" : "df79f403-b4a9-44ff-9d21-8123c2eb962c",
+    "resources" : [ {
+      "ARN" : "arn:aws:ecr:us-west-2:602401143452:repository/eks/pause-amd64",
+      "accountId" : "602401143452"
+    } ],
+    "eventType" : "AwsApiCall"
+  }
+}

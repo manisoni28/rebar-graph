@@ -1,0 +1,56 @@
+{
+  "version" : "0",
+  "id" : "48e53aee-43bb-6b2c-4ebf-31e08a09044f",
+  "detail-type" : "AWS API Call via CloudTrail",
+  "source" : "aws.ecr",
+  "account" : "550534291128",
+  "time" : "2019-01-30T07:41:34Z",
+  "region" : "us-west-2",
+  "resources" : [ ],
+  "detail" : {
+    "eventVersion" : "1.04",
+    "userIdentity" : {
+      "type" : "AssumedRole",
+      "principalId" : "AROAIBNM22D3F3OK2VKAK:i-00de046fe4a9977c7",
+      "arn" : "arn:aws:sts::550534291128:assumed-role/test-NodeInstanceRole-1FHKUZ5GSBUE2/i-00de046fe4a9977c7",
+      "accountId" : "550534291128",
+      "accessKeyId" : "ASIAJ43GIQQV4KX2R5UA",
+      "sessionContext" : {
+        "attributes" : {
+          "mfaAuthenticated" : "false",
+          "creationDate" : "2019-01-30T07:39:56Z"
+        },
+        "sessionIssuer" : {
+          "type" : "Role",
+          "principalId" : "AROAIBNM22D3F3OK2VKAK",
+          "arn" : "arn:aws:iam::550534291128:role/test-NodeInstanceRole-1FHKUZ5GSBUE2",
+          "accountId" : "550534291128",
+          "userName" : "test-NodeInstanceRole-1FHKUZ5GSBUE2"
+        }
+      },
+      "invokedBy" : "AWS Internal"
+    },
+    "eventTime" : "2019-01-30T07:41:34Z",
+    "eventSource" : "ecr.amazonaws.com",
+    "eventName" : "BatchGetImage",
+    "awsRegion" : "us-west-2",
+    "sourceIPAddress" : "AWS Internal",
+    "userAgent" : "AWS Internal",
+    "requestParameters" : {
+      "imageIds" : [ {
+        "imageTag" : "1.2.1"
+      } ],
+      "acceptedMediaTypes" : [ "application/vnd.docker.distribution.manifest.v2+json", "application/vnd.docker.distribution.manifest.list.v2+json", "application/vnd.docker.distribution.manifest.v1+prettyjws", "application/json" ],
+      "repositoryName" : "amazon-k8s-cni",
+      "registryId" : "602401143452"
+    },
+    "responseElements" : null,
+    "requestID" : "777d35d6-2462-11e9-aff1-c13178e3d7a3",
+    "eventID" : "ed2f0536-30ca-4aab-b1b0-fb92b7eba4f1",
+    "resources" : [ {
+      "ARN" : "arn:aws:ecr:us-west-2:602401143452:repository/amazon-k8s-cni",
+      "accountId" : "602401143452"
+    } ],
+    "eventType" : "AwsApiCall"
+  }
+}

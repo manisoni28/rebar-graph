@@ -1,0 +1,34 @@
+{
+  "version" : "0",
+  "id" : "a5778400-8cd1-7487-5191-fc3966a477e1",
+  "detail-type" : "AWS API Call via CloudTrail",
+  "source" : "aws.cloudformation",
+  "account" : "550534291128",
+  "time" : "2019-01-30T07:40:43Z",
+  "region" : "us-west-2",
+  "resources" : [ ],
+  "detail" : {
+    "eventVersion" : "1.05",
+    "userIdentity" : {
+      "type" : "Unknown",
+      "principalId" : "",
+      "arn" : "",
+      "accountId" : "550534291128",
+      "accessKeyId" : "",
+      "userName" : ""
+    },
+    "eventTime" : "2019-01-30T07:40:43Z",
+    "eventSource" : "cloudformation.amazonaws.com",
+    "eventName" : "SignalResource",
+    "awsRegion" : "us-west-2",
+    "sourceIPAddress" : "54.212.191.209",
+    "userAgent" : "CloudFormation Tools",
+    "errorCode" : "ValidationException",
+    "errorMessage" : "Stack arn:aws:cloudformation:us-west-2:550534291128:stack/test/7587bac0-d58b-11e8-89b3-503ac9316829 is in CREATE_COMPLETE state and cannot be signaled",
+    "requestParameters" : null,
+    "responseElements" : null,
+    "requestID" : "597b2c0a-2462-11e9-8d51-6f6186c60445",
+    "eventID" : "cd53d15c-6aca-49a1-afb4-fa409537272e",
+    "eventType" : "AwsApiCall"
+  }
+}

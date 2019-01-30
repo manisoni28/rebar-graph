@@ -1,0 +1,109 @@
+{
+  "version" : "0",
+  "id" : "dfd21a32-1a48-a5c1-56ab-20cb2a8ae623",
+  "detail-type" : "AWS API Call via CloudTrail",
+  "source" : "aws.ec2",
+  "account" : "550534291128",
+  "time" : "2019-01-30T08:13:08Z",
+  "region" : "us-west-2",
+  "resources" : [ ],
+  "detail" : {
+    "eventVersion" : "1.05",
+    "userIdentity" : {
+      "type" : "IAMUser",
+      "principalId" : "AIDAJQ25LHVLO36YRJDT6",
+      "arn" : "arn:aws:iam::550534291128:user/rob",
+      "accountId" : "550534291128",
+      "accessKeyId" : "ASIAYALTGT24MUGGP675",
+      "userName" : "rob",
+      "sessionContext" : {
+        "attributes" : {
+          "mfaAuthenticated" : "true",
+          "creationDate" : "2019-01-30T00:09:44Z"
+        }
+      },
+      "invokedBy" : "signin.amazonaws.com"
+    },
+    "eventTime" : "2019-01-30T08:13:08Z",
+    "eventSource" : "ec2.amazonaws.com",
+    "eventName" : "RequestSpotInstances",
+    "awsRegion" : "us-west-2",
+    "sourceIPAddress" : "73.15.72.105",
+    "userAgent" : "signin.amazonaws.com",
+    "requestParameters" : {
+      "spotPrice" : "0.0116",
+      "clientToken" : "1548835911702",
+      "blockDurationMinutes" : 60,
+      "launchSpecification" : {
+        "imageId" : "ami-01e24be29428c15b2",
+        "keyName" : "rs-mbp",
+        "instanceType" : "t2.micro",
+        "blockDeviceMapping" : {
+          "items" : [ {
+            "deviceName" : "/dev/xvda",
+            "ebs" : {
+              "snapshotId" : "snap-0af9c0b1d247238d6",
+              "volumeSize" : 8,
+              "deleteOnTermination" : true,
+              "volumeType" : "gp2"
+            }
+          } ]
+        },
+        "monitoring" : {
+          "enabled" : false
+        },
+        "subnetId" : "subnet-0317e0fbd082da242"
+      },
+      "instanceCount" : 1
+    },
+    "responseElements" : {
+      "spotInstanceRequestSet" : {
+        "items" : [ {
+          "spotInstanceRequestId" : "sir-g5ngb4dm",
+          "spotPrice" : "0.011600",
+          "type" : "one-time",
+          "state" : "open",
+          "status" : {
+            "code" : "pending-evaluation",
+            "updateTime" : 1548835988000,
+            "message" : "Your Spot request has been submitted for review, and is pending evaluation."
+          },
+          "launchSpecification" : {
+            "imageId" : "ami-01e24be29428c15b2",
+            "keyName" : "rs-mbp",
+            "groupSet" : {
+              "items" : [ {
+                "groupId" : "sg-0a8a2d214c8a1c7f5",
+                "groupName" : "default"
+              } ]
+            },
+            "instanceType" : "t2.micro",
+            "blockDeviceMapping" : {
+              "items" : [ {
+                "deviceName" : "/dev/xvda",
+                "ebs" : {
+                  "snapshotId" : "snap-0af9c0b1d247238d6",
+                  "volumeSize" : 8,
+                  "deleteOnTermination" : true,
+                  "volumeType" : "gp2"
+                }
+              } ]
+            },
+            "availabilityZone" : "us-west-2a",
+            "monitoring" : {
+              "enabled" : false
+            },
+            "subnetId" : "subnet-0317e0fbd082da242"
+          },
+          "createTime" : 1548835988000,
+          "productDescription" : "Linux/UNIX",
+          "blockDurationMinutes" : 60,
+          "instanceInterruptionBehavior" : "terminate"
+        } ]
+      }
+    },
+    "requestID" : "7577481d-e64c-4ba5-9ea6-a4a9feaa3d29",
+    "eventID" : "a64a1746-5728-41b6-a17e-fcf374de2b9f",
+    "eventType" : "AwsApiCall"
+  }
+}

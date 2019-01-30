@@ -1,0 +1,170 @@
+{
+  "version" : "0",
+  "id" : "4870084e-c398-4e38-f47b-b3b14dcacf37",
+  "detail-type" : "AWS API Call via CloudTrail",
+  "source" : "aws.ec2",
+  "account" : "550534291128",
+  "time" : "2019-01-30T08:57:35Z",
+  "region" : "us-west-2",
+  "resources" : [ ],
+  "detail" : {
+    "eventVersion" : "1.05",
+    "userIdentity" : {
+      "type" : "AssumedRole",
+      "principalId" : "AROAIALDRXZZNSY6DHK3M:AutoScaling",
+      "arn" : "arn:aws:sts::550534291128:assumed-role/AWSServiceRoleForAutoScaling/AutoScaling",
+      "accountId" : "550534291128",
+      "sessionContext" : {
+        "attributes" : {
+          "mfaAuthenticated" : "false",
+          "creationDate" : "2019-01-30T08:57:34Z"
+        },
+        "sessionIssuer" : {
+          "type" : "Role",
+          "principalId" : "AROAIALDRXZZNSY6DHK3M",
+          "arn" : "arn:aws:iam::550534291128:role/aws-service-role/autoscaling.amazonaws.com/AWSServiceRoleForAutoScaling",
+          "accountId" : "550534291128",
+          "userName" : "AWSServiceRoleForAutoScaling"
+        }
+      },
+      "invokedBy" : "autoscaling.amazonaws.com"
+    },
+    "eventTime" : "2019-01-30T08:57:35Z",
+    "eventSource" : "ec2.amazonaws.com",
+    "eventName" : "RunInstances",
+    "awsRegion" : "us-west-2",
+    "sourceIPAddress" : "autoscaling.amazonaws.com",
+    "userAgent" : "autoscaling.amazonaws.com",
+    "requestParameters" : {
+      "instancesSet" : {
+        "items" : [ {
+          "minCount" : 1,
+          "maxCount" : 1
+        } ]
+      },
+      "blockDeviceMapping" : { },
+      "availabilityZone" : "us-west-2b",
+      "monitoring" : {
+        "enabled" : false
+      },
+      "disableApiTermination" : false,
+      "clientToken" : "2b25a277-e939-539c-431e-22434dad43ca_subnet-0c4313ecae622ce37_1",
+      "networkInterfaceSet" : {
+        "items" : [ {
+          "deviceIndex" : 0,
+          "subnetId" : "subnet-0c4313ecae622ce37"
+        } ]
+      },
+      "launchTemplate" : {
+        "launchTemplateId" : "lt-06a8dd71bd4ceb731",
+        "version" : "6"
+      }
+    },
+    "responseElements" : {
+      "requestId" : "4c4376ac-2acd-46a9-8d04-e568d1cf2eb5",
+      "reservationId" : "r-05769fa96352f0f7a",
+      "ownerId" : "550534291128",
+      "groupSet" : { },
+      "instancesSet" : {
+        "items" : [ {
+          "instanceId" : "i-0a667c3cd4129dbbc",
+          "imageId" : "ami-3ecc8f46",
+          "instanceState" : {
+            "code" : 0,
+            "name" : "pending"
+          },
+          "privateDnsName" : "ip-10-200-2-45.us-west-2.compute.internal",
+          "keyName" : "rs-mbp",
+          "amiLaunchIndex" : 0,
+          "productCodes" : { },
+          "instanceType" : "t3.nano",
+          "launchTime" : 1548838655000,
+          "placement" : {
+            "availabilityZone" : "us-west-2b",
+            "tenancy" : "default"
+          },
+          "monitoring" : {
+            "state" : "disabled"
+          },
+          "subnetId" : "subnet-0c4313ecae622ce37",
+          "vpcId" : "vpc-0054607f86332dad9",
+          "privateIpAddress" : "10.200.2.45",
+          "stateReason" : {
+            "code" : "pending",
+            "message" : "pending"
+          },
+          "architecture" : "x86_64",
+          "rootDeviceType" : "ebs",
+          "rootDeviceName" : "/dev/sda1",
+          "blockDeviceMapping" : { },
+          "virtualizationType" : "hvm",
+          "hypervisor" : "xen",
+          "tagSet" : {
+            "items" : [ {
+              "key" : "aws:ec2launchtemplate:id",
+              "value" : "lt-06a8dd71bd4ceb731"
+            }, {
+              "key" : "aws:ec2launchtemplate:version",
+              "value" : "6"
+            } ]
+          },
+          "clientToken" : "2b25a277-e939-539c-431e-22434dad43ca_subnet-0c4313ecae622ce37_1",
+          "groupSet" : {
+            "items" : [ {
+              "groupId" : "sg-03e84687fd5e7f37f",
+              "groupName" : "external-ssh"
+            } ]
+          },
+          "sourceDestCheck" : true,
+          "networkInterfaceSet" : {
+            "items" : [ {
+              "networkInterfaceId" : "eni-060d41326bb898346",
+              "subnetId" : "subnet-0c4313ecae622ce37",
+              "vpcId" : "vpc-0054607f86332dad9",
+              "ownerId" : "550534291128",
+              "status" : "in-use",
+              "macAddress" : "02:c7:58:ce:c9:12",
+              "privateIpAddress" : "10.200.2.45",
+              "sourceDestCheck" : true,
+              "interfaceType" : "interface",
+              "groupSet" : {
+                "items" : [ {
+                  "groupId" : "sg-03e84687fd5e7f37f",
+                  "groupName" : "external-ssh"
+                } ]
+              },
+              "attachment" : {
+                "attachmentId" : "eni-attach-0b066a3c522a75eb5",
+                "deviceIndex" : 0,
+                "status" : "attaching",
+                "attachTime" : 1548838655000,
+                "deleteOnTermination" : true
+              },
+              "privateIpAddressesSet" : {
+                "item" : [ {
+                  "privateIpAddress" : "10.200.2.45",
+                  "primary" : true
+                } ]
+              },
+              "ipv6AddressesSet" : { },
+              "tagSet" : { }
+            } ]
+          },
+          "iamInstanceProfile" : {
+            "arn" : "arn:aws:iam::550534291128:instance-profile/bastion-instance-role",
+            "id" : "AIPAJD7Z4KNQVOOKFP45W"
+          },
+          "ebsOptimized" : false,
+          "cpuOptions" : {
+            "coreCount" : 1,
+            "threadsPerCore" : 2
+          }
+        } ]
+      },
+      "requesterId" : "903220451833"
+    },
+    "requestID" : "4c4376ac-2acd-46a9-8d04-e568d1cf2eb5",
+    "eventID" : "51e60d81-ceb7-4e98-ad74-defb9ccae00b",
+    "eventType" : "AwsApiCall"
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "version" : "0",
+  "id" : "a60f521c-3c81-4910-c855-c48ea0d15189",
+  "detail-type" : "AWS API Call via CloudTrail",
+  "source" : "aws.ecr",
+  "account" : "550534291128",
+  "time" : "2019-01-30T07:41:50Z",
+  "region" : "us-west-2",
+  "resources" : [ ],
+  "detail" : {
+    "eventVersion" : "1.04",
+    "userIdentity" : {
+      "type" : "AssumedRole",
+      "principalId" : "AROAIBNM22D3F3OK2VKAK:i-00de046fe4a9977c7",
+      "arn" : "arn:aws:sts::550534291128:assumed-role/test-NodeInstanceRole-1FHKUZ5GSBUE2/i-00de046fe4a9977c7",
+      "accountId" : "550534291128",
+      "accessKeyId" : "ASIAJ43GIQQV4KX2R5UA",
+      "sessionContext" : {
+        "attributes" : {
+          "mfaAuthenticated" : "false",
+          "creationDate" : "2019-01-30T07:39:56Z"
+        },
+        "sessionIssuer" : {
+          "type" : "Role",
+          "principalId" : "AROAIBNM22D3F3OK2VKAK",
+          "arn" : "arn:aws:iam::550534291128:role/test-NodeInstanceRole-1FHKUZ5GSBUE2",
+          "accountId" : "550534291128",
+          "userName" : "test-NodeInstanceRole-1FHKUZ5GSBUE2"
+        }
+      },
+      "invokedBy" : "AWS Internal"
+    },
+    "eventTime" : "2019-01-30T07:41:50Z",
+    "eventSource" : "ecr.amazonaws.com",
+    "eventName" : "BatchGetImage",
+    "awsRegion" : "us-west-2",
+    "sourceIPAddress" : "AWS Internal",
+    "userAgent" : "AWS Internal",
+    "requestParameters" : {
+      "imageIds" : [ {
+        "imageTag" : "1.14.10"
+      } ],
+      "acceptedMediaTypes" : [ "application/vnd.docker.distribution.manifest.v1+prettyjws", "application/json", "application/vnd.docker.distribution.manifest.v2+json", "application/vnd.docker.distribution.manifest.list.v2+json" ],
+      "repositoryName" : "eks/kube-dns/dnsmasq-nanny",
+      "registryId" : "602401143452"
+    },
+    "responseElements" : null,
+    "requestID" : "81670d44-2462-11e9-b8da-3986c3d3a01a",
+    "eventID" : "4ec24c08-75d6-4bca-945f-0c6f8e1d21d2",
+    "resources" : [ {
+      "ARN" : "arn:aws:ecr:us-west-2:602401143452:repository/eks/kube-dns/dnsmasq-nanny",
+      "accountId" : "602401143452"
+    } ],
+    "eventType" : "AwsApiCall"
+  }
+}

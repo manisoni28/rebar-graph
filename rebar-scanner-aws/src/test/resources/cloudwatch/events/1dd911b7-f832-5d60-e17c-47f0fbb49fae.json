@@ -1,0 +1,26 @@
+{
+  "version" : "0",
+  "id" : "1dd911b7-f832-5d60-e17c-47f0fbb49fae",
+  "detail-type" : "EC2 Instance Terminate Successful",
+  "source" : "aws.autoscaling",
+  "account" : "550534291128",
+  "time" : "2019-01-30T07:44:26Z",
+  "region" : "us-west-2",
+  "resources" : [ "arn:aws:autoscaling:us-west-2:550534291128:autoScalingGroup:e87599cb-60c2-469f-932b-e514a4f95922:autoScalingGroupName/test-NodeGroup-QV2M2YLQACA2", "arn:aws:ec2:us-west-2:550534291128:instance/i-07e8a40385580c6a9" ],
+  "detail" : {
+    "Description" : "Terminating EC2 instance: i-07e8a40385580c6a9",
+    "Details" : {
+      "Subnet ID" : "subnet-0c4313ecae622ce37",
+      "Availability Zone" : "us-west-2b"
+    },
+    "EndTime" : "2019-01-30T07:44:26.532Z",
+    "RequestId" : "0db5a276-ca7d-2115-4b65-5a6a290a03bb",
+    "ActivityId" : "0db5a276-ca7d-2115-4b65-5a6a290a03bb",
+    "Cause" : "At 2019-01-30T07:39:15Z an instance was taken out of service in response to a EC2 health check indicating it has been terminated or stopped.",
+    "AutoScalingGroupName" : "test-NodeGroup-QV2M2YLQACA2",
+    "StartTime" : "2019-01-30T07:39:15.656Z",
+    "EC2InstanceId" : "i-07e8a40385580c6a9",
+    "StatusCode" : "InProgress",
+    "StatusMessage" : ""
+  }
+}

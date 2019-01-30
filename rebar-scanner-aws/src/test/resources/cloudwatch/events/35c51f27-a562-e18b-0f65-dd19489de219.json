@@ -1,0 +1,59 @@
+{
+  "version" : "0",
+  "id" : "35c51f27-a562-e18b-0f65-dd19489de219",
+  "detail-type" : "AWS API Call via CloudTrail",
+  "source" : "aws.ec2",
+  "account" : "550534291128",
+  "time" : "2019-01-30T07:41:45Z",
+  "region" : "us-west-2",
+  "resources" : [ ],
+  "detail" : {
+    "eventVersion" : "1.05",
+    "userIdentity" : {
+      "type" : "AssumedRole",
+      "principalId" : "AROAIBNM22D3F3OK2VKAK:i-00de046fe4a9977c7",
+      "arn" : "arn:aws:sts::550534291128:assumed-role/test-NodeInstanceRole-1FHKUZ5GSBUE2/i-00de046fe4a9977c7",
+      "accountId" : "550534291128",
+      "accessKeyId" : "ASIAYALTGT24BJNXJL2R",
+      "sessionContext" : {
+        "attributes" : {
+          "mfaAuthenticated" : "false",
+          "creationDate" : "2019-01-30T07:39:56Z"
+        },
+        "sessionIssuer" : {
+          "type" : "Role",
+          "principalId" : "AROAIBNM22D3F3OK2VKAK",
+          "arn" : "arn:aws:iam::550534291128:role/test-NodeInstanceRole-1FHKUZ5GSBUE2",
+          "accountId" : "550534291128",
+          "userName" : "test-NodeInstanceRole-1FHKUZ5GSBUE2"
+        }
+      }
+    },
+    "eventTime" : "2019-01-30T07:41:45Z",
+    "eventSource" : "ec2.amazonaws.com",
+    "eventName" : "CreateTags",
+    "awsRegion" : "us-west-2",
+    "sourceIPAddress" : "54.212.191.209",
+    "userAgent" : "aws-sdk-go/1.15.22 (go1.10.2; linux; amd64)",
+    "requestParameters" : {
+      "resourcesSet" : {
+        "items" : [ {
+          "resourceId" : "eni-0e738c3d8cf6cfab5"
+        } ]
+      },
+      "tagSet" : {
+        "items" : [ {
+          "key" : "node.k8s.amazonaws.com/instance_id",
+          "value" : "i-00de046fe4a9977c7"
+        } ]
+      }
+    },
+    "responseElements" : {
+      "requestId" : "5fc46ae8-17e7-4834-b2ff-51c77e9d00e3",
+      "_return" : true
+    },
+    "requestID" : "5fc46ae8-17e7-4834-b2ff-51c77e9d00e3",
+    "eventID" : "00be58ff-af29-4c74-87e0-94cf1ba6b5e6",
+    "eventType" : "AwsApiCall"
+  }
+}

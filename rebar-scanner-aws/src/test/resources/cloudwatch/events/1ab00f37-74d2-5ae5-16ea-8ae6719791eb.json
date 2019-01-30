@@ -1,0 +1,26 @@
+{
+  "version" : "0",
+  "id" : "1ab00f37-74d2-5ae5-16ea-8ae6719791eb",
+  "detail-type" : "EC2 Instance Launch Successful",
+  "source" : "aws.autoscaling",
+  "account" : "550534291128",
+  "time" : "2019-01-30T08:07:43Z",
+  "region" : "us-west-2",
+  "resources" : [ "arn:aws:autoscaling:us-west-2:550534291128:autoScalingGroup:e2a1c8e2-ad54-4625-8250-0c0a55653fcd:autoScalingGroupName/bastion", "arn:aws:ec2:us-west-2:550534291128:instance/i-08635d6339b2d36e6" ],
+  "detail" : {
+    "Description" : "Launching a new EC2 instance: i-08635d6339b2d36e6",
+    "Details" : {
+      "Subnet ID" : "subnet-01dd658c63cbbf1ba",
+      "Availability Zone" : "us-west-2c"
+    },
+    "EndTime" : "2019-01-30T08:07:43.008Z",
+    "RequestId" : "9585a277-30ba-70d7-adcb-8eba2319abe5",
+    "ActivityId" : "9585a277-30ba-70d7-adcb-8eba2319abe5",
+    "Cause" : "At 2019-01-30T08:07:08Z an instance was started in response to a difference between desired and actual capacity, increasing the capacity from 0 to 1.",
+    "AutoScalingGroupName" : "bastion",
+    "StartTime" : "2019-01-30T08:07:10.748Z",
+    "EC2InstanceId" : "i-08635d6339b2d36e6",
+    "StatusCode" : "InProgress",
+    "StatusMessage" : ""
+  }
+}

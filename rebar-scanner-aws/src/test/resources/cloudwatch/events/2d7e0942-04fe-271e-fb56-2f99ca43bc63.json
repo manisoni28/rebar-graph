@@ -1,0 +1,19 @@
+{
+  "version" : "0",
+  "id" : "2d7e0942-04fe-271e-fb56-2f99ca43bc63",
+  "detail-type" : "Tag Change on Resource",
+  "source" : "aws.tag",
+  "account" : "550534291128",
+  "time" : "2019-01-30T07:41:45Z",
+  "region" : "us-west-2",
+  "resources" : [ "arn:aws:ec2:us-west-2:550534291128:network-interface/eni-0e738c3d8cf6cfab5" ],
+  "detail" : {
+    "changed-tag-keys" : [ "node.k8s.amazonaws.com/instance_id" ],
+    "service" : "ec2",
+    "resource-type" : "network-interface",
+    "version" : 1.0,
+    "tags" : {
+      "node.k8s.amazonaws.com/instance_id" : "i-00de046fe4a9977c7"
+    }
+  }
+}

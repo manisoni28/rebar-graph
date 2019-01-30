@@ -1,0 +1,21 @@
+{
+  "version" : "0",
+  "id" : "64325488-9f4d-96a3-97bd-4642994579dc",
+  "detail-type" : "Tag Change on Resource",
+  "source" : "aws.tag",
+  "account" : "550534291128",
+  "time" : "2019-01-30T08:07:41Z",
+  "region" : "us-west-2",
+  "resources" : [ "arn:aws:ec2:us-west-2:550534291128:instance/i-08635d6339b2d36e6" ],
+  "detail" : {
+    "changed-tag-keys" : [ "aws:autoscaling:groupName" ],
+    "service" : "ec2",
+    "resource-type" : "instance",
+    "version" : 2.0,
+    "tags" : {
+      "aws:autoscaling:groupName" : "bastion",
+      "aws:ec2launchtemplate:version" : "6",
+      "aws:ec2launchtemplate:id" : "lt-06a8dd71bd4ceb731"
+    }
+  }
+}

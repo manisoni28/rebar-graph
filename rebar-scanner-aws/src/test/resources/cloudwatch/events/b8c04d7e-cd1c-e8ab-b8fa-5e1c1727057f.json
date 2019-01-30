@@ -1,0 +1,84 @@
+{
+  "version" : "0",
+  "id" : "b8c04d7e-cd1c-e8ab-b8fa-5e1c1727057f",
+  "detail-type" : "AWS API Call via CloudTrail",
+  "source" : "aws.ec2",
+  "account" : "550534291128",
+  "time" : "2019-01-30T07:41:45Z",
+  "region" : "us-west-2",
+  "resources" : [ ],
+  "detail" : {
+    "eventVersion" : "1.05",
+    "userIdentity" : {
+      "type" : "AssumedRole",
+      "principalId" : "AROAIBNM22D3F3OK2VKAK:i-00de046fe4a9977c7",
+      "arn" : "arn:aws:sts::550534291128:assumed-role/test-NodeInstanceRole-1FHKUZ5GSBUE2/i-00de046fe4a9977c7",
+      "accountId" : "550534291128",
+      "accessKeyId" : "ASIAYALTGT24BJNXJL2R",
+      "sessionContext" : {
+        "attributes" : {
+          "mfaAuthenticated" : "false",
+          "creationDate" : "2019-01-30T07:39:56Z"
+        },
+        "sessionIssuer" : {
+          "type" : "Role",
+          "principalId" : "AROAIBNM22D3F3OK2VKAK",
+          "arn" : "arn:aws:iam::550534291128:role/test-NodeInstanceRole-1FHKUZ5GSBUE2",
+          "accountId" : "550534291128",
+          "userName" : "test-NodeInstanceRole-1FHKUZ5GSBUE2"
+        }
+      }
+    },
+    "eventTime" : "2019-01-30T07:41:45Z",
+    "eventSource" : "ec2.amazonaws.com",
+    "eventName" : "CreateNetworkInterface",
+    "awsRegion" : "us-west-2",
+    "sourceIPAddress" : "54.212.191.209",
+    "userAgent" : "aws-sdk-go/1.15.22 (go1.10.2; linux; amd64)",
+    "requestParameters" : {
+      "subnetId" : "subnet-01dd658c63cbbf1ba",
+      "description" : "aws-K8S-i-00de046fe4a9977c7",
+      "groupSet" : {
+        "items" : [ {
+          "groupId" : "sg-0f59b3ec9227ca803"
+        } ]
+      },
+      "privateIpAddressesSet" : { }
+    },
+    "responseElements" : {
+      "requestId" : "a10996a8-e989-4128-825f-4bca3ececb6b",
+      "networkInterface" : {
+        "networkInterfaceId" : "eni-0e738c3d8cf6cfab5",
+        "subnetId" : "subnet-01dd658c63cbbf1ba",
+        "vpcId" : "vpc-0054607f86332dad9",
+        "availabilityZone" : "us-west-2c",
+        "description" : "aws-K8S-i-00de046fe4a9977c7",
+        "ownerId" : "550534291128",
+        "requesterId" : "AROAIBNM22D3F3OK2VKAK:i-00de046fe4a9977c7",
+        "requesterManaged" : false,
+        "status" : "pending",
+        "macAddress" : "0a:8f:aa:bd:9f:4e",
+        "privateIpAddress" : "10.200.3.25",
+        "sourceDestCheck" : true,
+        "interfaceType" : "interface",
+        "groupSet" : {
+          "items" : [ {
+            "groupId" : "sg-0f59b3ec9227ca803",
+            "groupName" : "test-NodeSecurityGroup-P9M4YHWBN9JU"
+          } ]
+        },
+        "privateIpAddressesSet" : {
+          "item" : [ {
+            "privateIpAddress" : "10.200.3.25",
+            "primary" : true
+          } ]
+        },
+        "ipv6AddressesSet" : { },
+        "tagSet" : { }
+      }
+    },
+    "requestID" : "a10996a8-e989-4128-825f-4bca3ececb6b",
+    "eventID" : "55f170be-b327-4371-8edb-f75a2772a4d0",
+    "eventType" : "AwsApiCall"
+  }
+}

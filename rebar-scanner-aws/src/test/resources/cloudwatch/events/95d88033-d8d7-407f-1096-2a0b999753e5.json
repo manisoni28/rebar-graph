@@ -1,0 +1,20 @@
+{
+  "version" : "0",
+  "id" : "95d88033-d8d7-407f-1096-2a0b999753e5",
+  "detail-type" : "Tag Change on Resource",
+  "source" : "aws.tag",
+  "account" : "550534291128",
+  "time" : "2019-01-30T08:57:35Z",
+  "region" : "us-west-2",
+  "resources" : [ "arn:aws:ec2:us-west-2:550534291128:instance/i-0a667c3cd4129dbbc" ],
+  "detail" : {
+    "changed-tag-keys" : [ "aws:ec2launchtemplate:version", "aws:ec2launchtemplate:id" ],
+    "service" : "ec2",
+    "resource-type" : "instance",
+    "version" : 1.0,
+    "tags" : {
+      "aws:ec2launchtemplate:version" : "6",
+      "aws:ec2launchtemplate:id" : "lt-06a8dd71bd4ceb731"
+    }
+  }
+}

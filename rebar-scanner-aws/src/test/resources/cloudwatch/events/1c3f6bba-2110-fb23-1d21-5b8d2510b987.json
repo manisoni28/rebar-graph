@@ -1,0 +1,14 @@
+{
+  "version" : "0",
+  "id" : "1c3f6bba-2110-fb23-1d21-5b8d2510b987",
+  "detail-type" : "EC2 Instance State-change Notification",
+  "source" : "aws.ec2",
+  "account" : "550534291128",
+  "time" : "2019-01-30T08:55:59Z",
+  "region" : "us-west-2",
+  "resources" : [ "arn:aws:ec2:us-west-2:550534291128:instance/i-08635d6339b2d36e6" ],
+  "detail" : {
+    "instance-id" : "i-08635d6339b2d36e6",
+    "state" : "shutting-down"
+  }
+}

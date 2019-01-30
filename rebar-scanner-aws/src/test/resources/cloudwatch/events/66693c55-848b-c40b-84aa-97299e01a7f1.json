@@ -1,0 +1,51 @@
+{
+  "version" : "0",
+  "id" : "66693c55-848b-c40b-84aa-97299e01a7f1",
+  "detail-type" : "AWS API Call via CloudTrail",
+  "source" : "aws.elasticloadbalancing",
+  "account" : "550534291128",
+  "time" : "2019-01-30T07:40:19Z",
+  "region" : "us-west-2",
+  "resources" : [ ],
+  "detail" : {
+    "eventVersion" : "1.05",
+    "userIdentity" : {
+      "type" : "AssumedRole",
+      "principalId" : "AROAIALDRXZZNSY6DHK3M:AutoScaling",
+      "arn" : "arn:aws:sts::550534291128:assumed-role/AWSServiceRoleForAutoScaling/AutoScaling",
+      "accountId" : "550534291128",
+      "accessKeyId" : "ASIAYALTGT24EUUFOHGV",
+      "sessionContext" : {
+        "attributes" : {
+          "mfaAuthenticated" : "false",
+          "creationDate" : "2019-01-30T07:39:48Z"
+        },
+        "sessionIssuer" : {
+          "type" : "Role",
+          "principalId" : "AROAIALDRXZZNSY6DHK3M",
+          "arn" : "arn:aws:iam::550534291128:role/aws-service-role/autoscaling.amazonaws.com/AWSServiceRoleForAutoScaling",
+          "accountId" : "550534291128",
+          "userName" : "AWSServiceRoleForAutoScaling"
+        }
+      },
+      "invokedBy" : "autoscaling.amazonaws.com"
+    },
+    "eventTime" : "2019-01-30T07:40:19Z",
+    "eventSource" : "elasticloadbalancing.amazonaws.com",
+    "eventName" : "RegisterTargets",
+    "awsRegion" : "us-west-2",
+    "sourceIPAddress" : "autoscaling.amazonaws.com",
+    "userAgent" : "autoscaling.amazonaws.com",
+    "requestParameters" : {
+      "targets" : [ {
+        "id" : "i-00de046fe4a9977c7"
+      } ],
+      "targetGroupArn" : "arn:aws:elasticloadbalancing:us-west-2:550534291128:targetgroup/fizz/ea321fb6da513643"
+    },
+    "responseElements" : null,
+    "requestID" : "4b219e9a-2462-11e9-adbc-e3261166d2e1",
+    "eventID" : "ebc4ba00-6ab5-4b03-ba87-f3afdb11122c",
+    "eventType" : "AwsApiCall",
+    "apiVersion" : "2015-12-01"
+  }
+}

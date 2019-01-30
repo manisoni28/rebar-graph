@@ -1,0 +1,51 @@
+{
+  "version" : "0",
+  "id" : "94ea461a-51c2-bee2-4c10-c0243f95f833",
+  "detail-type" : "AWS API Call via CloudTrail",
+  "source" : "aws.elasticloadbalancing",
+  "account" : "550534291128",
+  "time" : "2019-01-30T07:39:16Z",
+  "region" : "us-west-2",
+  "resources" : [ ],
+  "detail" : {
+    "eventVersion" : "1.05",
+    "userIdentity" : {
+      "type" : "AssumedRole",
+      "principalId" : "AROAIALDRXZZNSY6DHK3M:AutoScaling",
+      "arn" : "arn:aws:sts::550534291128:assumed-role/AWSServiceRoleForAutoScaling/AutoScaling",
+      "accountId" : "550534291128",
+      "accessKeyId" : "ASIAYALTGT24A4EGUFTD",
+      "sessionContext" : {
+        "attributes" : {
+          "mfaAuthenticated" : "false",
+          "creationDate" : "2019-01-30T07:39:16Z"
+        },
+        "sessionIssuer" : {
+          "type" : "Role",
+          "principalId" : "AROAIALDRXZZNSY6DHK3M",
+          "arn" : "arn:aws:iam::550534291128:role/aws-service-role/autoscaling.amazonaws.com/AWSServiceRoleForAutoScaling",
+          "accountId" : "550534291128",
+          "userName" : "AWSServiceRoleForAutoScaling"
+        }
+      },
+      "invokedBy" : "autoscaling.amazonaws.com"
+    },
+    "eventTime" : "2019-01-30T07:39:16Z",
+    "eventSource" : "elasticloadbalancing.amazonaws.com",
+    "eventName" : "DeregisterTargets",
+    "awsRegion" : "us-west-2",
+    "sourceIPAddress" : "autoscaling.amazonaws.com",
+    "userAgent" : "autoscaling.amazonaws.com",
+    "requestParameters" : {
+      "targetGroupArn" : "arn:aws:elasticloadbalancing:us-west-2:550534291128:targetgroup/fizz/ea321fb6da513643",
+      "targets" : [ {
+        "id" : "i-07e8a40385580c6a9"
+      } ]
+    },
+    "responseElements" : null,
+    "requestID" : "2584684b-2462-11e9-8ff4-f3e6e60fc621",
+    "eventID" : "6bc7ac56-712d-4708-b5db-7e9ed4fa764b",
+    "eventType" : "AwsApiCall",
+    "apiVersion" : "2015-12-01"
+  }
+}

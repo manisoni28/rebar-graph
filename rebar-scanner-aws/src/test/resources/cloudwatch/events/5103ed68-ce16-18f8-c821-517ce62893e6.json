@@ -1,0 +1,26 @@
+{
+  "version" : "0",
+  "id" : "5103ed68-ce16-18f8-c821-517ce62893e6",
+  "detail-type" : "EC2 Instance Launch Successful",
+  "source" : "aws.autoscaling",
+  "account" : "550534291128",
+  "time" : "2019-01-30T07:40:20Z",
+  "region" : "us-west-2",
+  "resources" : [ "arn:aws:autoscaling:us-west-2:550534291128:autoScalingGroup:e87599cb-60c2-469f-932b-e514a4f95922:autoScalingGroupName/test-NodeGroup-QV2M2YLQACA2", "arn:aws:ec2:us-west-2:550534291128:instance/i-00de046fe4a9977c7" ],
+  "detail" : {
+    "Description" : "Launching a new EC2 instance: i-00de046fe4a9977c7",
+    "Details" : {
+      "Subnet ID" : "subnet-01dd658c63cbbf1ba",
+      "Availability Zone" : "us-west-2c"
+    },
+    "EndTime" : "2019-01-30T07:40:20.954Z",
+    "RequestId" : "4275a276-cc79-4484-2f12-433a126fa716",
+    "ActivityId" : "4275a276-cc79-4484-2f12-433a126fa716",
+    "Cause" : "At 2019-01-30T07:39:45Z an instance was started in response to a difference between desired and actual capacity, increasing the capacity from 0 to 1.",
+    "AutoScalingGroupName" : "test-NodeGroup-QV2M2YLQACA2",
+    "StartTime" : "2019-01-30T07:39:48.177Z",
+    "EC2InstanceId" : "i-00de046fe4a9977c7",
+    "StatusCode" : "InProgress",
+    "StatusMessage" : ""
+  }
+}

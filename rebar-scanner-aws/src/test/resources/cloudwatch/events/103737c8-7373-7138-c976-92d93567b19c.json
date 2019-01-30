@@ -1,0 +1,16 @@
+{
+  "version" : "0",
+  "id" : "103737c8-7373-7138-c976-92d93567b19c",
+  "detail-type" : "EBS Volume Notification",
+  "source" : "aws.ec2",
+  "account" : "550534291128",
+  "time" : "2019-01-30T08:57:40Z",
+  "region" : "us-west-2",
+  "resources" : [ "arn:aws:ec2:us-west-2:550534291128:volume/vol-0b72d5ccaac52d2ce" ],
+  "detail" : {
+    "result" : "available",
+    "cause" : "",
+    "event" : "createVolume",
+    "request-id" : "4c4376ac-2acd-46a9-8d04-e568d1cf2eb5"
+  }
+}
