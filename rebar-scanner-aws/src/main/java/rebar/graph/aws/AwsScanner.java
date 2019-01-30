@@ -29,7 +29,9 @@ import org.slf4j.LoggerFactory;
 import com.amazonaws.AmazonWebServiceClient;
 import com.amazonaws.SdkClientException;
 import com.amazonaws.client.builder.AwsClientBuilder;
+import com.amazonaws.client.builder.AwsClientBuilder.EndpointConfiguration;
 import com.amazonaws.regions.Regions;
+import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.securitytoken.AWSSecurityTokenServiceClientBuilder;
 import com.amazonaws.services.securitytoken.model.GetCallerIdentityRequest;
 import com.amazonaws.services.securitytoken.model.GetCallerIdentityResult;
@@ -137,7 +139,24 @@ public final class AwsScanner extends Scanner {
 
 			logger.info("building new client for account={} region={} type={}", getAccount(), getRegion().getName(),
 					builderClass.getName().replace("Builder", ""));
-			client = (T) newClientBuilder(builderClass).withRegion(getRegion()).build();
+			AwsClientBuilder cb = newClientBuilder(builderClass);
+			
+			
+			if (builderClass.equals(AmazonS3ClientBuilder.class)) {
+				// There are very odd legacy rules for S3 and its bizarre-o semi-global behavior.
+				// We need to force global bucket access mode if we are using a us-east-1 endpoint
+				AmazonS3ClientBuilder s3b = (AmazonS3ClientBuilder) cb;
+				if (region==Regions.US_EAST_1) {
+					cb = s3b.enableForceGlobalBucketAccess();
+				}
+				else {
+					cb = cb.withRegion(getRegion());
+				}
+			}
+			else {
+				cb = cb.withRegion(getRegion());
+			}
+			client = (T) cb.build();
 			clientCache.put(key, client);
 		}
 
