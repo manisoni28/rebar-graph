@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory;
 
 import com.amazonaws.regions.Regions;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.google.common.base.CharMatcher;
 import com.google.common.base.Splitter;
 
 import rebar.graph.core.ScannerModule;
@@ -119,10 +120,10 @@ public class AwsScannerModule extends ScannerModule {
 		getExecutor().scheduleWithFixedDelay(new FullScan(scanner), 0, 10, TimeUnit.SECONDS);
 
 	}
-
+	
 	public void init() {
 
-		List<String> regions = Splitter.on(",; ").omitEmptyStrings().trimResults()
+		List<String> regions = Splitter.on(CharMatcher.anyOf(",;: ")).omitEmptyStrings().trimResults()
 				.splitToList(getConfig().get("AWS_REGIONS").orElse(""));
 
 		if (regions.isEmpty()) {

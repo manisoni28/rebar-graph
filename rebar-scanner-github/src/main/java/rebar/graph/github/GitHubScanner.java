@@ -28,6 +28,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.base.CharMatcher;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Sets;
 
@@ -52,7 +53,7 @@ public class GitHubScanner extends Scanner {
 
 		Set<String> orgs = Sets.newHashSet();
 		EnvConfig cfg = new EnvConfig();
-		orgs.addAll(Splitter.on(" ,;").omitEmptyStrings().trimResults().splitToList(cfg.get("GITHUB_ORGS").orElse("")));
+		orgs.addAll(Splitter.on(CharMatcher.anyOf(" ,;")).omitEmptyStrings().trimResults().splitToList(cfg.get("GITHUB_ORGS").orElse("")));
 		orgs.forEach(name -> {
 			try {
 				scanOrg(name);
