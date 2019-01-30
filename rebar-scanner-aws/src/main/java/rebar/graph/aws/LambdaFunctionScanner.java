@@ -62,12 +62,18 @@ public class LambdaFunctionScanner extends AwsEntityScanner<FunctionConfiguratio
 
 		gc("AwsLambdaFunction", ts);
 		
-		mergeResidesInRegionRelationship();
-		
+		mergeRelationships();
 		
 		getGraphDB().nodes("AwsLambdaFunction").id("region",getRegionName()).id("account",getAccount()).relationship("RESIDES_IN").on("vpcId", "vpcId").to("AwsVpc").id("region",getRegionName()).merge();
 	}
 
+	private void mergeRelationships() {
+		mergeResidesInRegionRelationship();
+		mergeAccountOwner();
+		
+		getGraphDB().nodes("AwsLambdaFunction").id("region",getRegionName()).id("account",getAccount()).relationship("RESIDES_IN").on("vpcId", "vpcId").to("AwsVpc").id("region",getRegionName()).merge();
+
+	}
 	public void scanByName(String name) {
 		
 		AWSLambda c = getClient(AWSLambdaClientBuilder.class);
@@ -109,7 +115,7 @@ public class LambdaFunctionScanner extends AwsEntityScanner<FunctionConfiguratio
 		} catch (ResourceNotFoundException e) {
 			getGraphDB().nodes("AwsLambdaFunction").id("account",getAccount()).id("region",getRegionName()).id("name",name).delete();
 		}
-
+		mergeRelationships();
 	}
 
 	@Override

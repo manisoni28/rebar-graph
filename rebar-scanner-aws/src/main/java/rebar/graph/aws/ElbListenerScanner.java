@@ -39,6 +39,7 @@ public class ElbListenerScanner extends AwsEntityScanner<Listener> {
 		@Override
 		public Stream<JsonNode> exec(Scanner ctx, JsonNode n, GraphDriver neo4j) {
 
+		
 			String loadBalancerArn = n.path("loadBalancerArn").asText().trim();
 			long ts = ctx.getRebarGraph().getGraphDB().getTimestamp();
 			String cypher = "match (a:AwsElb {arn:{arn}}),(x:AwsElbListener {loadBalancerArn:{arn}}) merge (a)-[r:HAS]->(x) set r.graphUpdateTs=timestamp()";
@@ -67,9 +68,17 @@ public class ElbListenerScanner extends AwsEntityScanner<Listener> {
 					scanListenersByLoadBalancerArn(arn);
 				});
 
-		gc("AwsElbListener", ts);
+		gc(AwsEntityType.AwsElbListener, ts);
+		mergeRelationships();
+	
 	}
 
+	private void mergeRelationships() {
+		
+		// listeners can be detached from load balancers and thus have not relationships. 
+		// Make sure it has an owner
+		mergeAccountOwner();
+	}
 	public void scanListenersByLoadBalancerArn(String arn) {
 		AmazonElasticLoadBalancingClient client = getAwsScanner()
 				.getClient(AmazonElasticLoadBalancingClientBuilder.class);

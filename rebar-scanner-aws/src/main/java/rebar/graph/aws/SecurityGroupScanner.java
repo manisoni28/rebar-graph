@@ -71,6 +71,7 @@ public class SecurityGroupScanner extends AwsEntityScanner<SecurityGroup> {
 				throw e;
 			}
 		}
+		mergeAccountOwner();
 
 	}
 
@@ -107,14 +108,14 @@ public class SecurityGroupScanner extends AwsEntityScanner<SecurityGroup> {
 			result = ec2.describeSecurityGroups(request);
 
 			result.getSecurityGroups().forEach(sg -> {
-				projectSecurityGroup(sg);
+				tryExecute(()->projectSecurityGroup(sg));
 			});
 
 			request = request.withNextToken(result.getNextToken());
 
 		} while (!Strings.isNullOrEmpty(result.getNextToken()));
 
-	
+		mergeAccountOwner();
 	}
 	
 	

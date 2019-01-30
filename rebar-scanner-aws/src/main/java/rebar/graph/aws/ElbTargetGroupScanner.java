@@ -88,8 +88,16 @@ public class ElbTargetGroupScanner extends AwsEntityScanner<TargetGroup> {
 
 		getAwsScanner().execGraphOperation(TargetGroupGraphOperation.class, Json.objectNode());
 		gc("AwsElbTargetGroup", ts);
+		
+		mergeRelationships();
 	}
 
+	private void mergeRelationships() {
+		
+		// target groups when not attached to elbs end up free floating.
+		// make sure it is attached to vpc
+		mergeVpcOwner(AwsEntityType.AwsElbTargetGroup,"vpcId"); 
+	}
 	protected void project(com.amazonaws.services.elasticloadbalancingv2.model.TargetGroup tg) {
 		ObjectNode n = toJson(tg);
 		n.put("name", n.path("targetGroupName").asText());

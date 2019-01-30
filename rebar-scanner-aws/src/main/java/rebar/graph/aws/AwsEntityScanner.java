@@ -275,6 +275,9 @@ public abstract class AwsEntityScanner<A extends Object> {
 		return getEntityType().name();
 	}
 
+	protected void mergeVpcOwner(AwsEntityType t, String attribute) {
+		awsRelationships(AwsEntityType.AwsVpc).relationship("HAS").on("vpcId", attribute).to(t.name()).merge();
+	}
 	protected void mergeSubnetRelationships(String... args) {
 		FromNode n = awsRelationships();
 
