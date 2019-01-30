@@ -38,6 +38,7 @@ public class AllEntityScannerGroup extends SerialScanner {
 		
 		classList.add(S3Scanner.class);
 		
+		
 		classList.add(EksClusterScanner.class);
 		classList.add(LambdaFunctionScanner.class);
 		
@@ -49,7 +50,7 @@ public class AllEntityScannerGroup extends SerialScanner {
 		classList.add(ElasticMapReduceScannerGroup.class);
 		classList.add(SqsScanner.class);
 		classList.add(SnsScanner.class);
-		
+		classList.add(IamScannerGroup.class);
 		classList.add(Route53Scanner.class);
 		
 		

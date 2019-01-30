@@ -272,6 +272,10 @@ public final class AwsScanner extends Scanner {
 		s.createUniqueConstraint("AwsRouteTable","arn");
 		s.createUniqueConstraint("AwsInternetGateway", "arn");
 		s.createUniqueConstraint("AwsEgressOnlyInternetGateway", "arn");
+		s.createUniqueConstraint(AwsEntityType.AwsIamInstanceProfile.name(), "arn");
+		s.createUniqueConstraint(AwsEntityType.AwsIamRole.name(), "arn");
+		s.createUniqueConstraint(AwsEntityType.AwsIamPolicy.name(), "arn");
+		s.createUniqueConstraint(AwsEntityType.AwsIamUser.name(), "arn");
 	}
 
 	public CloudTrailEvents cloudTrailEvents() {

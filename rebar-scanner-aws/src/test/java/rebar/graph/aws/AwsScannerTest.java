@@ -36,6 +36,7 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 import io.github.classgraph.TypeSignature;
+import rebar.util.Json;
 import rebar.util.Sleep;
 
 public class AwsScannerTest extends AwsIntegrationTest {
@@ -110,7 +111,7 @@ public class AwsScannerTest extends AwsIntegrationTest {
 					}
 
 					if (ImmutableList.of("AwsHostedZoneRecordSet", "AwsAccount", "AwsRegion", "AwsAvailabilityZone")
-							.contains(it.path("graphEntityType").asText())) {
+							.contains(it.path("graphEntityType").asText()) || it.path("graphEntityType").asText().startsWith("AwsIam")) {
 
 					} else {
 
@@ -160,9 +161,19 @@ public class AwsScannerTest extends AwsIntegrationTest {
 					Assertions.assertThat(uniqueIndexes).as("should have unique index on %s", n).contains(n);
 				});
 		;
-		System.out.println(uniqueIndexes);
+		uniqueIndexes.forEach(it->{
+			logger.info("unique index: {}",it);
+		});
+		
+
 	}
 
+	@Test
+	public void dumpMetrics() {
+		getGraphDriver().metrics().getStatementStats().forEach(it->{
+			Json.logger().info("cypher metrics",it.toJson());
+		});
+	}
 	@Test
 	public void testMaybeThrow() {
 		getAwsScanner().maybeThrow(new RuntimeException("testing maybeThrow()"));
@@ -217,11 +228,20 @@ public class AwsScannerTest extends AwsIntegrationTest {
 
 		validRelationships.add("AwsVpcEndpoint RESIDES_IN AwsSubnet");
 		validRelationships.add("AwsVpcEndpoint USES AwsSecurityGroup");
+		validRelationships.add("AwsAccount HAS AwsIamInstanceProfile");
+		validRelationships.add("AwsAccount HAS AwsIamRole");
+		validRelationships.add("AwsAccount HAS AwsIamUser");
+		validRelationships.add("AwsAccount HAS AwsIamPolicy");
+		validRelationships.add("AwsIamInstanceProfile USES AwsIamRole");
 		getGraphDriver().cypher(
 				"match (a)-[r]->(b) where labels(a)[0]=~'Aws.*' return a.graphEntityType as fromLabel,r,b.graphEntityType as toLabel,type(r) as relType")
-				.forEach(it -> {
-					String rel = it.path("fromLabel").asText() + " " + it.path("relType").asText() + " "
-							+ it.path("toLabel").asText();
+			.stream().map(it->{
+				return  (String) it.path("fromLabel").asText() + " " + it.path("relType").asText() + " "
+						+ it.path("toLabel").asText();
+			})
+			.distinct()
+				.forEach(rel->{
+				
 					Assertions.assertThat(validRelationships).contains(rel);
 				});
 	}
@@ -238,8 +258,6 @@ public class AwsScannerTest extends AwsIntegrationTest {
 				AwsEntityType.AwsHostedZoneRecordSet.name());
 
 		Assertions.assertThat(Sets.difference(typesWithoutArn, validEntitiesWithoutArn)).isEmpty();
-		getGraphDriver().metrics().getStatementStats().forEach(it->{
-			System.out.println(it.toJson());
-		});
+		
 	}
 }

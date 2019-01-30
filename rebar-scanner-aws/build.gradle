@@ -10,6 +10,7 @@ mainClassName = "rebar.graph.core.Main"
 dependencies {
 
     compile project(':rebar-scanner-core')
+    compile "com.amazonaws:aws-java-sdk-iam:${AWS_VERSION}"
     compile "com.amazonaws:aws-java-sdk-ec2:${AWS_VERSION}"
     compile "com.amazonaws:aws-java-sdk-sts:${AWS_VERSION}"
     compile "com.amazonaws:aws-java-sdk-rds:${AWS_VERSION}"

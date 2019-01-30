@@ -75,11 +75,14 @@ public abstract class AwsEntityScanner<A extends Object> {
 	protected NodeOperation awsGraphNodes(String labelType) {
 		return getGraphDB().nodes(labelType).id("region", getRegionName()).id("account", getAccount());
 	}
-
+	
 	protected NodeOperation awsGraphNodes(AwsEntityType type) {
 		return awsGraphNodes(type.name());
 	}
 
+	protected NodeOperation awsGraphNodesWithoutRegion() {
+		return getGraphDB().nodes(getEntityTypeName()).id("account", getAccount());
+	}
 	protected NodeOperation awsGraphNodes() {
 		return awsGraphNodes(getEntityTypeName());
 	}
@@ -103,6 +106,30 @@ public abstract class AwsEntityScanner<A extends Object> {
 		gc(type, cutoff, new String[0]);
 	}
 
+	protected void gcWithoutRegion(String type, long cutoff) {
+		if (Strings.isNullOrEmpty(type)) {
+			return;
+		}
+		Stopwatch sw = Stopwatch.createStarted();
+
+		NodeOperation op = getGraphDB().nodes(type).whereAttributeLessThan(GraphDB.UPDATE_TS, cutoff).id("account",
+				getAccount());
+
+		AtomicInteger count = new AtomicInteger(0);
+		op.match().forEach(it -> {
+			Exceptions.log(logger).run(() -> {
+				count.incrementAndGet();
+
+				logger.info("running gc on {}", it.path(GraphDB.ENTITY_TYPE).asText());
+				scan(it);
+			});
+		});
+
+		if (count.get() > 0 || sw.elapsed(TimeUnit.MILLISECONDS) > 500L) {
+			logger.info("gc for {} {} nodes took {}ms", count.get(), type, sw.elapsed(TimeUnit.MILLISECONDS));
+		}
+
+	}
 	protected void gc(String type, long cutoff, String... attrs) {
 
 		if (Strings.isNullOrEmpty(type)) {

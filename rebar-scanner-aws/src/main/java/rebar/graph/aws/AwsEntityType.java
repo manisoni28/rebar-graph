@@ -20,6 +20,10 @@ public enum AwsEntityType {
 	
 	AwsHostedZone("AwsHostedZone"),
 	AwsHostedZoneRecordSet("AwsHostedZoneRecordSet"),
+	AwsIamUser("AwsIamUser"),
+	AwsIamPolicy("AwsIamPolicy"),
+	AwsIamInstanceProfile("AwsIamInstanceProfile"),
+	AwsIamRole("AwsIamRole"),
 	AwsInternetGateway("AwsInternetGateway"),
 	AwsLambdaFunction("AwsLambdaFunction"),
 	AwsLaunchConfig("AwsLaunchConfig"),
