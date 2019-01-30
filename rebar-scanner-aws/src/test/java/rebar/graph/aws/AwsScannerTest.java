@@ -110,7 +110,7 @@ public class AwsScannerTest extends AwsIntegrationTest {
 						Assertions.assertThat(arn).startsWith("arn:aws:");
 					}
 
-					if (ImmutableList.of("AwsHostedZoneRecordSet", "AwsAccount", "AwsRegion", "AwsAvailabilityZone")
+					if (ImmutableList.of(AwsEntityType.AwsHostedZone.name(),"AwsHostedZoneRecordSet", "AwsAccount", "AwsRegion", "AwsAvailabilityZone")
 							.contains(it.path("graphEntityType").asText()) || it.path("graphEntityType").asText().startsWith("AwsIam")) {
 
 					} else {
