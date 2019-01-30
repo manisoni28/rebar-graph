@@ -65,6 +65,7 @@ public final class AwsScanner extends Scanner {
 	Cache<String, AmazonWebServiceClient> clientCache = CacheBuilder.newBuilder().expireAfterAccess(1, TimeUnit.MINUTES)
 			.build();
 
+	CloudWatchEvents eventDispatcher = new CloudWatchEvents(this);
 	static Map<String, Class<? extends AwsEntityScanner>> typeMap = Maps.newHashMap();
 
 	static {
@@ -82,6 +83,11 @@ public final class AwsScanner extends Scanner {
 		return accountSupplier.get();
 	}
 
+	
+	public CloudWatchEvents cloudWatchEvents() {
+		return eventDispatcher;
+	}
+	
 	private String doGetAccount() {
 		try {
 			GetCallerIdentityResult result = newClientBuilder(AWSSecurityTokenServiceClientBuilder.class).build()

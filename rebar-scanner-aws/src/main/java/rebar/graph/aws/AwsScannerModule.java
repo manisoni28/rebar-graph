@@ -115,6 +115,7 @@ public class AwsScannerModule extends ScannerModule {
 			throw new UnsupportedOperationException("AWS_ROLE not yet supported");
 		}
 		AwsScanner scanner = b.build();
+		scanner.cloudWatchEvents().start();
 
 		registerScannerTarget(scanner.getAccount(), scanner.getRegion().getName());
 		getExecutor().scheduleWithFixedDelay(new FullScan(scanner), 0, 10, TimeUnit.SECONDS);
