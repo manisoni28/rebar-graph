@@ -237,6 +237,7 @@ public class AwsScannerTest extends AwsIntegrationTest {
 		validRelationships.add("AwsAccount HAS AwsLambdaFunction");
 		validRelationships.add("AwsVpc HAS AwsElbTargetGroup");
 		validRelationships.add("AwsAccount HAS AwsElbListener");
+		validRelationships.add("AwsAccount HAS AwsLaunchConfig");
 		getGraphDriver().cypher(
 				"match (a)-[r]->(b) where labels(a)[0]=~'Aws.*' return a.graphEntityType as fromLabel,r,b.graphEntityType as toLabel,type(r) as relType")
 			.stream().map(it->{

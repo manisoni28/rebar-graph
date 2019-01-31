@@ -31,6 +31,7 @@ public class LaunchConfigScanner extends AwsEntityScanner<LaunchConfiguration> {
 	
 
 
+
 	protected Optional<String> toArn(LaunchConfiguration lc) {
 		return Optional.ofNullable(lc.getLaunchConfigurationARN());
 	}
@@ -58,6 +59,7 @@ public class LaunchConfigScanner extends AwsEntityScanner<LaunchConfiguration> {
 		} while (!Strings.isNullOrEmpty(request.getNextToken()));
 
 		gc(getEntityTypeName(), ts);
+		mergeRelationships();
 	}
 	
 	public void scanLaunchConfigByName(String name) {
@@ -75,7 +77,7 @@ public class LaunchConfigScanner extends AwsEntityScanner<LaunchConfiguration> {
 				project(lc);
 			});
 		}
-
+		mergeRelationships();
 	}
 
 	public void project(LaunchConfiguration lc) {
@@ -89,7 +91,7 @@ public class LaunchConfigScanner extends AwsEntityScanner<LaunchConfiguration> {
 	public void doScan(String id) {
 		checkScanArgument(id);
 		scanLaunchConfigByName(id);
-		
+		mergeRelationships();
 	}
 	
 	@Override
@@ -99,8 +101,20 @@ public class LaunchConfigScanner extends AwsEntityScanner<LaunchConfiguration> {
 
 	@Override
 	protected void doMergeRelationships() {
-		// TODO Auto-generated method stub
 		
+		// AsgScanner will take care of the other relationships.
+		mergeAccountOwner(getEntityType());
+	}
+
+	@Override
+	protected ObjectNode toJson(LaunchConfiguration awsObject) {
+		// TODO Auto-generated method stub
+		ObjectNode n =  super.toJson(awsObject);
+		
+		if (n.has("launchConfigurationARN") && !n.has("launchConfigurationArn")) {
+			n.set("launchConfigurationArn", n.path("launchConfigurationARN"));
+		}
+		return n;
 	}
 
 }
