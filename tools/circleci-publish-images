@@ -26,6 +26,7 @@ build_image kubernetes
 build_image aws
 build_image alibaba
 build_image github
+build_image digitalocean
 
 docker build rebar-dashboard -t rebar/rebar-dashboard \
     -t rebar/rebar-dashboard:${DOCKER_SRC_TAG} \
@@ -49,6 +50,8 @@ push_image kubernetes
 push_image aws
 push_image alibaba
 push_image github
+push_image digitalocean
+
 docker push rebar/rebar-dashboard || exit 99
 docker push rebar/rebar-dashboard:${DOCKER_SRC_TAG} || exit 99
 

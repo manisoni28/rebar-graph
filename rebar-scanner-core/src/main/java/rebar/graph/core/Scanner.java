@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Stopwatch;
+import com.machinezoo.noexception.Exceptions;
 
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Metrics;
@@ -91,18 +92,28 @@ public abstract class Scanner {
 		}
 		Stopwatch sw = Stopwatch.createStarted();
 		logger.info("begin scan for {}",this);
-		doScan();
+		try {
+			doScan();
+		}
+		catch(Exception e) {
+			maybeThrow(e);
+		}
 		logger.info("end scan for {} ({}ms)",this,sw.elapsed(TimeUnit.MILLISECONDS));
 	}
 	
-	protected abstract void doScan();
+	protected abstract void doScan()  ;
 
-	public void tryExecute(Runnable r) {
+	public void tryExecute(Invokable r) {
 		try {
-			r.run();
-		} catch (RuntimeException e) {
+			r.invoke();
+		} catch (Exception e) {
 			if (isFailOnError()) {
-				throw e;
+				if (e instanceof RuntimeException ) {
+					throw (RuntimeException) e;
+				}
+				else {
+					Exceptions.sneak().handle(e); // try this bit of wizardry
+				}
 			} else {
 				logger.warn("problem", e);
 			}

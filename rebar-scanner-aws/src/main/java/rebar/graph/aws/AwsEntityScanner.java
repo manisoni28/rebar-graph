@@ -41,6 +41,7 @@ import com.machinezoo.noexception.Exceptions;
 
 import rebar.graph.core.GraphDB;
 import rebar.graph.core.GraphDB.NodeOperation;
+import rebar.graph.core.Invokable;
 import rebar.graph.core.RelationshipBuilder;
 import rebar.graph.core.RelationshipBuilder.Cardinality;
 import rebar.graph.core.RelationshipBuilder.FromNode;
@@ -240,7 +241,7 @@ public abstract class AwsEntityScanner<A extends Object> {
 	}
 	abstract void doScan(String id);
 
-	public void tryExecute(Runnable r) {
+	public void tryExecute(Invokable r) {
 		scanner.tryExecute(r);
 	}
 
