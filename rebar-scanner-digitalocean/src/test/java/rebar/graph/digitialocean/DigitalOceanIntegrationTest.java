@@ -1,5 +1,8 @@
 package rebar.graph.digitialocean;
 
+import org.junit.jupiter.api.Assumptions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 /**
  * Copyright 2018-2019 Rob Schoening
  *
@@ -16,34 +19,61 @@ package rebar.graph.digitialocean;
  * limitations under the License.
  */
 import org.junit.jupiter.api.Test;
+import org.opentest4j.TestAbortedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.base.Preconditions;
 
 import rebar.graph.digitalocean.DigitalOceanScanner;
 import rebar.graph.digitalocean.DigitalOceanScannerBuilder;
 import rebar.graph.test.AbstractIntegrationTest;
 
-public class DigitialOceanIntegrationTest extends AbstractIntegrationTest {
+public abstract class DigitalOceanIntegrationTest extends AbstractIntegrationTest {
 
+	static DigitalOceanScanner scanner;
+	static boolean skipAll=false;
 	@Override
 	protected void beforeAll() {
 		super.beforeAll();
 		getGraphDriver().cypher("match (a) where labels(a)[0]=~'DigitalOcean.*' detach delete a").exec();
+	
 	}
 
-	Logger logger = LoggerFactory.getLogger(DigitialOceanIntegrationTest.class);
-
+	Logger logger = LoggerFactory.getLogger(DigitalOceanIntegrationTest.class);
+	
+	@BeforeEach
+	private void checkAccess() {
+		try {
+			if (scanner==null) {
+				scanner = getRebarGraph().createBuilder(DigitalOceanScannerBuilder.class).build();
+				scanner.getAccountScanner().scan();
+				skipAll=false;
+			}
+		
+		}
+		catch (Exception e) {
+			skipAll = true;
+		}
+		Assumptions.assumeTrue(scanner!=null && (!skipAll));
+	}
+	public DigitalOceanScanner getScanner() {
+		Preconditions.checkState(scanner!=null,"scanner not initialized");
+		return scanner;
+	}
+	
 	@Test
 	public void testIt() throws Exception {
-
+		
 		try {
-
+			getScanner();
+			System.out.println("!!");
 			DigitalOceanScanner scanner = getRebarGraph().createBuilder(DigitalOceanScannerBuilder.class).build();
 
 			scanner.scan();
 
-		} catch (Exception e) {
-			logger.debug("ignore", e);
+		} catch (RuntimeException e) {
+			logger.info("ignore", e);
 		}
 
 	}
