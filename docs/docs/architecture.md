@@ -24,6 +24,82 @@ None. None. And none!
 
 Rebar is all about removing sadness.  It's about taking these miserable things and helping you solve them and make things as fun as they looked at re:Invent, OSCON, Velocity or QCon!
 
+# Database
+
+## Neo4j
+
+Rebar uses Neo4j as its primary datastore.
+
+I've tried to solve this infrascture management problem over the years with just about every type of database.  It wasn't until I started using graph databases that things started falling in place.
+
+Why?
+
+**Neo4j sparks joy!**
+
+Seriously.  I've enjoyed using the Neo4j graph database more than just about any other piece of technology in my career.  It is JSON-native and has a delightfully intuitive query language.
+
+It works extremely well for managing infrastructure because:
+
+__No Schema__
+
+I do a lot of work in FinTech and I usually do NOT see schema-less databases as having a lot of virtue.  Constraints have value.  I suppose that I like schema constraints for the same reason that I like strongly typed compiled languages like Java, Go, etc.  Constraints, like lane markers and guardrails keep you safe and make it *easier*, not harder to go fast, safely.
+
+But for infrastructure management, being able to model entitites, attributes and relationships fluidly is much more important.  Things change quickly.  If you find that you are missing some key metadata on your entities, with Neo4j you can _just add them_.  There is no reason to wait.
+
+For instance if you find that you need to keep track of patching status while you are addressing a 0-day vulnerability, just add it.
+
+__Real-World Relationships Change Constantly__
+
+We try to capture all the implicit relationships in the systems that Rebar scans.
+
+However, you probably have a lot more relationships that aren't a part of Rebar.  You can just load this data and establish those relationships as you see fit.  Again, there is no need to go through a software development cycle.  Again, just do it.
+
+__Infrastructure Is A Graph__
+
+With a graph database, it is trivial to *join* entities across domains.  Code resides in Github repositories, is built using CI jobs, baked into images, deployed in to clusters, which run on instances.  Each of these things typically has one or ore people responsible for it.  
+
+Obvious, right?  So why aren't you using a database that can model all these things for you?
+
+__Neo4j is Just Cool__
+
+I challenge you to try it and not smile.
+
+# Deployment Topology
+
+## Scanners
+
+Each of the rebar dicscovery tools, called _scanners_ is provided as a Docker image and deployed as a Docker container.  
+
+You are free to schedule these containers however you like, with Kubernetes or just plain docker. You might even find that it's enough just to run it on your laptop!
+
+In general the rebar scanners only need to connect to:
+
+* Data System - Cloud control planes (AWS), Kubernetes, GitHub, etc.
+* Neo4j - Where the data will be stored
+
+The deployment model is one-container-per-source.  If you have 5 AWS regions, one GitHub server, and 5 Kubernetes clusters, then you would run 11 rebar scanners, one for each.  
+
+It is worth noting that a single AWS scanner is able to connect to multiple regions, but each account will need its own rebar-scanner instance to ingest data.
+
+## Database
+
+You will need a Neo4j database.  The OSS version is free and very easy to manage.  Easy like Redis is easy.  
+
+If you want clustered HA, you can purchase that from Neo4j.
+
+_Note: We suggest that you use the graph much as you would use a cache.  That is, don't use it as a system of record for anything important.  We blew up Neo4j once a few years ago.  Fixing the problem was trivial.  We just nuked the database and a few minutes later, all the data had been reconstitued!_
+
+## Dashboard
+
+A simple Dashboard will be available soon.  You might want to create your own.  
+
+## API Server
+
+An API server will be available soon.  This will allow queries to be easily scripted with curl and grep.
+
+I'm interested in creating a small golang-based binary client.  But `curl | grep` or `curl | awk` is probably all you need. 
+
+
 # Design Philosophy
 
 Rebar reinforced concrete enhances concrete's compressive and tesnsile strength by up to 100x, without dramatically increasing the cost of construction. A modest amount of expensive steel combined with inexpensive concrete can be used to create structures that are cost-effective and resilient.

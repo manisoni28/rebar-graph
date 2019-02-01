@@ -6,7 +6,7 @@ sidebar_label: AWS
 
 
 
-# Overview
+# AWS
 
 The aws-scanner is deployed as a docker container.  It connects to the AWS control plane and queries it to extract metadata.
 It then normalizes and projects that data into Neo4j, the graph database.

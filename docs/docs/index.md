@@ -15,7 +15,7 @@ With data aggregated in a simple, easy-to-use, database, you will find it much e
 * Turn capacity planning and budgeting into something that you do not dread
 * Solve compliance issues - the auditors might turn out to be your best friends
 
-## Why?
+## Why Rebar?
 
 Most large-scale software deployments are heterogenous in nature.  Your infrastructure is likely spread across cloud-providers, split into multiple accounts, spread across multiple regions and serving multiple environments.  The people using and managing that infrastructure are likely spread across your org-chart.  Multiple org-charts, actually.
 

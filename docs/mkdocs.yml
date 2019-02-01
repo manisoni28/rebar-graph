@@ -4,11 +4,11 @@ site_name: Rebar
 
 nav:
     - Overview: index.md
+    - Architecture: architecture.md
     - AWS: aws.md
     - Kubernetes: kubernetes.md
     - Digital Ocean: digitalocean.md
     - GitHub: github.md
-    - Architecture: architecture.md
     - FAQ: faq.md
 
 markdown_extensions:
