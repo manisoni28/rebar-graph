@@ -89,3 +89,28 @@ They are elaborate life-support system from an operational model from the last d
 
 If they work for you, that's great.  But my experience with all of them is that they need a large amount of maintenance.  We used rebar
 just to monitor which puppet agents and salt minions were alive and which were dead.
+
+## How do I run Neo4j on my laptop?
+
+I use this:
+
+```bash
+docker run \
+    -d --rm \
+    --publish=7474:7474 --publish=7687:7687 \
+    --env=NEO4J_ACCEPT_LICENSE_AGREEMENT=yes \
+    --env=NEO4J_AUTH=none \
+    --name=neo4j \
+    neo4j:3.5
+```
+
+Once the container starts, you can access it from your browser at:
+
+[http://localhost:7474](http://localhost:7474)
+
+If you laumch a rebar scanner container on the same host, the Neo4j database url will be:
+
+`bolt://host.docker.internal:7687`
+
+
+

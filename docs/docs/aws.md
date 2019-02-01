@@ -13,7 +13,7 @@ It then normalizes and projects that data into Neo4j, the graph database.
 
 # Getting Started 
 
-You will need a neo4j graph database instance to store the data that rebar will gather from AWS.  If you don't have neo4j installed already, skip down to [Install Neo4j](#install-neo4j).
+You will need a neo4j graph database instance to store the data that rebar will gather from AWS.  If you don't have neo4j installed already, you can [follow these instructions](http://localhost:8000/faq/#how-do-i-run-neo4j-on-my-laptop).
 
 ## Start AWS Scanner Image
 
@@ -28,7 +28,7 @@ docker run -it \
 
 *Note: if you need to set username/password, they should be set with the environment variables: `GRAPH_USERNAME` and `GRAPH_PASSWORD`.*
 
-For this to work, you need valid AWS credentials in `$HOME/.aws`.  Note also that `host.docker.internal` only works on Docker for Mac/Windows.  For Linux, you would need to provide the host IP in the `GRAPH_URL` environment variables.
+For this to work, you need valid AWS credentials in `$HOME/.aws`.  Note also that `host.docker.internal` only works on Docker for Mac/Windows.  For Linux, you would need to figure out the host IP and use it in the `GRAPH_URL` environment variables.
 
 Once this has run, you can enter a Cypher query in the Neo4j console to see the graph:
 
@@ -38,29 +38,6 @@ The following will display the entire graph
 match (a) return a;
 ```
 
-## Install Neo4j
-
-### Docker Install
-The easiest way to get started with Neo4j is by launching it in a docker container.  The following will start a container and expose ports `7474`(HTTP) and `7687` (BOLT database protocol) on your local machine.
-
-```bash
-docker run \
-    -it --rm \
-    --publish=7474:7474 --publish=7687:7687 \
-    --env=NEO4J_ACCEPT_LICENSE_AGREEMENT=yes \
-    --env=NEO4J_AUTH=none \
-    --name=neo4j \
-    neo4j:3.5
-```
-Once it has started, you can point your browser to http://localhost:7474 to use the web UI.
-
-Note: It is not recommended that you disable auth in a deployed environment.  However, disabling auth makes local development easier. 
-
-### Native Install
-
-If you don't want to run neo4j in docker, you can [download](https://neo4j.com/download-center/#releases) and install it for your platform. 
-
-The neo4j download site is here: https://neo4j.com/download-center/#releases
 
 
 ## Configuration
