@@ -11,4 +11,6 @@ public enum DigitalOceanEntityType {
 	DigitalOceanEntityType(String type) {
 		this.name = type;
 	}
+	
+	
 }

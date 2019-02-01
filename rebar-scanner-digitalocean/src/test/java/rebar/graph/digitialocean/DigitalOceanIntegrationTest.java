@@ -35,9 +35,14 @@ public abstract class DigitalOceanIntegrationTest extends AbstractIntegrationTes
 	static boolean skipAll=false;
 	@Override
 	protected void beforeAll() {
+		
+		
 		super.beforeAll();
+		
+		
 		getGraphDriver().cypher("match (a) where labels(a)[0]=~'DigitalOcean.*' detach delete a").exec();
-	
+		checkAccess();
+		getScanner().scan();
 	}
 
 	Logger logger = LoggerFactory.getLogger(DigitalOceanIntegrationTest.class);
@@ -62,19 +67,5 @@ public abstract class DigitalOceanIntegrationTest extends AbstractIntegrationTes
 		return scanner;
 	}
 	
-	@Test
-	public void testIt() throws Exception {
-		
-		try {
-			getScanner();
-			System.out.println("!!");
-			DigitalOceanScanner scanner = getRebarGraph().createBuilder(DigitalOceanScannerBuilder.class).build();
 
-			scanner.scan();
-
-		} catch (RuntimeException e) {
-			logger.info("ignore", e);
-		}
-
-	}
 }

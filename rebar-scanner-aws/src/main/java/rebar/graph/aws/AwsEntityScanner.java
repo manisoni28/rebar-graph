@@ -387,4 +387,11 @@ public abstract class AwsEntityScanner<OBJECTTYPE,CLIENT> extends EntityScanner<
 		checkScanArgument(id);
 		return id.equals("*");
 	}
+	
+	/**
+	 * ERN is just a way of applying to ARN idea to non-AWS entities.  So here it is just the arn.
+	 */
+	public Optional<String> toErn(OBJECTTYPE t) {
+		return toArn(t);
+	}
 }

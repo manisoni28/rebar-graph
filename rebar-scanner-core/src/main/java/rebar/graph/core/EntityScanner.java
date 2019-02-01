@@ -1,5 +1,7 @@
 package rebar.graph.core;
 
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,7 +13,7 @@ import rebar.util.Json;
 
 public abstract class EntityScanner<SCANNER extends Scanner,ENTITYTYPE,OBJECTTYPE,CLIENT> {
 
-	private Logger logger = LoggerFactory.getLogger(EntityScanner.class);
+	private Logger logger = LoggerFactory.getLogger(getClass());
 	private SCANNER scanner;
 	
 	
@@ -58,4 +60,6 @@ public abstract class EntityScanner<SCANNER extends Scanner,ENTITYTYPE,OBJECTTYP
 		doScan();
 		logger.info("scan complete");
 	}
+	
+	public abstract Optional<String> toErn(OBJECTTYPE t);
 }

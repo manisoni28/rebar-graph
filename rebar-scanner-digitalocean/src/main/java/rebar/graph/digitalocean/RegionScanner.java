@@ -1,5 +1,8 @@
 package rebar.graph.digitalocean;
 
+import java.util.Optional;
+
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.myjeeva.digitalocean.exception.DigitalOceanException;
 import com.myjeeva.digitalocean.exception.RequestUnsuccessfulException;
@@ -48,6 +51,22 @@ public class RegionScanner extends DigitalOceanEntityScanner<Region> {
 	@Override
 	public DigitalOceanEntityType getEntityType() {
 		return DigitalOceanEntityType.DigitalOceanRegion;
+	}
+
+	@Override
+	public void scan(String id) {
+		// NO-OP
+		
+	}
+
+	@Override
+	public void scan(JsonNode n) {
+		// NO-OP
+	}
+
+	@Override
+	public Optional<String> toErn(Region t) {
+		return Optional.ofNullable(String.format("ern:digitalocean:%s", t.getSlug()));
 	}
 
 	

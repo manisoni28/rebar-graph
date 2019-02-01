@@ -94,43 +94,31 @@ public class DigitalOceanScanner extends Scanner {
 
 	@Override
 	protected void doScan() {
-		try {
-	
-				Account account = getDigitalOceanClient().getAccountInfo();
-				String uuid = account.getUuid();
-				ObjectNode n = Json.objectNode();
-				
-			
-				getAccountScanner().scan();
-				getRegionScanner().scan();
-				getDropletScanner().scan();
-				
-			
-		} catch (DigitalOceanException | RequestUnsuccessfulException  e) {
-			maybeThrow(e);
-		}
+
+		getAccountScanner().scan();
+		getRegionScanner().scan();
+		getDropletScanner().scan();
 
 	}
-	
+
 	public DropletScanner getDropletScanner() {
 		return new DropletScanner(this);
 	}
 
 	protected NodeOperation digitalOceanNodes(String label) {
-	
+
 		return getGraphDB().nodes(label).id("account", getAccount());
-		
+
 	}
 
-	
-	
 	public RegionScanner getRegionScanner() {
 		return new RegionScanner(this);
 	}
-	
+
 	public AccountScanner getAccountScanner() {
 		return new AccountScanner(this);
 	}
+
 	@Override
 	public void scan(String scannerType, String a, String b, String c, String id) {
 		// TODO Auto-generated method stub
@@ -139,8 +127,9 @@ public class DigitalOceanScanner extends Scanner {
 
 	@Override
 	public void applyConstraints() {
-		// TODO Auto-generated method stub
-
+		getGraphDB().schema().createUniqueConstraint("DigitalOceanAccount", "ern");
+		getGraphDB().schema().createUniqueConstraint("DigitalOceanRegion", "ern");
+		getGraphDB().schema().createUniqueConstraint("DigitalOceanDroplet", "ern");
 	}
 
 }
