@@ -38,7 +38,7 @@ rebar/digitalocean-scanner
 | `DIGITALOCEAN_ACCESS_TOKEN` | Your Access Token |
 | `GRAPH_URL` | Neo4j Database URL | bolt://myserver:7687 |
 | `GRAPH_USERNAME` | Database Username | |
-| `GRAPH_PASSWORD` | Database Password
+| `GRAPH_PASSWORD` | Database Password | |
 
 ## Data Model
 
