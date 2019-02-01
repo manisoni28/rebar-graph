@@ -19,12 +19,10 @@ import rebar.util.Sleep;
 
 public class ParallelScanner extends AwsEntityScanner {
 
-	
+
 	private static Map<String,ExecutorService> regionalExecutorMap = Maps.newConcurrentMap();
 	
-	public ParallelScanner() {
-	
-	}
+
 	
 	Set<Class<? extends AwsEntityScanner>> scanners =Sets.newHashSet();
 	
@@ -84,10 +82,7 @@ public class ParallelScanner extends AwsEntityScanner {
 
 	}
 
-	@Override
-	public AwsEntityType getEntityType() {
-		return AwsEntityType.UNKNOWN;
-	}
+
 
 	/**
 	 * Allows parallel concurrency by region.  This prevents a given region from locking up or hogging ability to make progress
@@ -109,5 +104,18 @@ public class ParallelScanner extends AwsEntityScanner {
 	protected void doMergeRelationships() {
 		// TODO Auto-generated method stub
 		
+	}
+	@Override
+	protected Object getClient() {
+		throw new UnsupportedOperationException();
+	}
+	@Override
+	protected void project(Object t) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public Object getEntityType() {
+		return AwsEntityType.UNKNOWN;
 	}
 }

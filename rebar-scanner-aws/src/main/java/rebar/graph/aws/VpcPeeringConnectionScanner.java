@@ -17,6 +17,7 @@ import rebar.util.Json;
 
 public class VpcPeeringConnectionScanner extends AbstractNetworkScanner<VpcPeeringConnection> {
 
+
 	@Override
 	protected ObjectNode toJson(VpcPeeringConnection awsObject) {
 
@@ -111,7 +112,7 @@ public class VpcPeeringConnectionScanner extends AbstractNetworkScanner<VpcPeeri
 		}
 	}
 
-	void project(VpcPeeringConnection c) {
+	protected void project(VpcPeeringConnection c) {
 
 		ObjectNode n = toJson(c);
 		awsGraphNodes().idKey("vpcPeeringConnectionId").properties(n).merge();
@@ -133,15 +134,17 @@ public class VpcPeeringConnectionScanner extends AbstractNetworkScanner<VpcPeeri
 		awsGraphNodes().id("vpcPeeringConnectionId", id).delete();
 	}
 
-	@Override
-	public AwsEntityType getEntityType() {
-		return AwsEntityType.AwsVpcPeeringConnection;
-	}
+
 
 	@Override
 	protected void doMergeRelationships() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public AwsEntityType getEntityType() {
+		return AwsEntityType.AwsVpcPeeringConnection;
 	}
 
 }

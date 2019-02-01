@@ -28,14 +28,14 @@ import rebar.graph.core.GraphDB;
 import rebar.graph.core.GraphDB.NodeOperation;
 import rebar.util.Json;
 
-public class IamPolicyScanner extends AwsEntityScanner<Policy> {
+public class IamPolicyScanner extends AwsEntityScanner<Policy,AmazonIdentityManagementClient> {
 
-	AmazonIdentityManagementClient getClient() {
+	public AmazonIdentityManagementClient getClient() {
 		return (AmazonIdentityManagementClient) getClient(AmazonIdentityManagementClientBuilder.class);
 
 	}
 
-	private void project(Policy policy) {
+	protected void project(Policy policy) {
 		JsonNode n = toJson(policy);
 
 		awsGraphNodesWithoutRegion().idKey("arn").properties(n).merge();

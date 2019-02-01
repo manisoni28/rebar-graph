@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 import com.amazonaws.services.apigateway.model.NotFoundException;
 import com.amazonaws.services.s3.model.GetBucketNotificationConfigurationRequest;
 import com.amazonaws.services.sns.AmazonSNS;
+import com.amazonaws.services.sns.AmazonSNSClient;
 import com.amazonaws.services.sns.AmazonSNSClientBuilder;
 import com.amazonaws.services.sns.model.GetTopicAttributesResult;
 import com.amazonaws.services.sns.model.ListSubscriptionsByTopicResult;
@@ -22,7 +23,7 @@ import com.google.common.collect.Lists;
 
 import rebar.util.Json;
 
-public class SnsScanner extends AwsEntityScanner<Topic> {
+public class SnsScanner extends AwsEntityScanner<Topic,AmazonSNSClient> {
 
 	Pattern SUBSCRIPTION_ARN_REGEX = Pattern.compile("arn\\:aws\\:sns\\:(.+?)\\:(.+?)\\:(.+?)\\:(.*)");
 
@@ -139,7 +140,7 @@ public class SnsScanner extends AwsEntityScanner<Topic> {
 		return AwsEntityType.AwsSnsTopic;
 	}
 
-	public AmazonSNS getClient() {
+	public AmazonSNSClient getClient() {
 		return getClient(AmazonSNSClientBuilder.class);
 	}
 

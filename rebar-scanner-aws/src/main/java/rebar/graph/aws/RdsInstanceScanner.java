@@ -19,7 +19,7 @@ import com.machinezoo.noexception.Exceptions;
 
 import rebar.util.Json;
 
-public class RdsInstanceScanner extends AwsEntityScanner<DBInstance> {
+public class RdsInstanceScanner extends AwsEntityScanner<DBInstance,AmazonRDSClient> {
 
 	
 
@@ -117,5 +117,10 @@ public class RdsInstanceScanner extends AwsEntityScanner<DBInstance> {
 	protected void doMergeRelationships() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	protected AmazonRDSClient getClient() {
+		return getClient(AmazonRDSClientBuilder.class);
 	}
 }

@@ -1,10 +1,12 @@
 package rebar.graph.aws;
 
 import com.amazonaws.services.ec2.AmazonEC2;
+import com.amazonaws.services.ec2.AmazonEC2Client;
 import com.amazonaws.services.ec2.AmazonEC2ClientBuilder;
 import com.amazonaws.services.ec2.model.DescribeInstancesRequest;
 import com.amazonaws.services.ec2.model.DescribeInstancesResult;
 import com.amazonaws.services.eks.AmazonEKS;
+import com.amazonaws.services.eks.AmazonEKSClient;
 import com.amazonaws.services.eks.AmazonEKSClientBuilder;
 import com.amazonaws.services.eks.model.Cluster;
 import com.amazonaws.services.eks.model.DescribeClusterRequest;
@@ -18,9 +20,7 @@ import com.google.common.base.Strings;
 
 import rebar.util.Json;
 
-public class EksClusterScanner extends AwsEntityScanner<Cluster> {
-
-	
+public class EksClusterScanner extends AwsEntityScanner<Cluster, AmazonEKSClient> {
 
 	@Override
 	protected void doScan() {
@@ -37,7 +37,6 @@ public class EksClusterScanner extends AwsEntityScanner<Cluster> {
 			request.setNextToken(result.getNextToken());
 		} while (!Strings.isNullOrEmpty(request.getNextToken()));
 
-
 		gc("AwsEksCluster", ts);
 		mergeSecurityGroupRelationships();
 		mergeSubnetRelationships();
@@ -47,15 +46,14 @@ public class EksClusterScanner extends AwsEntityScanner<Cluster> {
 	@Override
 	protected ObjectNode toJson(Cluster awsObject) {
 		ObjectNode n = super.toJson(awsObject);
-		
-		
+
 		n.set("subnets", n.path("resourcesVpcConfig").path("subnetIds"));
 		n.set("securityGroups", n.path("resourcesVpcConfig").path("securityGroupIds"));
 		n.set("vpcId", n.path("resourcesVpcConfig").path("vpcId"));
 		n.remove("resourcesVpcConfig");
 		n.set("certificateAuthorityData", n.path("certificateAuthority").path("data"));
 		n.remove("certificateAuthority");
-	
+
 		return n;
 	}
 
@@ -71,11 +69,9 @@ public class EksClusterScanner extends AwsEntityScanner<Cluster> {
 		doScan(entity.path("name").asText());
 	}
 
-
-	
 	@Override
 	public void doScan(String clusterName) {
-		
+
 		checkScanArgument(clusterName);
 		try {
 			AmazonEKS eks = getClient(AmazonEKSClientBuilder.class);
@@ -83,10 +79,9 @@ public class EksClusterScanner extends AwsEntityScanner<Cluster> {
 			DescribeClusterResult result = eks.describeCluster(new DescribeClusterRequest().withName(clusterName));
 
 			project(result.getCluster());
-			
+
 			mergeSecurityGroupRelationships();
 			mergeSubnetRelationships();
-			
 
 		} catch (ResourceNotFoundException e) {
 			awsGraphNodes("AwsEksCluster").id("name", clusterName).delete();
@@ -95,14 +90,19 @@ public class EksClusterScanner extends AwsEntityScanner<Cluster> {
 	}
 
 	@Override
-	public AwsEntityType getEntityType() {
-		return AwsEntityType.AwsEksCluster;
+	protected void doMergeRelationships() {
+		// TODO Auto-generated method stub
+
 	}
 
 	@Override
-	protected void doMergeRelationships() {
-		// TODO Auto-generated method stub
-		
+	protected AmazonEKSClient getClient() {
+		return getClient(AmazonEKSClientBuilder.class);
+	}
+
+	@Override
+	public AwsEntityType getEntityType() {
+		return AwsEntityType.AwsEksCluster;
 	}
 
 }

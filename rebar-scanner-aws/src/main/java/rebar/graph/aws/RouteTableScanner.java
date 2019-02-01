@@ -17,6 +17,7 @@ import rebar.util.Json;
 
 public class RouteTableScanner extends AbstractNetworkScanner<RouteTable> {
 
+
 	@Override
 	protected ObjectNode toJson(RouteTable awsObject) {
 
@@ -118,7 +119,7 @@ public class RouteTableScanner extends AbstractNetworkScanner<RouteTable> {
 
 	}
 
-	private void project(RouteTable routeTable) {
+	protected void project(RouteTable routeTable) {
 		ObjectNode n = toJson(routeTable);
 
 		awsGraphNodes(AwsEntityType.AwsRouteTable).idKey("arn").withTagPrefixes(TAG_PREFIXES).properties(n).merge();
@@ -130,9 +131,11 @@ public class RouteTableScanner extends AbstractNetworkScanner<RouteTable> {
 		logger.info("deleting route table: {}",id);
 		awsGraphNodes().id("routeTableId",id).delete();
 	}
+
 	@Override
 	public AwsEntityType getEntityType() {
 		return AwsEntityType.AwsRouteTable;
 	}
+
 
 }

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.amazonaws.services.elasticache.AmazonElastiCache;
+import com.amazonaws.services.elasticache.AmazonElastiCacheClient;
 import com.amazonaws.services.elasticache.AmazonElastiCacheClientBuilder;
 import com.amazonaws.services.elasticache.model.CacheCluster;
 import com.amazonaws.services.elasticache.model.DescribeCacheClustersRequest;
@@ -17,10 +18,11 @@ import com.google.common.collect.Lists;
 
 import rebar.util.Json;
 
-public class ElastiCacheScanner extends AwsEntityScanner<CacheCluster> {
+public class ElastiCacheScanner extends AwsEntityScanner<CacheCluster,AmazonElastiCacheClient> {
 
-	AmazonElastiCache getClient() {
-		return getAwsScanner().getClient(AmazonElastiCacheClientBuilder.class);
+
+	protected AmazonElastiCacheClient getClient() {
+		return getScanner().getClient(AmazonElastiCacheClientBuilder.class);
 	}
 
 	protected void project(ReplicationGroup rg) {
@@ -174,15 +176,16 @@ public class ElastiCacheScanner extends AwsEntityScanner<CacheCluster> {
 		});
 	}
 
-	@Override
-	public AwsEntityType getEntityType() {
-		return AwsEntityType.AwsCacheCluster;
-	}
 
 	@Override
 	protected void doMergeRelationships() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public AwsEntityType getEntityType() {
+		return AwsEntityType.AwsCacheCluster;
 	}
 
 }

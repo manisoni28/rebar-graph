@@ -26,7 +26,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Strings;
 
-public class LaunchConfigScanner extends AwsEntityScanner<LaunchConfiguration> {
+public class LaunchConfigScanner extends AwsEntityScanner<LaunchConfiguration,AmazonAutoScalingClient> {
 
 	
 
@@ -44,9 +44,12 @@ public class LaunchConfigScanner extends AwsEntityScanner<LaunchConfiguration> {
 
 	}
 
+	public AmazonAutoScalingClient getClient() {
+		return getClient(AmazonAutoScalingClientBuilder.class);
+	}
 	public void doScan() {
 		long ts = getGraphDB().getTimestamp();
-		AmazonAutoScalingClient client = getClient(AmazonAutoScalingClientBuilder.class);
+		AmazonAutoScalingClient client = getClient();
 
 		DescribeLaunchConfigurationsRequest request = new DescribeLaunchConfigurationsRequest();
 

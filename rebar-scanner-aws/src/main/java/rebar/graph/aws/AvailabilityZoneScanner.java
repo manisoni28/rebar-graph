@@ -18,6 +18,7 @@ package rebar.graph.aws;
 import java.util.Optional;
 
 import com.amazonaws.services.ec2.AmazonEC2;
+import com.amazonaws.services.ec2.AmazonEC2Client;
 import com.amazonaws.services.ec2.AmazonEC2ClientBuilder;
 import com.amazonaws.services.ec2.model.AvailabilityZone;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -25,9 +26,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import rebar.graph.core.GraphDB;
 import rebar.util.Json;
 
-public class AvailabilityZoneScanner extends AwsEntityScanner<AvailabilityZone> {
+public class AvailabilityZoneScanner extends AwsEntityScanner<AvailabilityZone,AmazonEC2Client> {
 
-	
+
 
 	@Override
 	public void doScan() {
@@ -63,15 +64,29 @@ public class AvailabilityZoneScanner extends AwsEntityScanner<AvailabilityZone> 
 		
 	}
 	
-	@Override
-	public AwsEntityType getEntityType() {
-		return AwsEntityType.AwsAvailabilityZone;
-	}
+	
 
 	@Override
 	protected void doMergeRelationships() {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	protected AmazonEC2Client getClient() {
+		return getClient(AmazonEC2ClientBuilder.class);
+	}
+
+	@Override
+	protected void project(AvailabilityZone t) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public AwsEntityType getEntityType() {
+		return AwsEntityType.AwsAvailabilityZone;
+	}
+
 
 }

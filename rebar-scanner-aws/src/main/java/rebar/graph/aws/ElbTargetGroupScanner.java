@@ -17,6 +17,7 @@ package rebar.graph.aws;
 
 import java.util.stream.Stream;
 
+import com.amazonaws.services.ec2.AmazonEC2Client;
 import com.amazonaws.services.elasticloadbalancingv2.AmazonElasticLoadBalancingClient;
 import com.amazonaws.services.elasticloadbalancingv2.AmazonElasticLoadBalancingClientBuilder;
 import com.amazonaws.services.elasticloadbalancingv2.model.DescribeTargetGroupsRequest;
@@ -31,7 +32,7 @@ import rebar.graph.core.Scanner;
 import rebar.graph.neo4j.GraphDriver;
 import rebar.util.Json;
 
-public class ElbTargetGroupScanner extends AwsEntityScanner<TargetGroup> {
+public class ElbTargetGroupScanner extends AwsEntityScanner<TargetGroup, AmazonElasticLoadBalancingClient> {
 
 	public static class TargetGroupGraphOperation implements GraphOperation {
 
@@ -150,6 +151,11 @@ public class ElbTargetGroupScanner extends AwsEntityScanner<TargetGroup> {
 	@Override
 	public AwsEntityType getEntityType() {
 		return AwsEntityType.AwsElbTargetGroup;
+	}
+	
+	@Override
+	protected AmazonElasticLoadBalancingClient getClient() {
+		return getClient(AmazonElasticLoadBalancingClientBuilder.class);
 	}
 
 }

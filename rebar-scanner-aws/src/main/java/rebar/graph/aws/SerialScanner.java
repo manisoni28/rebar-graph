@@ -22,30 +22,33 @@ import java.util.List;
 import java.util.Optional;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+
+import rebar.graph.core.EntityScanner;
 
 public class SerialScanner extends AwsEntityScanner {
 
 	List<Class<? extends AwsEntityScanner>> scanners = Lists.newArrayList();
 
-	
-
 	public SerialScanner removeScanner(Class<? extends AwsEntityScanner> scanner) {
 		scanners.remove(scanner);
 		return this;
 	}
-	
+
 	public SerialScanner addScanners(List<Class<? extends AwsEntityScanner>> scanners) {
 		this.scanners.addAll(scanners);
 		return this;
 	}
+
 	public SerialScanner addScanners(Class<? extends AwsEntityScanner>... scanners) {
 		if (scanners != null) {
 			this.scanners.addAll(Arrays.asList(scanners));
 		}
 		return this;
 	}
+
 	protected Optional<String> toArn(Object awsEntity) {
 		return Optional.empty();
 	}
@@ -53,10 +56,11 @@ public class SerialScanner extends AwsEntityScanner {
 	private synchronized void makeImmutable() {
 		scanners = ImmutableList.copyOf(scanners);
 	}
-	
+
 	public List<Class<? extends AwsEntityScanner>> getScannerClasses() {
 		return scanners;
 	}
+
 	@Override
 	protected final void doScan() {
 		makeImmutable();
@@ -64,10 +68,15 @@ public class SerialScanner extends AwsEntityScanner {
 			try {
 				Constructor ctor = scanner.getConstructor();
 				AwsEntityScanner s = (AwsEntityScanner) ctor.newInstance();
-				s.init(getAwsScanner());
+				EntityScanner x = (EntityScanner) s;
+	
+				Preconditions.checkNotNull(getScanner());
+				Preconditions.checkNotNull(getAwsScanner());
+				getScanner().init(x);
+				Preconditions.checkNotNull(s.getAccount());
 				s.scan();
-			}
-			catch (IllegalAccessException | InstantiationException | InvocationTargetException | NoSuchMethodException e) {
+			} catch (IllegalAccessException | InstantiationException | InvocationTargetException
+					| NoSuchMethodException e) {
 				maybeThrow(e);
 			}
 		});
@@ -83,16 +92,28 @@ public class SerialScanner extends AwsEntityScanner {
 	@Override
 	public void doScan(String id) {
 		// do nothing
-		
-	}
-	@Override
-	public AwsEntityType getEntityType() {
-		return AwsEntityType.UNKNOWN;
+
 	}
 
 	@Override
 	protected void doMergeRelationships() {
 		// TODO Auto-generated method stub
-		
+
+	}
+
+	@Override
+	protected Object getClient() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	protected void project(Object t) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public Object getEntityType() {
+		return AwsEntityType.UNKNOWN;
 	}
 }

@@ -23,6 +23,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import com.amazonaws.services.ec2.AmazonEC2Client;
+import com.amazonaws.services.ec2.AmazonEC2ClientBuilder;
 import com.amazonaws.services.elasticloadbalancing.AmazonElasticLoadBalancingClient;
 import com.amazonaws.services.elasticloadbalancing.AmazonElasticLoadBalancingClientBuilder;
 import com.amazonaws.services.elasticloadbalancing.model.DescribeLoadBalancersRequest;
@@ -47,7 +49,7 @@ import rebar.graph.core.Scanner;
 import rebar.graph.neo4j.GraphDriver;
 import rebar.util.Json;
 
-public class ElbClassicScanner extends AwsEntityScanner<LoadBalancerDescription> {
+public class ElbClassicScanner extends AwsEntityScanner<LoadBalancerDescription,AmazonElasticLoadBalancingClient> {
 
 	public static final int TAG_BATCH_SIZE=20;
 	
@@ -271,5 +273,10 @@ public class ElbClassicScanner extends AwsEntityScanner<LoadBalancerDescription>
 	protected void doMergeRelationships() {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	@Override
+	protected AmazonElasticLoadBalancingClient getClient() {
+		return getClient(AmazonElasticLoadBalancingClientBuilder.class);
 	}
 }

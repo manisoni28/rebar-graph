@@ -32,7 +32,7 @@ import rebar.graph.core.Scanner;
 import rebar.graph.neo4j.GraphDriver;
 import rebar.util.Json;
 
-public class ElbListenerScanner extends AwsEntityScanner<Listener> {
+public class ElbListenerScanner extends AwsEntityScanner<Listener,AmazonElasticLoadBalancingClient> {
 
 	public static class RelationshipGraphOperation implements GraphOperation {
 
@@ -142,5 +142,10 @@ public class ElbListenerScanner extends AwsEntityScanner<Listener> {
 	@Override
 	public AwsEntityType getEntityType() {
 		return AwsEntityType.AwsElbListener;
+	}
+
+	@Override
+	protected AmazonElasticLoadBalancingClient getClient() {
+		return getClient(AmazonElasticLoadBalancingClientBuilder.class);
 	}
 }

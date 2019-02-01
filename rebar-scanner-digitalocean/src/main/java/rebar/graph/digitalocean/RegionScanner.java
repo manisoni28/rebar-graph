@@ -17,7 +17,7 @@ public class RegionScanner extends DigitalOceanEntityScanner<Region> {
 	}
 
 	public RegionScanner(DigitalOceanScanner scanner) {
-		super(scanner,DigitalOceanEntityType.DigitalOceanRegion);
+		super(scanner);
 	}
 
 	@Override
@@ -43,6 +43,11 @@ public class RegionScanner extends DigitalOceanEntityScanner<Region> {
 		digitalOceanNodes(getEntityType().name()).idKey("region").properties(n).merge();
 		
 		
+	}
+
+	@Override
+	public DigitalOceanEntityType getEntityType() {
+		return DigitalOceanEntityType.DigitalOceanRegion;
 	}
 
 	

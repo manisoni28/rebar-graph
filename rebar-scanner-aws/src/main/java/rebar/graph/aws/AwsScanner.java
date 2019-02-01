@@ -47,6 +47,7 @@ import com.google.common.collect.Maps;
 
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ScanResult;
+import rebar.graph.core.EntityScanner;
 import rebar.graph.core.GraphDB;
 import rebar.graph.core.Scanner;
 import rebar.graph.core.ScannerBuilder;
@@ -119,7 +120,8 @@ public final class AwsScanner extends Scanner {
 	public <T extends AwsEntityScanner> T getEntityScanner(Class<T> clazz) {
 		try {
 			T t = clazz.newInstance();
-			t.init(this);
+			init(t);;
+	
 			return t;
 
 		} catch (IllegalAccessException | InstantiationException e) {

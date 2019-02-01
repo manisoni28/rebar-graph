@@ -3,7 +3,7 @@ package rebar.graph.aws;
 public class Ec2ScannerGroup extends SerialScanner {
 
 	public Ec2ScannerGroup() {
-		
+		super();
 		addScanners(Ec2InstanceScanner.class);
 		addScanners(AmiScanner.class);
 		addScanners(LaunchConfigScanner.class);

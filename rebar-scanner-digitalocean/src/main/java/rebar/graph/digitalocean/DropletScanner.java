@@ -15,7 +15,7 @@ public class DropletScanner extends DigitalOceanEntityScanner<Droplet> {
 
 	DropletScanner(DigitalOceanScanner scanner) {
 
-		super(scanner,DigitalOceanEntityType.DigitalOceanDroplet);
+		super(scanner);
 	
 	}
 
@@ -83,6 +83,11 @@ public class DropletScanner extends DigitalOceanEntityScanner<Droplet> {
 		
 	
 		return n;
+	}
+
+	@Override
+	public DigitalOceanEntityType getEntityType() {
+		return DigitalOceanEntityType.DigitalOceanDroplet;
 	}
 
 }

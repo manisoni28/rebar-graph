@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.event.S3EventNotification.S3BucketEntity;
 import com.amazonaws.services.s3.model.AmazonS3Exception;
@@ -18,9 +19,9 @@ import com.google.common.base.Strings;
 
 import rebar.util.Json;
 
-public class S3Scanner extends AwsEntityScanner<Bucket> {
+public class S3Scanner extends AwsEntityScanner<Bucket, AmazonS3Client> {
 
-	AmazonS3 getClient() {
+	protected AmazonS3Client getClient() {
 		return getClient(AmazonS3ClientBuilder.class);
 	}
 
@@ -104,15 +105,13 @@ public class S3Scanner extends AwsEntityScanner<Bucket> {
 
 		}
 
-		
-
 	}
 
 	@Override
 	public void doScan(JsonNode entity) {
 		String type = entity.path("graphEntityType").asText();
 		String account = entity.path("account").asText();
-	
+
 		if (type.equals("AwsS3Bucket") && account.equals(getAccount())) {
 			doScan(entity.path("name").asText());
 		}
@@ -127,7 +126,7 @@ public class S3Scanner extends AwsEntityScanner<Bucket> {
 		n.put("name", name);
 		n.put("graphEntityType", AwsEntityType.AwsS3Bucket.name());
 		n.put("graphEntityGroup", "aws");
-		n.put("arn",toArn(id));
+		n.put("arn", toArn(id));
 		boolean exists = getClient().doesBucketExistV2(id);
 		if (!exists) {
 			getGraphDB().nodes(AwsEntityType.AwsS3Bucket.name()).id("name", id).id("account", getAccount()).delete();
@@ -139,29 +138,36 @@ public class S3Scanner extends AwsEntityScanner<Bucket> {
 		mergeAccountOwner(AwsEntityType.AwsS3Bucket);
 	}
 
-	@Override
-	public AwsEntityType getEntityType() {
-		return AwsEntityType.AwsS3Bucket;
-	}
-
 	protected boolean isBucketInRegion(JsonNode n) {
 		return n != null && n.path("bucketRegion").asText().equals(getRegionName());
 	}
 
 	public String toArn(String bucketName) {
-		return String.format("arn:aws:s3:::%s",bucketName);
+		return String.format("arn:aws:s3:::%s", bucketName);
 	}
+
 	@Override
 	protected Optional<String> toArn(Bucket awsObject) {
 
-		return Optional.ofNullable(toArn( awsObject.getName()));
+		return Optional.ofNullable(toArn(awsObject.getName()));
 
 	}
 
 	@Override
 	protected void doMergeRelationships() {
 		// TODO Auto-generated method stub
-		
+
+	}
+
+	@Override
+	protected void project(Bucket t) {
+		throw new UnsupportedOperationException();
+
+	}
+
+	@Override
+	public AwsEntityType getEntityType() {
+		return AwsEntityType.AwsS3Bucket;
 	}
 
 }

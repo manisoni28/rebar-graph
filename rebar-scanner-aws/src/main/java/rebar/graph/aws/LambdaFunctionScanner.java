@@ -19,6 +19,7 @@ import java.util.Optional;
 
 import com.amazonaws.services.apigateway.AmazonApiGateway;
 import com.amazonaws.services.lambda.AWSLambda;
+import com.amazonaws.services.lambda.AWSLambdaClient;
 import com.amazonaws.services.lambda.AWSLambdaClientBuilder;
 import com.amazonaws.services.lambda.model.FunctionConfiguration;
 import com.amazonaws.services.lambda.model.GetFunctionConfigurationRequest;
@@ -34,11 +35,9 @@ import com.google.common.base.Strings;
 
 import rebar.util.Json;
 
-public class LambdaFunctionScanner extends AwsEntityScanner<FunctionConfiguration> {
+public class LambdaFunctionScanner extends AwsEntityScanner<FunctionConfiguration, AWSLambdaClient> {
 
-	
-
-	void project(FunctionConfiguration f) {
+	protected void project(FunctionConfiguration f) {
 		ObjectNode n = toJson(f);
 		getGraphDB().nodes(getEntityTypeName()).id("arn", n.path("arn").asText()).properties(n).merge();
 	}
@@ -61,22 +60,25 @@ public class LambdaFunctionScanner extends AwsEntityScanner<FunctionConfiguratio
 		} while (!Strings.isNullOrEmpty(lfRequest.getMarker()));
 
 		gc("AwsLambdaFunction", ts);
-		
+
 		doMergeRelationships();
-		
-		getGraphDB().nodes("AwsLambdaFunction").id("region",getRegionName()).id("account",getAccount()).relationship("RESIDES_IN").on("vpcId", "vpcId").to("AwsVpc").id("region",getRegionName()).merge();
+
+		getGraphDB().nodes("AwsLambdaFunction").id("region", getRegionName()).id("account", getAccount())
+				.relationship("RESIDES_IN").on("vpcId", "vpcId").to("AwsVpc").id("region", getRegionName()).merge();
 	}
 
 	@Override
 	protected void doMergeRelationships() {
 		mergeResidesInRegionRelationship();
 		mergeAccountOwner();
-		
-		getGraphDB().nodes("AwsLambdaFunction").id("region",getRegionName()).id("account",getAccount()).relationship("RESIDES_IN").on("vpcId", "vpcId").to("AwsVpc").id("region",getRegionName()).merge();
+
+		getGraphDB().nodes("AwsLambdaFunction").id("region", getRegionName()).id("account", getAccount())
+				.relationship("RESIDES_IN").on("vpcId", "vpcId").to("AwsVpc").id("region", getRegionName()).merge();
 
 	}
+
 	public void scanByName(String name) {
-		
+
 		AWSLambda c = getClient(AWSLambdaClientBuilder.class);
 
 		GetFunctionConfigurationRequest lfRequest = new GetFunctionConfigurationRequest();
@@ -86,7 +88,6 @@ public class LambdaFunctionScanner extends AwsEntityScanner<FunctionConfiguratio
 
 			GetFunctionConfigurationResult result = c.getFunctionConfiguration(lfRequest);
 
-			
 			FunctionConfiguration fc = new FunctionConfiguration();
 
 			fc.setCodeSize(result.getCodeSize());
@@ -114,7 +115,8 @@ public class LambdaFunctionScanner extends AwsEntityScanner<FunctionConfiguratio
 			project(fc);
 
 		} catch (ResourceNotFoundException e) {
-			getGraphDB().nodes("AwsLambdaFunction").id("account",getAccount()).id("region",getRegionName()).id("name",name).delete();
+			getGraphDB().nodes("AwsLambdaFunction").id("account", getAccount()).id("region", getRegionName())
+					.id("name", name).delete();
 		}
 		doMergeRelationships();
 	}
@@ -136,7 +138,7 @@ public class LambdaFunctionScanner extends AwsEntityScanner<FunctionConfiguratio
 		n.put("vpcId", n.path("vpcConfig").path("vpcId").asText(null));
 		n.set("name", n.path("functionName"));
 		n.set("tracingConfigMode", n.path("tracingConfig").path("mode"));
-		
+
 		n.remove("tracingConfig");
 		n.remove("vpcConfig");
 		return n;
@@ -151,9 +153,14 @@ public class LambdaFunctionScanner extends AwsEntityScanner<FunctionConfiguratio
 	public void doScan(String id) {
 		checkScanArgument(id);
 		scanByName(id);
-		
+
 	}
-	
+
+	@Override
+	protected AWSLambdaClient getClient() {
+		return getClient(AWSLambdaClientBuilder.class);
+	}
+
 	@Override
 	public AwsEntityType getEntityType() {
 		return AwsEntityType.AwsLambdaFunction;

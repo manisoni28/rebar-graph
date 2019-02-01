@@ -83,7 +83,7 @@ public class VpcEndpointScanner extends AbstractNetworkScanner<VpcEndpoint> {
 		mergeRelationships();
 	}
 
-	private void project(VpcEndpoint endpoint) {
+	protected void project(VpcEndpoint endpoint) {
 		ObjectNode n = toJson(endpoint);
 
 		awsGraphNodes().idKey("vpcEndpointId").withTagPrefixes(TAG_PREFIXES).properties(n).merge();

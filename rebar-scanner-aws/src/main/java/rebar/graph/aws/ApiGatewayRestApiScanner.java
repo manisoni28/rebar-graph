@@ -14,9 +14,9 @@ import com.google.common.base.Strings;
 
 import rebar.util.Json;
 
-public class ApiGatewayRestApiScanner extends AwsEntityScanner<RestApi> {
+public class ApiGatewayRestApiScanner extends AwsEntityScanner<RestApi,AmazonApiGatewayClient > {
 
-	AmazonApiGatewayClient getClient() {
+	protected AmazonApiGatewayClient getClient() {
 		return getClient(AmazonApiGatewayClientBuilder.class);
 	}
 

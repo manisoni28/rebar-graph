@@ -22,7 +22,9 @@ import com.google.common.base.Strings;
 
 import rebar.util.Json;
 
-public class ElasticMapReduceClusterScanner extends AwsEntityScanner<Cluster> {
+public class ElasticMapReduceClusterScanner extends AwsEntityScanner<Cluster,AmazonElasticMapReduceClient> {
+
+	
 
 	protected AmazonElasticMapReduceClient getClient() {
 		return getAwsScanner().getClient(AmazonElasticMapReduceClientBuilder.class);

@@ -53,22 +53,15 @@ public class VpnGatewayScanner extends AbstractNetworkScanner<VpnGateway> {
 		if (isEntityOwner(entity)) {
 			String id = entity.path("vpnGatewayId").asText();
 			if (!Strings.isNullOrEmpty(id)) {
-			scan(id);
+				scan(id);
 			}
 		}
 
 	}
 
-
 	private void deleteById(String id) {
 		logger.info("deleting {} id={}", getEntityType().name(), id);
 		awsGraphNodes().id("vpnGatewayId", id).delete();
-	}
-
-	@Override
-	public AwsEntityType getEntityType() {
-
-		return AwsEntityType.AwsVpnGateway;
 	}
 
 	@Override
@@ -78,7 +71,7 @@ public class VpnGatewayScanner extends AbstractNetworkScanner<VpnGateway> {
 				.to(AwsEntityType.AwsVpc.name()).merge();
 	}
 
-	private void project(VpnGateway gw) {
+	protected void project(VpnGateway gw) {
 		ObjectNode n = toJson(gw);
 
 		awsGraphNodes().idKey("vpnGatewayId").withTagPrefixes(TAG_PREFIXES).properties(n).merge();
@@ -100,5 +93,10 @@ public class VpnGatewayScanner extends AbstractNetworkScanner<VpnGateway> {
 		n.remove("vpcAttachments");
 		n.set("vpcAttachments", vpcAttachments);
 		return n;
+	}
+
+	@Override
+	public AwsEntityType getEntityType() {
+		return AwsEntityType.AwsVpnGateway;
 	}
 }

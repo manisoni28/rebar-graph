@@ -19,6 +19,7 @@ import java.nio.channels.ScatteringByteChannel;
 import java.util.Optional;
 
 import com.amazonaws.services.ec2.AmazonEC2;
+import com.amazonaws.services.ec2.AmazonEC2Client;
 import com.amazonaws.services.ec2.AmazonEC2ClientBuilder;
 import com.amazonaws.services.ec2.model.AmazonEC2Exception;
 import com.amazonaws.services.ec2.model.DescribeSecurityGroupsRequest;
@@ -31,9 +32,7 @@ import com.google.common.collect.ImmutableSet;
 
 import rebar.util.Json;
 
-public class SecurityGroupScanner extends AwsEntityScanner<SecurityGroup> {
-
-	
+public class SecurityGroupScanner extends AwsEntityScanner<SecurityGroup, AmazonEC2Client> {
 
 	@Override
 	public void doScan() {
@@ -47,8 +46,10 @@ public class SecurityGroupScanner extends AwsEntityScanner<SecurityGroup> {
 		}
 
 	}
+
 	protected Optional<String> toArn(SecurityGroup sg) {
-		return Optional.ofNullable(String.format("arn:aws:ec2:%s:%s:security-group/%s", getRegionName(), getAccount(), sg.getGroupId()));
+		return Optional.ofNullable(
+				String.format("arn:aws:ec2:%s:%s:security-group/%s", getRegionName(), getAccount(), sg.getGroupId()));
 	}
 
 	public void scanById(String id) {
@@ -60,12 +61,12 @@ public class SecurityGroupScanner extends AwsEntityScanner<SecurityGroup> {
 			DescribeSecurityGroupsResult result = ec2.describeSecurityGroups(request);
 
 			result.getSecurityGroups().forEach(sg -> {
-				projectSecurityGroup(sg);
+				project(sg);
 			});
 		} catch (AmazonEC2Exception e) {
 			if (ImmutableSet.of("InvalidGroup.NotFound").contains(e.getErrorCode())) {
-				getGraphDB().nodes(AwsEntityType.AwsSecurityGroup.name()).id("region", getRegion().getName(), "account",
-						getAccount(), "groupId", id).delete();
+				getGraphDB().nodes(AwsEntityType.AwsSecurityGroup.name())
+						.id("region", getRegion().getName(), "account", getAccount(), "groupId", id).delete();
 
 			} else {
 				throw e;
@@ -75,32 +76,26 @@ public class SecurityGroupScanner extends AwsEntityScanner<SecurityGroup> {
 
 	}
 
-	/*public void scanByName(String name) {
-		try {
-			DescribeSecurityGroupsRequest request = new DescribeSecurityGroupsRequest();
-			request.withGroupNames(name);
-			AmazonEC2 ec2 = getClient(AmazonEC2ClientBuilder.class);
-			DescribeSecurityGroupsResult result = ec2.describeSecurityGroups(request);
-
-			result.getSecurityGroups().forEach(sg -> {
-				projectSecurityGroup(sg);
-			});
-		} catch (AmazonEC2Exception e) {
-			if (ImmutableSet.of("InvalidGroup.NotFound").contains(e.getErrorCode())) {
-				logger.info("removing security group: {}",name);
-				getGraphDB().nodes().label(AwsEntities.SECURITY_GROUP_TYPE).id("account", getAccount(), "region",
-						getRegion().getName(), "name", name).delete();
-
-			} else {
-				throw e;
-			}
-		}
-
-	}*/
+	/*
+	 * public void scanByName(String name) { try { DescribeSecurityGroupsRequest
+	 * request = new DescribeSecurityGroupsRequest(); request.withGroupNames(name);
+	 * AmazonEC2 ec2 = getClient(AmazonEC2ClientBuilder.class);
+	 * DescribeSecurityGroupsResult result = ec2.describeSecurityGroups(request);
+	 * 
+	 * result.getSecurityGroups().forEach(sg -> { projectSecurityGroup(sg); }); }
+	 * catch (AmazonEC2Exception e) { if
+	 * (ImmutableSet.of("InvalidGroup.NotFound").contains(e.getErrorCode())) {
+	 * logger.info("removing security group: {}",name);
+	 * getGraphDB().nodes().label(AwsEntities.SECURITY_GROUP_TYPE).id("account",
+	 * getAccount(), "region", getRegion().getName(), "name", name).delete();
+	 * 
+	 * } else { throw e; } }
+	 * 
+	 * }
+	 */
 
 	private void scanSecurityGroups(AmazonEC2 ec2) {
 
-	
 		DescribeSecurityGroupsRequest request = new DescribeSecurityGroupsRequest();
 
 		DescribeSecurityGroupsResult result = null;
@@ -108,7 +103,7 @@ public class SecurityGroupScanner extends AwsEntityScanner<SecurityGroup> {
 			result = ec2.describeSecurityGroups(request);
 
 			result.getSecurityGroups().forEach(sg -> {
-				tryExecute(()->projectSecurityGroup(sg));
+				tryExecute(() -> project(sg));
 			});
 
 			request = request.withNextToken(result.getNextToken());
@@ -117,23 +112,21 @@ public class SecurityGroupScanner extends AwsEntityScanner<SecurityGroup> {
 
 		mergeAccountOwner();
 	}
-	
-	
+
 	protected ObjectNode toJson(SecurityGroup awsObject) {
-		
+
 		ObjectNode n = super.toJson(awsObject);
 		n.set("name", n.path("groupName"));
-		
-		
-		n.path("tags").forEach(it->{
-			n.put(TAG_PREFIX+it.path("key").asText(),it.path("value").asText());
+
+		n.path("tags").forEach(it -> {
+			n.put(TAG_PREFIX + it.path("key").asText(), it.path("value").asText());
 		});
 		n.remove("tags");
-		
+
 		return n;
 	}
 
-	private void projectSecurityGroup(SecurityGroup sg) {
+	protected void project(SecurityGroup sg) {
 
 		ObjectNode n = toJson(sg);
 		n.set("name", n.path("groupName"));
@@ -141,29 +134,33 @@ public class SecurityGroupScanner extends AwsEntityScanner<SecurityGroup> {
 		getGraphDB().nodes("AwsSecurityGroup").withTagPrefixes(TAG_PREFIXES).idKey("arn").properties(n).merge();
 
 		if (!Strings.isNullOrEmpty(sg.getVpcId())) {
-			getGraphDB().nodes("AwsVpc").id("vpcId", sg.getVpcId()).relationship("HAS").on("vpcId","vpcId")
+			getGraphDB().nodes("AwsVpc").id("vpcId", sg.getVpcId()).relationship("HAS").on("vpcId", "vpcId")
 					.to("AwsSecurityGroup").id("arn", n.path("arn").asText()).merge();
 		}
 
-	
 	}
 
 	@Override
 	public void doScan(String id) {
 		checkScanArgument(id);
 		scanById(id);
-		
-	}
-	
-	@Override
-	public AwsEntityType getEntityType() {
-		return AwsEntityType.AwsSecurityGroup;
+
 	}
 
 	@Override
 	protected void doMergeRelationships() {
 		// TODO Auto-generated method stub
-		
+
+	}
+
+	@Override
+	protected AmazonEC2Client getClient() {
+		return getClient(AmazonEC2ClientBuilder.class);
+	}
+
+	@Override
+	public AwsEntityType getEntityType() {
+		return AwsEntityType.AwsSecurityGroup;
 	}
 
 }

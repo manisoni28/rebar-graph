@@ -19,30 +19,31 @@ import java.util.Optional;
 
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.ec2.AmazonEC2;
+import com.amazonaws.services.ec2.AmazonEC2Client;
 import com.amazonaws.services.ec2.AmazonEC2ClientBuilder;
+import com.amazonaws.services.ec2.model.Region;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import rebar.graph.core.GraphDB;
 import rebar.util.Json;
 
-public class RegionScanner extends AwsEntityScanner<Regions> {
-
-	
+public class RegionScanner extends AwsEntityScanner<Region, AmazonEC2Client> {
 
 	@Override
 	public void doScan() {
 		scanRegions(getClient(AmazonEC2ClientBuilder.class));
 
 	}
+
 	private void scanRegions(AmazonEC2 ec2) {
 
 		ec2.describeRegions().getRegions().forEach(r -> {
-
-			getGraphDB().nodes("AwsRegion").properties(Json.objectNode().put("name", r.getRegionName()).put("region", r.getRegionName()).put(GraphDB.ENTITY_GROUP, "aws").put(GraphDB.ENTITY_TYPE, getEntityTypeName())).idKey("region").merge();
+			project(r);
 
 		});
 
 	}
+
 	@Override
 	public void doScan(JsonNode entity) {
 		// do nothing
@@ -56,17 +57,31 @@ public class RegionScanner extends AwsEntityScanner<Regions> {
 	@Override
 	public void doScan(String id) {
 		// do nothing
-		
+
 	}
-	
+
 	@Override
 	public AwsEntityType getEntityType() {
 		return AwsEntityType.AwsRegion;
 	}
+
 	@Override
 	protected void doMergeRelationships() {
 		// TODO Auto-generated method stub
-		
+
+	}
+
+	public AmazonEC2Client getClient() {
+		return getClient(AmazonEC2ClientBuilder.class);
+	}
+
+	@Override
+	protected void project(Region r) {
+		getGraphDB().nodes("AwsRegion")
+				.properties(Json.objectNode().put("name", r.getRegionName()).put("region", r.getRegionName())
+						.put(GraphDB.ENTITY_GROUP, "aws").put(GraphDB.ENTITY_TYPE, getEntityTypeName()))
+				.idKey("region").merge();
+
 	}
 
 }

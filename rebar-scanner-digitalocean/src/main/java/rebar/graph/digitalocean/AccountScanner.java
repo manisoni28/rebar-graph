@@ -4,14 +4,12 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.myjeeva.digitalocean.exception.DigitalOceanException;
 import com.myjeeva.digitalocean.exception.RequestUnsuccessfulException;
 import com.myjeeva.digitalocean.pojo.Account;
-import com.myjeeva.digitalocean.pojo.Region;
-import com.myjeeva.digitalocean.pojo.Regions;
 
 public class AccountScanner extends DigitalOceanEntityScanner<Account> {
 
 
 	public AccountScanner(DigitalOceanScanner scanner) {
-		super(scanner,DigitalOceanEntityType.DigitalOceanAccount);
+		super(scanner);
 	}
 
 	@Override
@@ -50,5 +48,8 @@ public class AccountScanner extends DigitalOceanEntityScanner<Account> {
 		
 	}
 
-	
+	@Override
+	public DigitalOceanEntityType getEntityType() {
+		return DigitalOceanEntityType.DigitalOceanAccount;
+	}
 }

@@ -3,6 +3,7 @@ package rebar.graph.aws;
 import java.util.Optional;
 
 import com.amazonaws.services.route53.AmazonRoute53;
+import com.amazonaws.services.route53.AmazonRoute53Client;
 import com.amazonaws.services.route53.AmazonRoute53ClientBuilder;
 import com.amazonaws.services.route53.model.GetHostedZoneRequest;
 import com.amazonaws.services.route53.model.GetHostedZoneResult;
@@ -20,15 +21,15 @@ import com.google.common.base.Strings;
 
 import rebar.util.Json;
 
-public class Route53Scanner extends AwsEntityScanner<HostedZone> {
+public class Route53Scanner extends AwsEntityScanner<HostedZone,AmazonRoute53Client> {
 
-	void project(String hostedZone, ResourceRecordSet rs) {
+	protected void project(String hostedZone, ResourceRecordSet rs) {
 		ObjectNode recordSet = toJson(hostedZone, rs);
 		awsGraphNodes(AwsEntityType.AwsHostedZoneRecordSet.name()).idKey("hostedZoneId", "name").properties(recordSet)
 				.merge();
 	}
 
-	void project(HostedZone z) {
+	protected void project(HostedZone z) {
 
 		ObjectNode n = toJson(z);
 		
@@ -187,6 +188,11 @@ public class Route53Scanner extends AwsEntityScanner<HostedZone> {
 		n.remove("config");
 
 		return n;
+	}
+
+	@Override
+	protected AmazonRoute53Client getClient() {
+		return getAwsScanner().getClient(AmazonRoute53ClientBuilder.class);
 	}
 
 }

@@ -29,14 +29,14 @@ import rebar.graph.core.GraphDB.NodeOperation;
 import rebar.graph.core.RelationshipBuilder.Cardinality;
 import rebar.util.Json;
 
-public class IamInstanceProfileScanner extends AwsEntityScanner<InstanceProfile> {
+public class IamInstanceProfileScanner extends AwsEntityScanner<InstanceProfile, AmazonIdentityManagementClient> {
 
-	AmazonIdentityManagementClient getClient() {
+	protected AmazonIdentityManagementClient getClient() {
 		return (AmazonIdentityManagementClient) getClient(AmazonIdentityManagementClientBuilder.class);
 
 	}
 
-	private void project(InstanceProfile profile) {
+	protected void project(InstanceProfile profile) {
 		JsonNode n = toJson(profile);
 
 		awsGraphNodesWithoutRegion().idKey("arn").properties(n).merge();

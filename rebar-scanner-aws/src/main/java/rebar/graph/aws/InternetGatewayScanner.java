@@ -15,31 +15,31 @@ import rebar.util.Json;
 
 public class InternetGatewayScanner extends AbstractNetworkScanner<InternetGateway> {
 
-
-
 	@Override
 	protected void doScan() {
-		
+
 		long ts = getGraphDB().getTimestamp();
-		for (InternetGateway igw: getClient().describeInternetGateways().getInternetGateways()) {
-			
-			tryExecute(()->project(igw));
-			
+		for (InternetGateway igw : getClient().describeInternetGateways().getInternetGateways()) {
+
+			tryExecute(() -> project(igw));
+
 		}
-		gc(AwsEntityType.AwsInternetGateway.name(),ts);
+		gc(AwsEntityType.AwsInternetGateway.name(), ts);
 		doMergeRelationships();
 	}
 
-	void project(InternetGateway igw) {
+	protected void project(InternetGateway igw) {
 		ObjectNode n = toJson(igw);
-		
-		awsGraphNodes(AwsEntityType.AwsInternetGateway.name()).idKey("arn").withTagPrefixes(TAG_PREFIXES).properties(n).merge();
+
+		awsGraphNodes(AwsEntityType.AwsInternetGateway.name()).idKey("arn").withTagPrefixes(TAG_PREFIXES).properties(n)
+				.merge();
 	}
-	
+
 	protected void doMergeRelationships() {
-		
-		awsRelationships().relationship("ATTACHED_TO").on("vpcIds", "vpcId",Cardinality.MANY).to("AwsVpc").merge();
+
+		awsRelationships().relationship("ATTACHED_TO").on("vpcIds", "vpcId", Cardinality.MANY).to("AwsVpc").merge();
 	}
+
 	@Override
 	public void doScan(JsonNode entity) {
 		if (isEntityOwner(entity)) {
@@ -47,53 +47,51 @@ public class InternetGatewayScanner extends AbstractNetworkScanner<InternetGatew
 			scan(id);
 			doMergeRelationships();
 		}
-		
+
 	}
 
 	@Override
 	public void doScan(String id) {
 		checkScanArgument(id);
 		try {
-		getClient().describeInternetGateways(new DescribeInternetGatewaysRequest().withInternetGatewayIds(id)).getInternetGateways().forEach(it->{
-			project(it);
-		});
-		}
-		catch (AmazonEC2Exception e) {
+			getClient().describeInternetGateways(new DescribeInternetGatewaysRequest().withInternetGatewayIds(id))
+					.getInternetGateways().forEach(it -> {
+						project(it);
+					});
+		} catch (AmazonEC2Exception e) {
 			if (Strings.nullToEmpty(e.getErrorCode()).contains("NotFound")) {
 				deleteId(id);
 				return;
 			}
 			throw e;
 		}
-		
+
 	}
+
 	private void deleteId(String id) {
-		logger.info("deleting AwsInternetGateway {}",id);
-		getGraphDB().getNeo4jDriver().cypher("match (a:AwsInternetGateway {internetGatewayId:{internetGatewayId},account:{account},region:{region}}) detach delete a")
-		.param("account", getAccount()).param("region", getRegionName()).param("internetGatewayId",id).exec();
-	}
-	
-	@Override
-	public AwsEntityType getEntityType() {
-		return AwsEntityType.AwsInternetGateway;
+		logger.info("deleting AwsInternetGateway {}", id);
+		getGraphDB().getNeo4jDriver().cypher(
+				"match (a:AwsInternetGateway {internetGatewayId:{internetGatewayId},account:{account},region:{region}}) detach delete a")
+				.param("account", getAccount()).param("region", getRegionName()).param("internetGatewayId", id).exec();
 	}
 
 	@Override
 	protected Optional<String> toArn(InternetGateway awsObject) {
-		return Optional.of(String.format("arn:aws:ec2:%s:%s:internet-gateway/%s", getRegionName(),getAccount(),awsObject.getInternetGatewayId()));
+		return Optional.of(String.format("arn:aws:ec2:%s:%s:internet-gateway/%s", getRegionName(), getAccount(),
+				awsObject.getInternetGatewayId()));
 	}
 
 	@Override
 	protected ObjectNode toJson(InternetGateway awsObject) {
-	
-		ObjectNode n =  super.toJson(awsObject);
+
+		ObjectNode n = super.toJson(awsObject);
 		n.set("id", n.path("internetGatewayId"));
-		awsObject.getTags().forEach(it->{
-			n.put(TAG_PREFIX+it.getKey(),it.getValue());
+		awsObject.getTags().forEach(it -> {
+			n.put(TAG_PREFIX + it.getKey(), it.getValue());
 		});
 		ArrayNode vpcs = Json.arrayNode();
-		n.set("vpcIds",vpcs);
-		n.path("attachments").forEach(it->{
+		n.set("vpcIds", vpcs);
+		n.path("attachments").forEach(it -> {
 			String vpcId = it.path("vpcId").asText(null);
 			if (!Strings.isNullOrEmpty(vpcId)) {
 				vpcs.add(vpcId);
@@ -101,8 +99,13 @@ public class InternetGatewayScanner extends AbstractNetworkScanner<InternetGatew
 		});
 		n.remove("attachments");
 		n.remove("tags");
-		
+
 		return n;
 	}
-	
+
+	@Override
+	public AwsEntityType getEntityType() {
+		return AwsEntityType.AwsInternetGateway;
+	}
+
 }

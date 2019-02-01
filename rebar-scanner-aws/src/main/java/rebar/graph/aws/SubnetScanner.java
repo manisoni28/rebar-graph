@@ -28,7 +28,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Strings;
 
-public class SubnetScanner extends AwsEntityScanner<Subnet> {
+public class SubnetScanner extends AwsEntityScanner<Subnet,AmazonEC2Client> {
 
 	
 
@@ -44,7 +44,7 @@ public class SubnetScanner extends AwsEntityScanner<Subnet> {
 		return n;
 	}
 
-	private void projectSubnet(Subnet it) {
+	protected void project(Subnet it) {
 
 		ObjectNode n = toJson(it);
 
@@ -69,7 +69,7 @@ public class SubnetScanner extends AwsEntityScanner<Subnet> {
 					.describeSubnets(new DescribeSubnetsRequest().withSubnetIds(subnetId));
 
 			subnetResult.getSubnets().forEach(it -> {
-				projectSubnet(it);
+				project(it);
 			});
 		} catch (AmazonEC2Exception e) {
 			if (Strings.nullToEmpty(e.getErrorCode()).equals("InvalidSubnetID.NotFound")) {
@@ -90,7 +90,7 @@ public class SubnetScanner extends AwsEntityScanner<Subnet> {
 
 		client.describeSubnets().getSubnets().forEach(it -> {
 			// there is no paging to deal with here
-			tryExecute(() -> projectSubnet(it));
+			tryExecute(() -> project(it));
 
 		});
 
@@ -120,5 +120,10 @@ public class SubnetScanner extends AwsEntityScanner<Subnet> {
 	protected void doMergeRelationships() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	protected AmazonEC2Client getClient() {
+		return getClient(AmazonEC2ClientBuilder.class);
 	}
 }

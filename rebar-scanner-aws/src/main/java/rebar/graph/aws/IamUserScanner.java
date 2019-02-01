@@ -22,14 +22,14 @@ import rebar.graph.core.GraphDB;
 import rebar.graph.core.GraphDB.NodeOperation;
 import rebar.util.Json;
 
-public class IamUserScanner extends AwsEntityScanner<User> {
+public class IamUserScanner extends AwsEntityScanner<User,AmazonIdentityManagementClient> {
 
-	AmazonIdentityManagementClient getClient() {
+	protected AmazonIdentityManagementClient getClient() {
 		return (AmazonIdentityManagementClient) getClient(AmazonIdentityManagementClientBuilder.class);
 
 	}
 
-	private void project(User user) {
+	protected void project(User user) {
 		JsonNode n = toJson(user);
 
 		awsGraphNodesWithoutRegion().idKey("arn").properties(n).merge();

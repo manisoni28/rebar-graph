@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import com.amazonaws.services.sqs.AmazonSQS;
+import com.amazonaws.services.sqs.AmazonSQSClient;
 import com.amazonaws.services.sqs.AmazonSQSClientBuilder;
 import com.amazonaws.services.sqs.model.GetQueueAttributesResult;
 import com.amazonaws.services.sqs.model.ListQueuesResult;
@@ -17,8 +18,12 @@ import com.google.common.collect.Lists;
 
 import rebar.util.Json;
 
-public class SqsScanner extends AwsEntityScanner<Map<String, String>> {
+public class SqsScanner extends AwsEntityScanner<Map<String, String>,AmazonSQSClient> {
 
+	
+	public AmazonSQSClient getClient() {
+		return getClient(AmazonSQSClientBuilder.class);
+	}
 	@Override
 	protected void doScan() {
 
@@ -135,6 +140,11 @@ public class SqsScanner extends AwsEntityScanner<Map<String, String>> {
 	@Override
 	protected void doMergeRelationships() {
 		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	protected void project(Map<String, String> t) {
+		throw new UnsupportedOperationException();
 		
 	}
 

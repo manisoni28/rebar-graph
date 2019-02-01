@@ -28,9 +28,9 @@ import rebar.graph.core.GraphDB;
 import rebar.graph.core.GraphDB.NodeOperation;
 import rebar.util.Json;
 
-public class IamRoleScanner extends AwsEntityScanner<Role> {
+public class IamRoleScanner extends AwsEntityScanner<Role,AmazonIdentityManagementClient> {
 
-	AmazonIdentityManagementClient getClient() {
+	protected AmazonIdentityManagementClient getClient() {
 		return (AmazonIdentityManagementClient) getClient(AmazonIdentityManagementClientBuilder.class);
 
 	}
@@ -43,7 +43,7 @@ public class IamRoleScanner extends AwsEntityScanner<Role> {
 			return s;
 		}
 	}
-	private void project(Role role) {
+	protected void project(Role role) {
 		ObjectNode n = toJson(role);
 
 		

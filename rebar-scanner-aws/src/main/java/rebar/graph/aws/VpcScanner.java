@@ -18,6 +18,7 @@ package rebar.graph.aws;
 import java.util.Optional;
 
 import com.amazonaws.services.ec2.AmazonEC2;
+import com.amazonaws.services.ec2.AmazonEC2Client;
 import com.amazonaws.services.ec2.AmazonEC2ClientBuilder;
 import com.amazonaws.services.ec2.model.AmazonEC2Exception;
 import com.amazonaws.services.ec2.model.DescribeVpcsRequest;
@@ -29,21 +30,21 @@ import com.google.common.base.Strings;
 
 import rebar.util.RebarException;
 
-public class VpcScanner extends AwsEntityScanner<Vpc> {
+public class VpcScanner extends AwsEntityScanner<Vpc, AmazonEC2Client> {
 
 
 	static final String VPC_ID_PROPERTY = "vpcId";
 
 
 
-	
+
 
 	public void scanVPC(String vpcId) {
 		try {
-			AmazonEC2 ec2 = getClient(AmazonEC2ClientBuilder.class);
+			AmazonEC2 ec2 = getClient();
 			DescribeVpcsResult vpc = ec2.describeVpcs(new DescribeVpcsRequest().withVpcIds(vpcId));
 			vpc.getVpcs().forEach(it -> {
-				projectVPC(it);
+				project(it);
 			});
 
 		} catch (AmazonEC2Exception e) {
@@ -57,7 +58,7 @@ public class VpcScanner extends AwsEntityScanner<Vpc> {
 
 	}
 
-	private void projectVPC(Vpc it) {
+	protected void project(Vpc it) {
 
 		ObjectNode n = toJson(it);
 
@@ -77,7 +78,7 @@ public class VpcScanner extends AwsEntityScanner<Vpc> {
 
 		ec2.describeVpcs().getVpcs().forEach(vpc -> {
 
-			projectVPC(vpc);
+			project(vpc);
 
 		});
 	}
@@ -140,4 +141,8 @@ public class VpcScanner extends AwsEntityScanner<Vpc> {
 		
 	}
 
+	@Override
+	protected AmazonEC2Client getClient() {
+		return getClient(AmazonEC2ClientBuilder.class);
+	}
 }

@@ -19,6 +19,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import com.amazonaws.services.ec2.AmazonEC2;
+import com.amazonaws.services.ec2.AmazonEC2Client;
 import com.amazonaws.services.ec2.AmazonEC2ClientBuilder;
 import com.amazonaws.services.ec2.model.AmazonEC2Exception;
 import com.amazonaws.services.ec2.model.DescribeInstancesRequest;
@@ -38,7 +39,7 @@ import rebar.graph.neo4j.GraphDriver;
 import rebar.util.Json;
 import rebar.util.RebarException;
 
-public class Ec2InstanceScanner extends AwsEntityScanner<Instance> {
+public class Ec2InstanceScanner extends AwsEntityScanner<Instance, AmazonEC2Client> {
 
 
 
@@ -211,6 +212,21 @@ public class Ec2InstanceScanner extends AwsEntityScanner<Instance> {
 	@Override
 	protected void doMergeRelationships() {
 		// TODO Auto-generated method stub
+		
+	}
+
+
+
+	@Override
+	protected AmazonEC2Client getClient() {
+		return getClient(AmazonEC2ClientBuilder.class);
+	}
+
+
+
+	@Override
+	protected void project(Instance t) {
+		throw new UnsupportedOperationException();
 		
 	}
 }

@@ -17,12 +17,15 @@ package rebar.graph.aws;
 
 import java.util.Optional;
 
+import com.amazonaws.services.ec2.AmazonEC2Client;
+import com.amazonaws.services.ec2.AmazonEC2ClientBuilder;
+import com.amazonaws.services.ec2.model.AccountAttribute;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import rebar.graph.core.GraphDB;
 import rebar.util.Json;
 
-public class AccountScanner extends AwsEntityScanner {
+public class AccountScanner extends AwsEntityScanner<AccountAttribute,AmazonEC2Client> {
 
 
 
@@ -38,7 +41,8 @@ public class AccountScanner extends AwsEntityScanner {
 		scan();
 	}
 	
-	protected Optional<String> toArn(Object awsEntity) {
+	protected Optional<String> toArn(AccountAttribute awsEntity) {
+
 		return Optional.empty();
 	}
 
@@ -48,15 +52,28 @@ public class AccountScanner extends AwsEntityScanner {
 		scan();	
 	}
 
-	@Override
-	public AwsEntityType getEntityType() {
-		return AwsEntityType.AwsAccount;
-	}
+
 
 	@Override
 	protected void doMergeRelationships() {
 		
 		
+	}
+
+	@Override
+	protected AmazonEC2Client getClient() {
+		return getClient(AmazonEC2ClientBuilder.class);
+	}
+
+	@Override
+	protected void project(AccountAttribute t) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public AwsEntityType getEntityType() {
+		return AwsEntityType.AwsAccount;
 	}
 	
 	

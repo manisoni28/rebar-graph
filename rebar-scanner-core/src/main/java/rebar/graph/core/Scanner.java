@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.Preconditions;
 import com.google.common.base.Stopwatch;
 import com.machinezoo.noexception.Exceptions;
 
@@ -45,6 +46,10 @@ public abstract class Scanner {
 	
 	MeterRegistry meterRegistry = Metrics.globalRegistry; 
 	
+	public String getEntityGroup() {
+		return getClass().getSimpleName().toLowerCase().replace("scanner", "");
+		
+	}
 	public Scanner(ScannerBuilder<? extends Scanner> builder) {
 		this.scannerBuilder = builder;
 		
@@ -141,6 +146,11 @@ public abstract class Scanner {
 		return getScannerBuilder().getRebarGraph();
 	}
 
+	public final void init(EntityScanner scanner) {
+		Preconditions.checkNotNull(scanner);
+		scanner.setScanner(this);
+	}
+	
 	protected ScannerBuilder<? extends Scanner> getScannerBuilder() {
 		return scannerBuilder;
 	}

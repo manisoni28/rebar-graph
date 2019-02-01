@@ -5,14 +5,17 @@ import java.util.List;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.ImmutableList;
 
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ScanResult;
+import rebar.util.RebarException;
 
 public class AwsEntityTypeTest {
-
+	Logger logger = LoggerFactory.getLogger(AwsEntityTypeTest.class);
 
 	@Test
 	public void testIt() {
@@ -30,6 +33,7 @@ public class AwsEntityTypeTest {
 
 						Class clazz = Class.forName(it.getName());
 						if (!exclusions.contains(clazz)) {
+							logger.info("instantiating {}", clazz);
 							AwsEntityScanner x = (AwsEntityScanner) clazz.newInstance();
 
 							Assertions.assertThat(x.getEntityTypeName()).isNotEmpty();
@@ -38,8 +42,11 @@ public class AwsEntityTypeTest {
 							Assertions.assertThat(x.getEntityTypeName()).isEqualTo(et.name());
 
 						}
+					} catch (RuntimeException e) {
+						throw e;
 					} catch (Exception e) {
-						throw new RuntimeException(e);
+
+						throw new RebarException(e);
 					}
 				});
 
@@ -51,7 +58,7 @@ public class AwsEntityTypeTest {
 			if (t != AwsEntityType.UNKNOWN) {
 
 				Assertions.assertThat(t.name()).startsWith("Aws").isEqualTo(t.toString());
-				
+
 				Assertions.assertThat(t).isSameAs(AwsEntityType.valueOf(t.name()));
 			}
 		}

@@ -18,6 +18,7 @@ package rebar.graph.aws;
 import java.util.Optional;
 
 import com.amazonaws.services.ec2.AmazonEC2;
+import com.amazonaws.services.ec2.AmazonEC2Client;
 import com.amazonaws.services.ec2.AmazonEC2ClientBuilder;
 import com.amazonaws.services.ec2.model.AmazonEC2Exception;
 import com.amazonaws.services.ec2.model.DescribeLaunchTemplatesRequest;
@@ -27,9 +28,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Strings;
 
-public class LaunchTemplateScanner extends AwsEntityScanner<LaunchTemplate> {
-
-	
+public class LaunchTemplateScanner extends AwsEntityScanner<LaunchTemplate, AmazonEC2Client> {
 
 	@Override
 	public void doScan() {
@@ -44,25 +43,25 @@ public class LaunchTemplateScanner extends AwsEntityScanner<LaunchTemplate> {
 		}
 
 	}
+
 	protected Optional<String> toArn(LaunchTemplate awsEntity) {
-		return Optional.ofNullable(generateStandardArn("ec2","launch-template",awsEntity.getLaunchTemplateId()));
+		return Optional.ofNullable(generateStandardArn("ec2", "launch-template", awsEntity.getLaunchTemplateId()));
 	}
 
 	protected ObjectNode toJson(LaunchTemplate lt) {
 		ObjectNode x = super.toJson(lt);
 		x.set("name", x.path("launchTemplateName"));
-		
 
 		return x;
 	}
-	void project(LaunchTemplate t) {
+
+	protected void project(LaunchTemplate t) {
 
 		ObjectNode n = toJson(t);
-		
-		getGraphDB().nodes(getEntityTypeName()).idKey("arn").properties(n)
-				.merge();
+
+		getGraphDB().nodes(getEntityTypeName()).idKey("arn").properties(n).merge();
 	}
-	
+
 	public void scanLaunchTemplateByName(String name) {
 		try {
 			AmazonEC2 ec2 = getClient(AmazonEC2ClientBuilder.class);
@@ -107,9 +106,9 @@ public class LaunchTemplateScanner extends AwsEntityScanner<LaunchTemplate> {
 	public void doScan(String id) {
 		checkScanArgument(id);
 		scanLaunchTemplateByName(id);
-		
+
 	}
-	
+
 	@Override
 	public AwsEntityType getEntityType() {
 		return AwsEntityType.AwsLaunchTemplate;
@@ -118,6 +117,12 @@ public class LaunchTemplateScanner extends AwsEntityScanner<LaunchTemplate> {
 	@Override
 	protected void doMergeRelationships() {
 		// TODO Auto-generated method stub
-		
+
 	}
+
+	@Override
+	protected AmazonEC2Client getClient() {
+		return getClient(AmazonEC2ClientBuilder.class);
+	}
+
 }

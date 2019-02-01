@@ -2,6 +2,7 @@ package rebar.graph.aws;
 
 import java.util.Optional;
 
+import com.amazonaws.services.ec2.AmazonEC2Client;
 import com.amazonaws.services.ec2.model.AmazonEC2Exception;
 import com.amazonaws.services.ec2.model.DescribeEgressOnlyInternetGatewaysRequest;
 import com.amazonaws.services.ec2.model.DescribeEgressOnlyInternetGatewaysResult;
@@ -15,6 +16,9 @@ import rebar.graph.core.RelationshipBuilder.Cardinality;
 import rebar.util.Json;
 
 public class EgressOnlyInternetGatewayScanner extends AbstractNetworkScanner<EgressOnlyInternetGateway> {
+
+
+
 
 	@Override
 	protected ObjectNode toJson(EgressOnlyInternetGateway awsObject) {
@@ -40,7 +44,7 @@ public class EgressOnlyInternetGatewayScanner extends AbstractNetworkScanner<Egr
 		return Optional.of(String.format("arn:aws:ec2:%s:%s:egress-only-internet-gateway/%s", getRegionName(),getAccount(),awsObject.getEgressOnlyInternetGatewayId()));
 		
 	}
-
+	
 	@Override
 	protected void doMergeRelationships() {
 		// do not merge account owner
@@ -108,9 +112,15 @@ public class EgressOnlyInternetGatewayScanner extends AbstractNetworkScanner<Egr
 		awsGraphNodes().idKey("arn").properties(n).merge();
 		
 	}
+
+
 	@Override
 	public AwsEntityType getEntityType() {
 		return AwsEntityType.AwsEgressOnlyInternetGateway;
 	}
+
+
+
+
 
 }

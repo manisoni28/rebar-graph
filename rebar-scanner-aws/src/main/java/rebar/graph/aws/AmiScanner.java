@@ -40,7 +40,7 @@ import com.machinezoo.noexception.Exceptions;
 import rebar.graph.core.GraphDB;
 import rebar.util.Json;
 
-public class AmiScanner extends AwsEntityScanner<Image> {
+public class AmiScanner extends AwsEntityScanner<Image, AmazonEC2Client> {
 
 	
 
@@ -161,6 +161,11 @@ public class AmiScanner extends AwsEntityScanner<Image> {
 	protected void doMergeRelationships() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	protected AmazonEC2Client getClient() {
+		return getClient(AmazonEC2ClientBuilder.class);
 	}
 
 }

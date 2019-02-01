@@ -3,6 +3,7 @@ package rebar.graph.aws;
 public class VpcScannerGroup extends SerialScanner {
 
 	public VpcScannerGroup() {
+		super();
 		addScanners(AccountScanner.class);
 		addScanners(RegionScanner.class);
 		addScanners(VpcScanner.class);

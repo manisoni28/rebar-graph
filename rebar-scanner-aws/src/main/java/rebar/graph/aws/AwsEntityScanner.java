@@ -39,6 +39,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.machinezoo.noexception.Exceptions;
 
+import rebar.graph.core.EntityScanner;
 import rebar.graph.core.GraphDB;
 import rebar.graph.core.GraphDB.NodeOperation;
 import rebar.graph.core.Invokable;
@@ -47,24 +48,22 @@ import rebar.graph.core.RelationshipBuilder.Cardinality;
 import rebar.graph.core.RelationshipBuilder.FromNode;
 import rebar.util.Json;
 
-public abstract class AwsEntityScanner<A extends Object> {
+public abstract class AwsEntityScanner<OBJECTTYPE,CLIENT> extends EntityScanner<AwsScanner, AwsEntityType, OBJECTTYPE, CLIENT>{
+
+	
 
 	public static final String WILDCARD="*";
 	Logger logger = LoggerFactory.getLogger(getClass());
-	AwsScanner scanner;
 
 	public static final String TAG_PREFIX = "tag_";
 	protected static final Set<String> TAG_PREFIXES = ImmutableSet.of(TAG_PREFIX);
-	private AwsEntityType entityType;
-
+	
+	
+	
 	boolean isEnabled() {
 		return true;
 	}
 
-	protected void init(AwsScanner scanner) {
-		this.scanner = scanner;
-
-	}
 
 	/**
 	 * Convenience for initializing a NodeOperation with common boilerplate.
@@ -207,8 +206,9 @@ public abstract class AwsEntityScanner<A extends Object> {
 		return getAwsScanner().getAccount();
 	}
 
+	@Deprecated
 	public AwsScanner getAwsScanner() {
-		return scanner;
+		return getScanner();
 	}
 
 	public final void scan() {
@@ -242,19 +242,19 @@ public abstract class AwsEntityScanner<A extends Object> {
 	abstract void doScan(String id);
 
 	public void tryExecute(Invokable r) {
-		scanner.tryExecute(r);
+		getScanner().tryExecute(r);
 	}
 
 	public void maybeThrow(Exception t) {
-		scanner.maybeThrow(t);
+		getScanner().maybeThrow(t);
 	}
 
-	protected Optional<String> toArn(A awsObject) {
+	protected Optional<String> toArn(OBJECTTYPE awsObject) {
 		return Optional.empty();
 	}
 
 	@SuppressWarnings("unchecked")
-	protected ObjectNode toJson(A awsObject) {
+	protected ObjectNode toJson(OBJECTTYPE awsObject) {
 
 		Preconditions.checkNotNull(awsObject);
 		ObjectNode n = Json.objectMapper().valueToTree(awsObject);
@@ -263,7 +263,7 @@ public abstract class AwsEntityScanner<A extends Object> {
 		n.put("region", getRegionName());
 		n.put("account", getAccount());
 
-		toArn((A) awsObject).ifPresent(arn -> n.put("arn", arn));
+		toArn((OBJECTTYPE) awsObject).ifPresent(arn -> n.put("arn", arn));
 		return n;
 	}
 
@@ -282,7 +282,7 @@ public abstract class AwsEntityScanner<A extends Object> {
 		return String.format("arn:aws:%s:%s:%s:%s/%s", serviceType, getRegionName(), getAccount(), entity, id);
 	}
 
-	public abstract AwsEntityType getEntityType();
+
 
 	public String getEntityTypeName() {
 		Preconditions.checkState(getEntityType() != null, "AwsEntityType not set on " + getClass().getSimpleName());

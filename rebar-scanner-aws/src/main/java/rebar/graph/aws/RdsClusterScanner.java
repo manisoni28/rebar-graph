@@ -16,9 +16,7 @@ import com.machinezoo.noexception.Exceptions;
 
 import rebar.util.Json;
 
-public class RdsClusterScanner extends AwsEntityScanner<DBCluster> {
-
-	
+public class RdsClusterScanner extends AwsEntityScanner<DBCluster, AmazonRDSClient> {
 
 	static void fixBrokenNames(ObjectNode n) {
 		List<String> brokenNames = Lists.newArrayList();
@@ -35,32 +33,37 @@ public class RdsClusterScanner extends AwsEntityScanner<DBCluster> {
 
 		brokenNames.forEach(it -> {
 			JsonNode val = n.get(it);
-		
+
 			String fixedName = "db" + (it.substring(2, 3).toUpperCase()) + it.substring(3);
 			n.remove(it);
 			n.set(fixedName, val);
 		});
-		
+
 		if (n.has("iamdatabaseAuthenticationEnabled")) {
-			n.set("iamDatabaseAuthenticationEnabled",n.get("iamDatabaseAuthenticationEnabled"));
+			n.set("iamDatabaseAuthenticationEnabled", n.get("iamDatabaseAuthenticationEnabled"));
 			n.remove("iamdatabaseAuthenticationEnabled");
 		}
-		
+
 		if (n.has("cacertificateIdentifier")) {
-			n.set("caCertificateIdentifier",n.get("cacertificateIdentifier"));
+			n.set("caCertificateIdentifier", n.get("cacertificateIdentifier"));
 			n.remove("cacertificateIdentifier");
 		}
 	}
 
 	@Override
 	protected ObjectNode toJson(DBCluster awsObject) {
-		
+
 		ObjectNode n = super.toJson(awsObject);
 
 		fixBrokenNames(n);
 		n.put("arn", awsObject.getDBClusterArn());
-		
+
 		return n;
+	}
+
+	protected AmazonRDSClient getClient() {
+
+		return getClient(AmazonRDSClientBuilder.class);
 	}
 
 	@Override
@@ -77,7 +80,7 @@ public class RdsClusterScanner extends AwsEntityScanner<DBCluster> {
 			request.setMarker(result.getMarker());
 		} while (!Strings.isNullOrEmpty(request.getMarker()));
 		gc("AwsRdsCluster", ts);
-		
+
 		mergeAccountOwner();
 
 	}
@@ -114,17 +117,16 @@ public class RdsClusterScanner extends AwsEntityScanner<DBCluster> {
 		}
 		mergeAccountOwner();
 	}
-	
-	@Override
-	public AwsEntityType getEntityType() {
-		return AwsEntityType.AwsRdsCluster;
-	}
 
 	@Override
 	protected void doMergeRelationships() {
 		// TODO Auto-generated method stub
-		
+
 	}
-	
+
+	@Override
+	public AwsEntityType getEntityType() {
+		return AwsEntityType.AwsRdsCluster;
+	}
 
 }
