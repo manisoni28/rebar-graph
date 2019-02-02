@@ -1,11 +1,12 @@
 site_name: Rebar
-#theme:
-#  name: 'material'
+theme:
+  name: 'readthedocs'
 
 nav:
     - Overview: index.md
     - Architecture: architecture.md
     - AWS: aws.md
+    - Catalog: catalog.md
     - Kubernetes: kubernetes.md
     - Digital Ocean: digitalocean.md
     - GitHub: github.md
