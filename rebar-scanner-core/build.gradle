@@ -12,6 +12,7 @@ dependencies {
     compile "com.fasterxml.jackson.core:jackson-databind:${JACKSON_VERSION}"
     compile "com.fasterxml.jackson.dataformat:jackson-dataformat-cbor:${JACKSON_VERSION}"
     compile 'io.reactivex.rxjava2:rxjava:2.2.6'
+    compile "org.eclipse.jgit:org.eclipse.jgit:${JGIT_VERSION}" 
 
     compile "com.google.guava:guava:${GUAVA_VERSION}"
     compile "com.machinezoo.noexception:noexception:${NOEXCEPTION_VERSION}"
