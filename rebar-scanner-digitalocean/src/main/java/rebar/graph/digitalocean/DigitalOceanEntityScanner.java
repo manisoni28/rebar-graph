@@ -32,7 +32,7 @@ public abstract class DigitalOceanEntityScanner<T>
 		logger.info("{} limit={} remaining={} reset={}sec", type, limit.getLimit(), limit.getRemaining(),
 				limit.getReset().toString());
 		
-			//	TimeUnit.MILLISECONDS.toSeconds(limit.getReset().getTime()-System.currentTimeMillis()));
+			
 	}
 
 	protected DigitalOceanEntityScanner(DigitalOceanScanner scanner) {
