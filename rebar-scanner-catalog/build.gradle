@@ -1,0 +1,20 @@
+
+plugins {
+  id 'com.github.johnrengelman.shadow' version '4.0.3'
+}
+apply plugin: 'application'
+
+mainClassName = "rebar.graph.core.Main"
+
+
+dependencies {
+
+    compile project(':rebar-scanner-core')
+
+	  compile "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:${JACKSON_VERSION}"
+    compile "org.eclipse.jgit:org.eclipse.jgit:${JGIT_VERSION}"
+    compile "ch.qos.logback:logback-classic:${LOGBACK_VERSION}"
+    testCompile project(':rebar-scanner-test')
+    
+
+}
