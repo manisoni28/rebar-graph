@@ -14,9 +14,9 @@ import com.myjeeva.digitalocean.pojo.Droplets;
 
 import rebar.util.Json;
 
-public class DropletScanner extends DigitalOceanEntityScanner<Droplet> {
+public class DIgitalOceanDropletScanner extends DigitalOceanEntityScanner<Droplet> {
 
-	DropletScanner(DigitalOceanScanner scanner) {
+	DIgitalOceanDropletScanner(DigitalOceanScanner scanner) {
 
 		super(scanner);
 
@@ -58,7 +58,7 @@ public class DropletScanner extends DigitalOceanEntityScanner<Droplet> {
 	protected void project(Droplet entity) {
 		ObjectNode n = toJson(entity);
 
-		digitalOceanNodes("DigitalOceanDroplet").idKey("ern").properties(n).merge();
+		digitalOceanNodes("DigitalOceanDroplet").idKey("urn").properties(n).merge();
 	}
 
 	@Override
@@ -118,9 +118,9 @@ public class DropletScanner extends DigitalOceanEntityScanner<Droplet> {
 	}
 
 	@Override
-	public Optional<String> toErn(Droplet t) {
-		return Optional.ofNullable(String.format("ern:digitalocean:%s:%s:%s:%s", t.getRegion().getSlug().toString(),
-				getAccount(), "droplet", Integer.toString(t.getId())));
+	public Optional<String> toUrn(Droplet t) {
+		return Optional.ofNullable(toUrn(t.getRegion().getSlug(), getAccount(), "droplet", Integer.toString(t.getId())));
+	
 	}
 
 }

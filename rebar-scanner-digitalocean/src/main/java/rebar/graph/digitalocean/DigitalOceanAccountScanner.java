@@ -8,9 +8,9 @@ import com.myjeeva.digitalocean.exception.DigitalOceanException;
 import com.myjeeva.digitalocean.exception.RequestUnsuccessfulException;
 import com.myjeeva.digitalocean.pojo.Account;
 
-public class AccountScanner extends DigitalOceanEntityScanner<Account> {
+public class DigitalOceanAccountScanner extends DigitalOceanEntityScanner<Account> {
 
-	public AccountScanner(DigitalOceanScanner scanner) {
+	public DigitalOceanAccountScanner(DigitalOceanScanner scanner) {
 		super(scanner);
 	}
 
@@ -22,7 +22,7 @@ public class AccountScanner extends DigitalOceanEntityScanner<Account> {
 		n.put("email", account.getEmail());
 		n.put("status", account.getStatus());
 		n.put("statusMessage", account.getStatusMessage());
-		n.put("ern",toErn(account).get());
+		n.put("urn",toUrn(account).get());
 		n.put("graphEntityType", DigitalOceanEntityType.DigitalOceanAccount.name());
 		n.put("graphEntityGroup", "digitalocean");
 		return n;
@@ -45,7 +45,7 @@ public class AccountScanner extends DigitalOceanEntityScanner<Account> {
 	@Override
 	protected void project(Account entity) {
 		ObjectNode n = toJson(entity);
-		digitalOceanNodes(getEntityType().name()).idKey("ern").properties(n).merge();
+		digitalOceanNodes(getEntityType().name()).idKey("urn").properties(n).merge();
 
 	}
 
@@ -67,7 +67,7 @@ public class AccountScanner extends DigitalOceanEntityScanner<Account> {
 	}
 
 	@Override
-	public Optional<String> toErn(Account t) {
-		return Optional.ofNullable(String.format("ern:digitalocean::%s", t.getUuid()));
+	public Optional<String> toUrn(Account t) {
+		return Optional.ofNullable(String.format("urn:digitalocean:cloud::%s", t.getUuid()));
 	}
 }

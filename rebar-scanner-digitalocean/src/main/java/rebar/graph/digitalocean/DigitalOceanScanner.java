@@ -101,8 +101,8 @@ public class DigitalOceanScanner extends Scanner {
 
 	}
 
-	public DropletScanner getDropletScanner() {
-		return new DropletScanner(this);
+	public DIgitalOceanDropletScanner getDropletScanner() {
+		return new DIgitalOceanDropletScanner(this);
 	}
 
 	protected NodeOperation digitalOceanNodes(String label) {
@@ -111,12 +111,12 @@ public class DigitalOceanScanner extends Scanner {
 
 	}
 
-	public RegionScanner getRegionScanner() {
-		return new RegionScanner(this);
+	public DigitalOceanRegionScanner getRegionScanner() {
+		return new DigitalOceanRegionScanner(this);
 	}
 
-	public AccountScanner getAccountScanner() {
-		return new AccountScanner(this);
+	public DigitalOceanAccountScanner getAccountScanner() {
+		return new DigitalOceanAccountScanner(this);
 	}
 
 	@Override
@@ -127,9 +127,9 @@ public class DigitalOceanScanner extends Scanner {
 
 	@Override
 	public void applyConstraints() {
-		getGraphDB().schema().createUniqueConstraint("DigitalOceanAccount", "ern");
-		getGraphDB().schema().createUniqueConstraint("DigitalOceanRegion", "ern");
-		getGraphDB().schema().createUniqueConstraint("DigitalOceanDroplet", "ern");
+		getGraphDB().schema().createUniqueConstraint("DigitalOceanAccount", "urn");
+		getGraphDB().schema().createUniqueConstraint("DigitalOceanRegion", "urn");
+		getGraphDB().schema().createUniqueConstraint("DigitalOceanDroplet", "urn");
 	}
 
 }

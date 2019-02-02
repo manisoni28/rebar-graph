@@ -29,8 +29,10 @@ public abstract class DigitalOceanEntityScanner<T>
 	Logger logger = LoggerFactory.getLogger(getClass());
 
 	protected void adviseRateLimit(DigitalOceanEntityType type, RateLimit limit) {
-		logger.info("{} limit={} remaining={} reset={}", type, limit.getLimit(), limit.getRemaining(),
+		logger.info("{} limit={} remaining={} reset={}sec", type, limit.getLimit(), limit.getRemaining(),
 				limit.getReset().toString());
+		
+			//	TimeUnit.MILLISECONDS.toSeconds(limit.getReset().getTime()-System.currentTimeMillis()));
 	}
 
 	protected DigitalOceanEntityScanner(DigitalOceanScanner scanner) {
@@ -57,7 +59,7 @@ public abstract class DigitalOceanEntityScanner<T>
 		if (n.has("id")) {
 			n.put("id", n.path("id").asText());
 		}
-		n.put("ern", toErn(entity).get());
+		n.put("urn", toUrn(entity).get());
 		return n;
 	}
 
@@ -95,6 +97,8 @@ public abstract class DigitalOceanEntityScanner<T>
 		getScanner().getGraphDB().nodes(getEntityType().name()).id(keyName, id).idKey("account").delete();
 
 	}
-	
-	public abstract java.util.Optional<String> toErn(T t);
+	public static String toUrn(String region, String account, String resourceType, String resource) {
+		return String.format("urn:digitalocean:cloud:%s:%s:%s/%s",region, account, resourceType, resource);
+	}
+	public abstract java.util.Optional<String> toUrn(T t);
 }

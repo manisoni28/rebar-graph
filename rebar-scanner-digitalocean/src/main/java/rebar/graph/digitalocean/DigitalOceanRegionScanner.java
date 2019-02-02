@@ -9,7 +9,7 @@ import com.myjeeva.digitalocean.exception.RequestUnsuccessfulException;
 import com.myjeeva.digitalocean.pojo.Region;
 import com.myjeeva.digitalocean.pojo.Regions;
 
-public class RegionScanner extends DigitalOceanEntityScanner<Region> {
+public class DigitalOceanRegionScanner extends DigitalOceanEntityScanner<Region> {
 
 	@Override
 	protected ObjectNode toJson(Region entity) {
@@ -19,7 +19,7 @@ public class RegionScanner extends DigitalOceanEntityScanner<Region> {
 		return n;
 	}
 
-	public RegionScanner(DigitalOceanScanner scanner) {
+	public DigitalOceanRegionScanner(DigitalOceanScanner scanner) {
 		super(scanner);
 	}
 
@@ -65,8 +65,8 @@ public class RegionScanner extends DigitalOceanEntityScanner<Region> {
 	}
 
 	@Override
-	public Optional<String> toErn(Region t) {
-		return Optional.ofNullable(String.format("ern:digitalocean:%s", t.getSlug()));
+	public Optional<String> toUrn(Region t) {
+		return Optional.ofNullable(String.format("urn:digitalocean:cloud:%s", t.getSlug()));
 	}
 
 	

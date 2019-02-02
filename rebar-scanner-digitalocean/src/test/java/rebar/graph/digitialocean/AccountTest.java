@@ -14,8 +14,8 @@ public class AccountTest extends DigitalOceanIntegrationTest {
 
 		
 		getGraphDriver().cypher("match (a) where labels(a)[0]=~'DigitalOcean.*' return a").forEach(it->{
-			Assertions.assertThat(it.has("ern")).as("entity has ern: %s",it).isTrue();
-			Assertions.assertThat(it.path("ern").asText()).as("ern follows naming convention: %s",it.toString()).startsWith("ern:digitalocean:");
+			Assertions.assertThat(it.has("urn")).as("entity has urn: %s",it).isTrue();
+			Assertions.assertThat(it.path("urn").asText()).as("urn follows naming convention: %s",it.toString()).startsWith("urn:digitalocean:cloud:");
 		});
 
 	}

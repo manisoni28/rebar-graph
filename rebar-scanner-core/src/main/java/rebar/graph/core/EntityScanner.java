@@ -59,7 +59,8 @@ public abstract class EntityScanner<SCANNER extends Scanner,ENTITYTYPE,OBJECTTYP
 		logger.info("scanning");
 		doScan();
 		logger.info("scan complete");
+		
 	}
 	
-	public abstract Optional<String> toErn(OBJECTTYPE t);
+	public abstract Optional<String> toUrn(OBJECTTYPE t);
 }
