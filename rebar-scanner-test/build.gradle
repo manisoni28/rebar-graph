@@ -1,21 +1,6 @@
-buildscript {
-	ext {
-		springBootVersion = '2.1.2.RELEASE'
-	}
-	repositories {
-		mavenCentral()
-	}
-	dependencies {
-		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-    }
-}
-apply plugin: 'java'
-apply plugin: 'org.springframework.boot'
-apply plugin: 'io.spring.dependency-management'
 
-jar {
-    enabled = true
-}
+apply plugin: 'java'
+
 
 dependencies {
     compile project(":rebar-scanner-core")
@@ -23,8 +8,6 @@ dependencies {
     compile "org.junit.jupiter:junit-jupiter-engine:${JUNIT_VERSION}"
     compile "ch.qos.logback:logback-classic:${LOGBACK_VERSION}"
 
-	compile 'org.springframework.boot:spring-boot-starter'
-	compile  'org.springframework.boot:spring-boot-starter-test'
 
     compile "org.assertj:assertj-core:${ASSERTJ_VERSION}"
     compile "ch.qos.logback:logback-classic:${LOGBACK_VERSION}"

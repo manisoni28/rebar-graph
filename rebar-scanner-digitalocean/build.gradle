@@ -21,8 +21,8 @@ dependencies {
     compile 'com.myjeeva.digitalocean:digitalocean-api-client:2.16'
     compile "ch.qos.logback:logback-classic:${LOGBACK_VERSION}"
     testCompile project(':rebar-scanner-test')
-    
     compile 'org.springframework.boot:spring-boot-starter'
-	  testCompile  'org.springframework.boot:spring-boot-starter-test'
+	testCompile  'org.springframework.boot:spring-boot-starter-test'
+
 
 }

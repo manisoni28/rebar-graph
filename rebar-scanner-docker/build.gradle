@@ -21,9 +21,9 @@ dependencies {
 
     compile 'com.spotify:docker-client:8.14.3'
     compile "ch.qos.logback:logback-classic:${LOGBACK_VERSION}"
-    	compile 'org.springframework.boot:spring-boot-starter'
+  
+        testCompile project(':rebar-scanner-test')
+    compile 'org.springframework.boot:spring-boot-starter'
 	testCompile  'org.springframework.boot:spring-boot-starter-test'
-    testCompile project(':rebar-scanner-test')
-    
 
 }
