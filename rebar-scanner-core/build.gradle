@@ -21,7 +21,7 @@ dependencies {
     compile "com.machinezoo.noexception:noexception:${NOEXCEPTION_VERSION}"
 
 compile "org.springframework.boot:spring-boot-starter:${SPRING_BOOT_VERSION}"
-testCompille "org.springframework.boot:spring-boot-starter-test:${SPRING_BOOT_VERSION}"
+testCompile "org.springframework.boot:spring-boot-starter-test:${SPRING_BOOT_VERSION}"
 
     testCompile "org.assertj:assertj-core:${ASSERTJ_VERSION}"
     testCompile "ch.qos.logback:logback-classic:${LOGBACK_VERSION}"
