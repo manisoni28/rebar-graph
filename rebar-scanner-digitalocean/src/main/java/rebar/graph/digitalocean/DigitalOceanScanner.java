@@ -17,26 +17,21 @@ package rebar.graph.digitalocean;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Map;
 import java.util.Optional;
 
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.myjeeva.digitalocean.exception.DigitalOceanException;
 import com.myjeeva.digitalocean.exception.RequestUnsuccessfulException;
 import com.myjeeva.digitalocean.impl.DigitalOceanClient;
-import com.myjeeva.digitalocean.pojo.Account;
-import com.myjeeva.digitalocean.pojo.Region;
-import com.myjeeva.digitalocean.pojo.Regions;
 
-import rebar.graph.core.GraphDB;
-import rebar.graph.core.Scanner;
-import rebar.graph.core.ScannerBuilder;
 import rebar.graph.core.GraphDB.NodeOperation;
-import rebar.util.Json;
+import rebar.graph.core.RebarGraph;
+import rebar.graph.core.Scanner;
 import rebar.util.RebarException;
 
 public class DigitalOceanScanner extends Scanner {
@@ -46,8 +41,8 @@ public class DigitalOceanScanner extends Scanner {
 
 	String uuid;
 
-	public DigitalOceanScanner(ScannerBuilder<? extends Scanner> builder) {
-		super(builder);
+	public DigitalOceanScanner() {
+		
 
 	}
 
@@ -101,8 +96,8 @@ public class DigitalOceanScanner extends Scanner {
 
 	}
 
-	public DIgitalOceanDropletScanner getDropletScanner() {
-		return new DIgitalOceanDropletScanner(this);
+	public DigitalOceanDropletScanner getDropletScanner() {
+		return new DigitalOceanDropletScanner(this);
 	}
 
 	protected NodeOperation digitalOceanNodes(String label) {
@@ -130,6 +125,12 @@ public class DigitalOceanScanner extends Scanner {
 		getGraphDB().schema().createUniqueConstraint("DigitalOceanAccount", "urn");
 		getGraphDB().schema().createUniqueConstraint("DigitalOceanRegion", "urn");
 		getGraphDB().schema().createUniqueConstraint("DigitalOceanDroplet", "urn");
+	}
+
+	@Override
+	protected void init(RebarGraph g, Map<String, String> config) throws Exception {
+	
+		
 	}
 
 }

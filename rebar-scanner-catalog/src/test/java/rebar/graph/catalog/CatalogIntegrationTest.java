@@ -31,7 +31,7 @@ public abstract class CatalogIntegrationTest extends AbstractIntegrationTest {
 	private void checkAccess() {
 		try {
 			if (scanner==null) {
-				scanner = getRebarGraph().createBuilder(CatalogScannerBuilder.class).build();
+				scanner = getRebarGraph().newScanner(CatalogScanner.class);
 				scanner.scan();
 				skipAll=false;
 			}

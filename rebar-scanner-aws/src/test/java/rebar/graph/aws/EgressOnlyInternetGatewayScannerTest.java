@@ -9,7 +9,6 @@ public class EgressOnlyInternetGatewayScannerTest extends AwsIntegrationTest {
 	protected void beforeAll() {
 	
 		super.beforeAll();
-		
 		getAwsScanner().getEntityScanner(VpcScannerGroup.class).scan();
 		getAwsScanner().getEntityScanner(NetworkScannerGroup.class).scan();
 	}

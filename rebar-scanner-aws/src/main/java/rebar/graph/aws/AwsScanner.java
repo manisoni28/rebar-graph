@@ -15,7 +15,6 @@
  */
 package rebar.graph.aws;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +28,7 @@ import org.slf4j.LoggerFactory;
 import com.amazonaws.AmazonWebServiceClient;
 import com.amazonaws.SdkClientException;
 import com.amazonaws.client.builder.AwsClientBuilder;
-import com.amazonaws.client.builder.AwsClientBuilder.EndpointConfiguration;
+import com.amazonaws.regions.DefaultAwsRegionProviderChain;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.securitytoken.AWSSecurityTokenServiceClientBuilder;
@@ -47,10 +46,8 @@ import com.google.common.collect.Maps;
 
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ScanResult;
-import rebar.graph.core.EntityScanner;
-import rebar.graph.core.GraphDB;
+import rebar.graph.core.RebarGraph;
 import rebar.graph.core.Scanner;
-import rebar.graph.core.ScannerBuilder;
 import rebar.graph.neo4j.GraphSchema;
 import rebar.util.RebarException;
 
@@ -73,22 +70,43 @@ public final class AwsScanner extends Scanner {
 		findEntityScanners();
 	}
 
-	protected AwsScanner(ScannerBuilder<? extends Scanner> builder) {
-		super(builder);
+	public AwsScanner() {
 
-		configurers = ImmutableList.copyOf(AwsScannerBuilder.class.cast(builder).configurers);
+	}
 
+	@Override
+	public void init(RebarGraph g, Map<String, String> cfg) {
+
+		try {
+		
+			String regionVal = cfg.get("region");
+
+			if (regionVal == null) {
+				String r = new DefaultAwsRegionProviderChain().getRegion();
+				if (Strings.isNullOrEmpty(r)) {
+					r = Regions.US_EAST_1.getName();
+				}
+				region = Regions.fromName(r);
+				logger.info("region not specified defaulting to: {}", region.getName());
+
+			} else {
+				this.region = Regions.fromName(regionVal);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		Preconditions.checkState(this.region != null, "region must be set");
 	}
 
 	public String getAccount() {
 		return accountSupplier.get();
 	}
 
-	
 	public CloudWatchEvents cloudWatchEvents() {
 		return eventDispatcher;
 	}
-	
+
 	private String doGetAccount() {
 		try {
 			GetCallerIdentityResult result = newClientBuilder(AWSSecurityTokenServiceClientBuilder.class).build()
@@ -120,8 +138,9 @@ public final class AwsScanner extends Scanner {
 	public <T extends AwsEntityScanner> T getEntityScanner(Class<T> clazz) {
 		try {
 			T t = clazz.newInstance();
-			init(t);;
-	
+			init(t);
+			;
+
 			return t;
 
 		} catch (IllegalAccessException | InstantiationException e) {
@@ -132,6 +151,7 @@ public final class AwsScanner extends Scanner {
 	public String getRegionName() {
 		return getRegion().getName();
 	}
+
 	public Regions getRegion() {
 		return region;
 	}
@@ -148,20 +168,19 @@ public final class AwsScanner extends Scanner {
 			logger.info("building new client for account={} region={} type={}", getAccount(), getRegion().getName(),
 					builderClass.getName().replace("Builder", ""));
 			AwsClientBuilder cb = newClientBuilder(builderClass);
-			
-			
+
 			if (builderClass.equals(AmazonS3ClientBuilder.class)) {
-				// There are very odd legacy rules for S3 and its bizarre-o semi-global behavior.
-				// We need to force global bucket access mode if we are using a us-east-1 endpoint
+				// There are very odd legacy rules for S3 and its bizarre-o semi-global
+				// behavior.
+				// We need to force global bucket access mode if we are using a us-east-1
+				// endpoint
 				AmazonS3ClientBuilder s3b = (AmazonS3ClientBuilder) cb;
-				if (region==Regions.US_EAST_1) {
+				if (region == Regions.US_EAST_1) {
 					cb = s3b.enableForceGlobalBucketAccess();
-				}
-				else {
+				} else {
 					cb = cb.withRegion(getRegion());
 				}
-			}
-			else {
+			} else {
 				cb = cb.withRegion(getRegion());
 			}
 			client = (T) cb.build();
@@ -257,21 +276,21 @@ public final class AwsScanner extends Scanner {
 		s.createUniqueConstraint("AwsEksCluster", "arn");
 		s.createUniqueConstraint("AwsLambdaFunction", "arn");
 		s.createUniqueConstraint("AwsVpc", "arn");
-		
+
 		s.createUniqueConstraint("AwsHostedZone", "id");
 		s.createUniqueConstraint("AwsHostedZone", "arn");
-		
+
 		s.createUniqueConstraint("AwsSqsQueue", "url");
 		s.createUniqueConstraint("AwsSqsQueue", "arn");
 		s.createUniqueConstraint("AwsSnsTopic", "arn");
 		s.createUniqueConstraint("AwsSnsSubscription", "arn");
-		
+
 		s.createUniqueConstraint("AwsS3Bucket", "arn");
 		s.createUniqueConstraint("AwsS3Bucket", "name");
-		
+
 		s.createUniqueConstraint("AwsEmrCluster", "arn");
-		
-		s.createUniqueConstraint("AwsRouteTable","arn");
+
+		s.createUniqueConstraint("AwsRouteTable", "arn");
 		s.createUniqueConstraint("AwsInternetGateway", "arn");
 		s.createUniqueConstraint("AwsEgressOnlyInternetGateway", "arn");
 		s.createUniqueConstraint(AwsEntityType.AwsIamInstanceProfile.name(), "arn");
@@ -283,10 +302,10 @@ public final class AwsScanner extends Scanner {
 	public CloudTrailEvents cloudTrailEvents() {
 		return new CloudTrailEvents(this);
 	}
+
 	public String toString() {
 		return MoreObjects.toStringHelper(this).add("type", getScannerType()).add("account", getAccount())
 				.add("region", getRegion().getName()).toString();
 	}
 
-	
 }

@@ -47,6 +47,7 @@ public class AwsScannerTest extends AwsIntegrationTest {
 		logger.info("deleting all aws entities...");
 		deleteAllAwsEntities();
 		getAwsScanner().scan();
+	
 	}
 
 	public void testScannerType() {

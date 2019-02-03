@@ -18,24 +18,7 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.aliyuncs.DefaultAcsClient;
-import com.aliyuncs.IAcsClient;
-import com.aliyuncs.auth.AlibabaCloudCredentialsProvider;
-import com.aliyuncs.auth.BasicCredentials;
-import com.aliyuncs.auth.StaticCredentialsProvider;
-import com.aliyuncs.ecs.model.v20140526.DescribeInstancesRequest;
-import com.aliyuncs.ecs.model.v20140526.DescribeInstancesResponse;
-import com.aliyuncs.ecs.model.v20140526.DescribeVpcsRequest;
-import com.aliyuncs.ecs.model.v20140526.DescribeVpcsResponse;
-import com.aliyuncs.profile.DefaultProfile;
-import com.aliyuncs.sts.model.v20150401.GetCallerIdentityRequest;
-import com.aliyuncs.sts.model.v20150401.GetCallerIdentityResponse;
-import com.fasterxml.jackson.databind.JsonNode;
-
-import rebar.graph.alibaba.AlibabaScanner;
-import rebar.graph.alibaba.AlibabaScannerBuilder;
 import rebar.graph.test.AbstractIntegrationTest;
-import rebar.util.Json;
 
 public class AlibabaIntegrationTest extends AbstractIntegrationTest {
 
@@ -46,7 +29,7 @@ public class AlibabaIntegrationTest extends AbstractIntegrationTest {
 	
 		try {
 		
-		AlibabaScanner scanner = getRebarGraph().createBuilder(AlibabaScannerBuilder.class).build();
+		AlibabaScanner scanner = getRebarGraph().newScanner(AlibabaScanner.class);
 	
 
 		scanner.scan();

@@ -9,7 +9,7 @@ public class FilesystemCatalogLoaderTest extends AbstractIntegrationTest {
 
 	@Test
 	public void testIt() {
-		getRebarGraph().createBuilder(CatalogScannerBuilder.class).build().scan();
+		getRebarGraph().newScanner(CatalogScanner.class).scan();
 	}
 
 }

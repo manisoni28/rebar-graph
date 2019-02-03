@@ -53,11 +53,12 @@ public class SimpleGit {
 	static ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
 	public static final String GIT_URL = "GIT_URL";
 	public static final String GIT_SSH_KEY = "GIT_SSH_KEY";
-	EnvConfig env = null;
+	EnvConfig env = new EnvConfig();
 
 	TransportConfigCallback transportConfigCallback = null;
 
 	public SimpleGit withEnv(EnvConfig env) {
+		Preconditions.checkNotNull(env);
 		this.env = env;
 		return this;
 	}

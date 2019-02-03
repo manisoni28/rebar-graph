@@ -21,6 +21,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -29,13 +30,14 @@ import io.fabric8.kubernetes.client.KubernetesClient;
 import rebar.graph.core.ScannerModule;
 import rebar.graph.core.Main;
 
+@Component
 public class KubeScannerModule extends ScannerModule {
 
 	Logger logger = LoggerFactory.getLogger(KubeScannerModule.class);
 
 	KubeScanner scanner;
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		Main.main(args);
 	}
 
@@ -117,13 +119,13 @@ public class KubeScannerModule extends ScannerModule {
 		}
 
 	}
-	public void doInit() {
+	public void doStartModule() {
 
 		if (scanner == null) {
 			
 		
 			
-			scanner = getRebarGraph().createBuilder(KubeScannerBuilder.class).build();
+			scanner = getRebarGraph().newScanner(KubeScanner.class);
 			scanner.applyConstraints();
 			scanner.watchEvents(); // idempotent
 		}

@@ -28,7 +28,7 @@ public class GitHubIntegrationTest extends AbstractIntegrationTest {
 	public void testIt() throws Exception {
 	
 		
-		getRebarGraph().createBuilder(GitHubScannerBuilder.class).build().scanRepo("if6was9/minecraft");
+		getRebarGraph().newScanner(GitHubScanner.class).scanRepo("if6was9/minecraft");
 	
 		
 		

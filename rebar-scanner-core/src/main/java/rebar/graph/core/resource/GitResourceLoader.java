@@ -11,6 +11,7 @@ import org.eclipse.jgit.api.errors.GitAPIException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.base.Suppliers;
 import com.google.common.collect.ImmutableList;
@@ -27,7 +28,8 @@ public class GitResourceLoader implements ResourceLoader {
 	EnvConfig env;
 
 	public GitResourceLoader(EnvConfig env) {
-		this.env = env.withEnv("GIT_URL", "git@github.com:rebar-cloud/git-test.git");
+		Preconditions.checkNotNull(env);
+		this.env = env;
 		logger.info("GIT_URL: {}", this.env.get("GIT_URL").orElse(""));
 		if (this.env.get("GIT_URL").isPresent()) {
 			simpleGit = new SimpleGit().withEnv(this.env);

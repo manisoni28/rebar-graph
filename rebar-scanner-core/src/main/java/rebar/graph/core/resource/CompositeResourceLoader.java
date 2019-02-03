@@ -1,27 +1,25 @@
 package rebar.graph.core.resource;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Stream;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Streams;
-
-import rebar.graph.core.resource.ResourceLoader.LoadableResource;
-import rebar.util.EnvConfig;
 
 public class CompositeResourceLoader implements ResourceLoader {
 
-	FilesystemResourceLoader filesystemLoader;
-	GitResourceLoader gitResourceLoader;
-
-	public CompositeResourceLoader(EnvConfig env) {
-		filesystemLoader = new FilesystemResourceLoader(env);
-		gitResourceLoader = new GitResourceLoader(env);
-
-	}
+	List<ResourceLoader> resourceLoaders = Lists.newCopyOnWriteArrayList();
 
 	@Override
 	public Stream<LoadableResource> getResources() {
 
-		return Streams.concat(filesystemLoader.getResources(),gitResourceLoader.getResources());
+		Stream<LoadableResource> result = new ArrayList<LoadableResource>().stream();
+
+		for (ResourceLoader loader : resourceLoaders) {
+			result = Streams.concat(result, loader.getResources());
+		}
+		return result;
 	}
 
 }

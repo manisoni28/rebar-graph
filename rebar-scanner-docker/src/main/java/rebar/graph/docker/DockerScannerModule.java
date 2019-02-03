@@ -21,18 +21,21 @@ import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import com.machinezoo.noexception.Exceptions;
 
+import rebar.graph.core.Main;
 import rebar.graph.core.ScannerModule;
 import rebar.util.Sleep;
 
+@Component
 public class DockerScannerModule extends ScannerModule {
 
 	Logger logger = LoggerFactory.getLogger(DockerScannerModule.class);
 
 	@Override
-	public void doInit() {
+	public void doStartModule() {
 
 		while (true == true) {
 			Exceptions.log(logger).run(() -> {
@@ -45,4 +48,7 @@ public class DockerScannerModule extends ScannerModule {
 
 	}
 
+	public static void main(String [] args) throws Exception {
+		Main.main(args);
+	}
 }

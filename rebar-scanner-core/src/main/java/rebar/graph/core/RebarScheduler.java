@@ -11,6 +11,8 @@ import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.MissingNode;
@@ -36,17 +38,18 @@ public class RebarScheduler {
 	AtomicLong cron4jTheadCounter = new AtomicLong();
 	Logger logger = LoggerFactory.getLogger(RebarScheduler.class);
 	Scheduler cron4j;
-	ScannerModule module;
 
-	public RebarScheduler(ScannerModule module) {
-		this.module = module;
+	@Autowired
+	ApplicationContext ctx;
+
+	public RebarScheduler() {
+	
 
 	}
 
 	
-
 	public ResourceLoader getResourceLoader() {
-		return this.module.resourceLoader;
+		return getScannerModule().resourceLoader;
 	}
 	private void renameThread() {
 		// cron4j has very annoying thread names
@@ -91,12 +94,12 @@ public class RebarScheduler {
 				if (it.getPath().contains("scripts/") && it.getPath().endsWith(".groovy")) {
 					try (InputStream in = it.getInputStreamSupplier().get()) {
 						JsonNode n = extractFrontMatter(in);
-						System.out.println(CharStreams.toString(new InputStreamReader(it.getInputStreamSupplier().get())));
+					
 						logger.info("front matter: {}", n);
 						String cron = n.path("cron").asText().trim();
 						String scannerType = n.path("scanner").asText().trim();
 						if (Strings.isNullOrEmpty(scannerType)
-								|| scannerType.equalsIgnoreCase(module.getScannerType())) {
+								|| scannerType.equalsIgnoreCase(getScannerModule().getScannerType())) {
 							if ((!Strings.isNullOrEmpty(cron)) && n.path("enabled").asBoolean(true)) {
 
 								final Supplier<InputStream> supplier = it.getInputStreamSupplier();
@@ -163,7 +166,7 @@ public class RebarScheduler {
 	}
 
 	public <T extends ScannerModule> T getScannerModule() {
-		return (T) module;
+		return (T) ctx.getBean(ScannerModule.class);
 	}
 
 	public Scheduler getScheduler() {

@@ -27,7 +27,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import rebar.graph.neo4j.GraphDriver;
 import rebar.util.Json;
 
-public class RebarGraphTest extends Neo4jIntegrationTest {
+public class RebarGraphTest extends CoreIntegrationTest {
 
 	@org.junit.jupiter.api.Test
 	public void testIt() {

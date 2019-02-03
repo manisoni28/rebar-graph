@@ -21,8 +21,13 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import javax.annotation.PostConstruct;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.ApplicationListener;
 
 import com.google.common.base.Strings;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
@@ -33,30 +38,29 @@ import rebar.util.EnvConfig;
 
 public abstract class ScannerModule {
 
-	
-
 	static Logger logger = LoggerFactory.getLogger(ScannerModule.class);
 	ScheduledExecutorService executor = Executors.newScheduledThreadPool(1, new ThreadFactoryBuilder()
 			.setNameFormat("graph-%d").setUncaughtExceptionHandler(this::handleException).build());
 
-	EnvConfig config = new EnvConfig();
-
+	@Autowired
 	RebarGraph rebarGraph;
 
-	RebarScheduler scheduler = null;
-	
+	@Autowired
+	EnvConfig config;
+
+	@Autowired
+	RebarScheduler scheduler;
+
+	@Autowired
 	CompositeResourceLoader resourceLoader;
+
 	public RebarScheduler getScheduler() {
 		return scheduler;
 	}
-	
+
 	public ScannerModule() {
-		this.resourceLoader = new CompositeResourceLoader(config); 
-		scheduler = new RebarScheduler(this);
-		scheduler.start();
+
 	}
-
-
 
 	public RebarGraph getRebarGraph() {
 		return rebarGraph;
@@ -70,11 +74,6 @@ public abstract class ScannerModule {
 		return config;
 	}
 
-	
-
-
-
-	
 	protected void handleException(Thread thread, Throwable throwable) {
 		logger.warn("uncaught exception", throwable);
 	}
@@ -85,30 +84,28 @@ public abstract class ScannerModule {
 			@Override
 			public void run() {
 				try {
-				GraphDriver neo4j = getRebarGraph().getGraphDB().getNeo4jDriver();
-				
-				String r = Strings.isNullOrEmpty(region) ? "undefined" : region;
-				neo4j.cypher(
-						"merge (a:RebarScannerTarget {type:{type},target:{target},region:{region}}) ON MATCH set a.pingTs=timestamp() ON CREATE set a.pingTs=timestamp(),a.fullScanEnabled=true,a.fullScanIntervalSecs=300")
-						.param("type", getScannerType()).param("target", target).param("region", r)
-						.exec();
-				
-				neo4j.cypher("match (s:RebarScanner {id:{id}}),(t:RebarScannerTarget {type:{type},target:{target},region:{region}}) merge (s)-[r:SCANS]->(t) ")
-						.param("id",getScannerId())
-						.param("type",getScannerType())
-						.param("target",target)
-						.param("region",r).exec();
-				}
-				catch (RuntimeException e) {
-					logger.warn("unexpected exception",e);
+					GraphDriver neo4j = getRebarGraph().getGraphDB().getNeo4jDriver();
+
+					String r = Strings.isNullOrEmpty(region) ? "undefined" : region;
+					neo4j.cypher(
+							"merge (a:RebarScannerTarget {type:{type},target:{target},region:{region}}) ON MATCH set a.pingTs=timestamp() ON CREATE set a.pingTs=timestamp(),a.fullScanEnabled=true,a.fullScanIntervalSecs=300")
+							.param("type", getScannerType()).param("target", target).param("region", r).exec();
+
+					neo4j.cypher(
+							"match (s:RebarScanner {id:{id}}),(t:RebarScannerTarget {type:{type},target:{target},region:{region}}) merge (s)-[r:SCANS]->(t) ")
+							.param("id", getScannerId()).param("type", getScannerType()).param("target", target)
+							.param("region", r).exec();
+				} catch (RuntimeException e) {
+					logger.warn("unexpected exception", e);
 				}
 			}
 
 		};
 		r.run(); // make sure we have one synchronous execution
-		executor.scheduleWithFixedDelay(r,30, 30, TimeUnit.SECONDS);
-		
+		executor.scheduleWithFixedDelay(r, 30, 30, TimeUnit.SECONDS);
+
 	}
+
 	protected void registerScanner(String type) {
 
 		Runnable r = new Runnable() {
@@ -116,17 +113,16 @@ public abstract class ScannerModule {
 			@Override
 			public void run() {
 				try {
-				GraphDriver neo4j = getRebarGraph().getGraphDB().getNeo4jDriver();
-				String hostname = InetAddress.getLocalHost().getCanonicalHostName();
-				String ipAddress = InetAddress.getLocalHost().getHostAddress();
-				neo4j.cypher(
-						"merge (a:RebarScanner {id:{id}}) set a.type={type},a.hostname={hostname},a.ipAddress={ipAddress},a.pingTs=timestamp()")
-						.param("hostname", hostname).param("ipAddress", ipAddress).param("id", getRebarGraph().getScannerId()).param("type", type)
-						.exec();
-				
-				}
-				catch (UnknownHostException e) {
-					logger.warn("unexpected exception",e);
+					GraphDriver neo4j = getRebarGraph().getGraphDB().getNeo4jDriver();
+					String hostname = InetAddress.getLocalHost().getCanonicalHostName();
+					String ipAddress = InetAddress.getLocalHost().getHostAddress();
+					neo4j.cypher(
+							"merge (a:RebarScanner {id:{id}}) set a.type={type},a.hostname={hostname},a.ipAddress={ipAddress},a.pingTs=timestamp()")
+							.param("hostname", hostname).param("ipAddress", ipAddress)
+							.param("id", getRebarGraph().getScannerId()).param("type", type).exec();
+
+				} catch (UnknownHostException e) {
+					logger.warn("unexpected exception", e);
 				}
 			}
 
@@ -138,13 +134,31 @@ public abstract class ScannerModule {
 	public String getScannerId() {
 		return getRebarGraph().getScannerId();
 	}
-	
+
 	public String getScannerType() {
 		return getClass().getPackage().getName().replace("rebar.graph.", "");
 	}
-	
-	public final void init() {
-		doInit();
+
+	@PostConstruct
+	public final void startModule() {
+
+		// Only start the module via main.  Very distracting to have a bunch of background  threads executing 
+		// during tests.
+		boolean runModule = false;
+		for (StackTraceElement ste : new RuntimeException().getStackTrace()) {
+			if (ste.getClassName().startsWith("org.junit")) {
+				if (ste.getClassName().equals(Main.class.getName()) && ste.getMethodName().equals("main")) {
+					runModule = true;
+				}
+			}
+
+		}
+
+		if (runModule) {
+			logger.info("init()");
+			doStartModule();
+		}
 	}
-	protected abstract  void doInit();
+
+	protected abstract void doStartModule();
 }

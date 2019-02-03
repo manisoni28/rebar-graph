@@ -15,8 +15,11 @@
  */
 package rebar.graph.aws;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
@@ -25,6 +28,7 @@ import org.slf4j.LoggerFactory;
 
 import com.amazonaws.regions.Regions;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.google.common.collect.ImmutableMap;
 
 import rebar.graph.test.AbstractIntegrationTest;
 
@@ -34,23 +38,29 @@ import rebar.graph.test.AbstractIntegrationTest;
  * @author rob
  *
  */
-@TestInstance(Lifecycle.PER_CLASS)
+
 public abstract class AwsIntegrationTest extends AbstractIntegrationTest {
 
 	static Logger logger = LoggerFactory.getLogger(AwsIntegrationTest.class);
-	static Boolean awsAvailable = null;
-	static AwsScanner awsScanner;
 
+	static AwsScanner awsScanner;
+	static AtomicInteger failureCount = new AtomicInteger();
 	
 	public AwsIntegrationTest() {
 		super();
 	}
 
-
+	
+	@Override
+	protected void checkAssumptions() {
+		Assumptions.assumeTrue(getAwsScanner()!=null);
+	}
 	@Override
 	protected void beforeAll() {
 		super.beforeAll();
 		deleteAllAwsEntities();
+		
+		Assumptions.assumeTrue(getAwsScanner()!=null);
 	}
 
 
@@ -59,7 +69,7 @@ public abstract class AwsIntegrationTest extends AbstractIntegrationTest {
 	}
 	@BeforeEach
 	public void __setupAws() {
-			
+
 		Assumptions.assumeTrue(getAwsScanner()!=null);
 	}
 
@@ -71,34 +81,34 @@ public abstract class AwsIntegrationTest extends AbstractIntegrationTest {
 	
 	}
 
-
+	@BeforeEach
+	public void checkAccess() {
+		Assumptions.assumeTrue(getAwsScanner()!=null);
+	}
 	protected AwsScanner getAwsScanner() {
 		try {
-
-			if (awsAvailable == null) {
-				AwsScanner scanner = getRebarGraph().createBuilder(AwsScannerBuilder.class)
-						.withRegion(Regions.US_WEST_2).withConfig(c -> {
-
-						}).build();
+			if (awsScanner!=null) {
+				return awsScanner;
+			}
+			if (failureCount.get()==0) {
+				AwsScanner scanner = getRebarGraph().newScanner(AwsScanner.class,ImmutableMap.of("region",Regions.US_WEST_2.getName()));//
 
 				String account = scanner.getAccount();
 
 				if (account != null) {
 					logger.info("integration tests using AWS account: {}", account);
-					awsAvailable = true;
+				
 					awsScanner = scanner;
 				} else {
-					awsAvailable = false;
+					failureCount.incrementAndGet();
 				}
 			}
 		} catch (Exception e) {
-			logger.warn("AWS integration tests will be skipped - " + e.toString());
+			logger.warn("AWS integration tests will be skipped",e);
 
-			awsAvailable = false;
+			failureCount.incrementAndGet();
 		}
-		if (awsAvailable == null) {
-			awsAvailable = false;
-		}
+		
 
 		return awsScanner;
 	}

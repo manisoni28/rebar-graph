@@ -15,6 +15,7 @@
  */
 package rebar.graph.core;
 
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
@@ -39,28 +40,37 @@ public abstract class Scanner {
 	static org.slf4j.Logger logger = LoggerFactory.getLogger(Scanner.class);
 
 	static ObjectMapper mapper = new ObjectMapper();
-	ScannerBuilder<? extends Scanner> scannerBuilder;
+
 	Boolean failOnError = null;
 	
 	private boolean constraintsApplied=false;
 	
 	MeterRegistry meterRegistry = Metrics.globalRegistry; 
 	
+	RebarGraph rebarGraph;
+	
 	public String getEntityGroup() {
 		return getClass().getSimpleName().toLowerCase().replace("scanner", "");
 		
 	}
-	public Scanner(ScannerBuilder<? extends Scanner> builder) {
-		this.scannerBuilder = builder;
+	public Scanner() {
 		
 		
 	}
-
+	public final void _init(RebarGraph g, Map<String,String> config)  throws Exception {
+		Preconditions.checkNotNull(g);
+		Preconditions.checkNotNull(config);
+		this.rebarGraph = g;
+		init(g,config);
+	}
+	protected abstract void init(RebarGraph g, Map<String,String> config) throws Exception ;
+	
 	public MeterRegistry metrics() {
 		return meterRegistry;
 	}
 
 	public final EnvConfig getEnvConfig() {
+		Preconditions.checkNotNull(getRebarGraph());
 		return getRebarGraph().getEnvConfig();
 	}
 
@@ -90,7 +100,7 @@ public abstract class Scanner {
 	
 	public final void scan() {
 		if (!constraintsApplied) {
-			if (Boolean.parseBoolean(this.scannerBuilder.env.get("INDEX_AUTOCREATE").orElse("true"))) {
+			if (Boolean.parseBoolean(this.getEnvConfig().get("INDEX_AUTOCREATE").orElse("true"))) {
 				constraintsApplied=true;
 				applyConstraints();
 			}
@@ -143,7 +153,7 @@ public abstract class Scanner {
 		}
 	}
 	public RebarGraph getRebarGraph() {
-		return getScannerBuilder().getRebarGraph();
+		return rebarGraph;
 	}
 
 	public final void init(EntityScanner scanner) {
@@ -151,9 +161,7 @@ public abstract class Scanner {
 		scanner.setScanner(this);
 	}
 	
-	protected ScannerBuilder<? extends Scanner> getScannerBuilder() {
-		return scannerBuilder;
-	}
+
 	
 	public String getScannerType() {
 		return getClass().getPackage().getName().replace("rebar.graph.", "");

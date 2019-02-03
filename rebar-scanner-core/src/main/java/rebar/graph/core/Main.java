@@ -15,51 +15,43 @@
  */
 package rebar.graph.core;
 
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
+import org.springframework.boot.SpringApplication;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextInitializer;
+import org.springframework.context.ConfigurableApplicationContext;
 
+import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.machinezoo.noexception.Exceptions;
 
 import io.github.classgraph.ClassGraph;
+import io.github.classgraph.ClassInfoList;
 import io.github.classgraph.ScanResult;
 import io.micrometer.core.instrument.Metrics;
+import rebar.graph.config.CoreSpringConfig;
 
-public class Main  {
+public class Main {
+	static Logger logger = LoggerFactory.getLogger(Main.class);
+	public static void main(String[] args) throws Exception {
+		
+		
+		ConfigurableApplicationContext ctx = new SpringApplication(CoreSpringConfig.class).run(args);
 
-	public static void main(String[] args) {
 		
 	
-
-		RebarGraph g = new RebarGraph.Builder().build();
-
-		ScanResult result = new ClassGraph().enableClassInfo().whitelistPackages("rebar.graph").scan();
-
-		AtomicInteger count = new AtomicInteger(0);
+		Map<String,ScannerModule> modules = ctx.getBeansOfType(ScannerModule.class);
 		
-		
-		result.getSubclasses(ScannerModule.class.getName()).stream().filter(p -> !p.isAbstract()).forEach(it -> {
-
-			Exceptions.sneak().run(() -> {
-				ScannerModule m = (ScannerModule) Class.forName(it.getName()).newInstance();
-				
-				m.rebarGraph = g;
-
-				m.registerScanner(m.getScannerType());
-				
-				Thread thread = new ThreadFactoryBuilder().setNameFormat(it.getSimpleName() + "-%d").build()
-						.newThread(m::init);
-
-				thread.start();
-				count.incrementAndGet();
-			});
-
-			
-		});
-
-		if (count.get()==0) {
-			throw new IllegalStateException("RebarGraphModule implementation not available");
+		if (modules.isEmpty()) {
+			logger.warn("there are no modules");
 		}
+		
+
 	}
 
 }

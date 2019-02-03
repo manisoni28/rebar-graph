@@ -19,6 +19,7 @@ import com.google.common.collect.Maps;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
 import rebar.graph.neo4j.GraphDriver;
+import rebar.util.Sleep;
 
 public class Neo4jScanQueue implements ScanQueue {
 
@@ -171,7 +172,8 @@ public class Neo4jScanQueue implements ScanQueue {
 			public void run() {
 				try {
 					logger.debug("polling scan queue");
-
+					boolean enabled = false;
+					if (enabled) {
 					neo4j.cypher(
 							"match (q:ScanQueueItem) where q.type in {types} and q.n0 in {accounts} and (not exists (q.consumerId)) and q.createTs>timestamp()-60000 return q.id as id,q.createTs as createTs, q.type as type, q.n0 as n0, q.n1 as n1, q.n2 as n2, q.n3 as n3")
 							.param("selfId", selfId).param("types", getSubscriptionTypes().toArray(new String[0]))
@@ -189,6 +191,10 @@ public class Neo4jScanQueue implements ScanQueue {
 								}
 
 							});
+					}
+					else {
+						Sleep.sleep(5,TimeUnit.MINUTES);
+					}
 
 				} catch (Exception e) {
 					logger.warn("", e);
