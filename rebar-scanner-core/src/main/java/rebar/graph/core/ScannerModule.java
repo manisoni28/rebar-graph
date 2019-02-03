@@ -142,14 +142,15 @@ public abstract class ScannerModule {
 	@PostConstruct
 	public final void startModule() {
 
-		// Only start the module via main.  Very distracting to have a bunch of background  threads executing 
+		logger.info("startModule()");
+		// Only start the module via main. Very distracting to have a bunch of
+		// background threads executing
 		// during tests.
 		boolean runModule = false;
 		for (StackTraceElement ste : new RuntimeException().getStackTrace()) {
-			if (ste.getClassName().startsWith("org.junit")) {
-				if (ste.getClassName().equals(Main.class.getName()) && ste.getMethodName().equals("main")) {
-					runModule = true;
-				}
+
+			if (ste.getClassName().equals(Main.class.getName()) && ste.getMethodName().equals("main")) {
+				runModule = true;
 			}
 
 		}
@@ -157,6 +158,8 @@ public abstract class ScannerModule {
 		if (runModule) {
 			logger.info("init()");
 			doStartModule();
+		} else {
+			logger.info("will not start module");
 		}
 	}
 

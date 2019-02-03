@@ -22,6 +22,7 @@ import static rebar.graph.neo4j.GraphDriver.GRAPH_USERNAME;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Supplier;
 
 import org.slf4j.LoggerFactory;
@@ -48,6 +49,7 @@ public class RebarGraph {
 
 	String scannerId = UUID.randomUUID().toString();
 
+	AtomicBoolean running = new AtomicBoolean(true);
 	private RebarGraph() {
 
 	}
@@ -198,5 +200,9 @@ public class RebarGraph {
 	public final EnvConfig getEnvConfig() {
 		Preconditions.checkNotNull(env);
 		return env;
+	}
+	
+	public boolean isRunning() {
+		return running.get();
 	}
 }

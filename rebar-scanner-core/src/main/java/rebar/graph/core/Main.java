@@ -16,6 +16,7 @@
 package rebar.graph.core;
 
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.slf4j.Logger;
@@ -35,13 +36,14 @@ import io.github.classgraph.ClassInfoList;
 import io.github.classgraph.ScanResult;
 import io.micrometer.core.instrument.Metrics;
 import rebar.graph.config.CoreSpringConfig;
+import rebar.util.Sleep;
 
 public class Main {
 	static Logger logger = LoggerFactory.getLogger(Main.class);
 	public static void main(String[] args) throws Exception {
 		
 		
-		ConfigurableApplicationContext ctx = new SpringApplication(CoreSpringConfig.class).run(args);
+		ConfigurableApplicationContext ctx = new SpringApplication(BaseConfig.class).run(args);
 
 		
 	
@@ -52,6 +54,10 @@ public class Main {
 		}
 		
 
+		RebarGraph g = ctx.getBean(RebarGraph.class);
+		while (g.isRunning()) {
+			Sleep.sleep(5,TimeUnit.SECONDS);
+		}
 	}
 
 }
