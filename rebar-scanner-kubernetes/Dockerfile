@@ -4,7 +4,7 @@ FROM rebar/scanner-core:latest
 RUN curl -o /bin/kubectl  https://storage.googleapis.com/kubernetes-release/release/v1.13.2/bin/linux/amd64/kubectl && \
 chmod +x /bin/kubectl 
 
-COPY build/libs/*-all.jar /app/app.jar
+COPY build/libs/rebar-scanner*.jar /app/app.jar
 
 
 ARG GIT_COMMIT=unknown

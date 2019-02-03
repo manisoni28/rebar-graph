@@ -6,7 +6,7 @@ RUN	apk -Uuv add groff less python py-pip && \
 	apk --purge -v del py-pip
 
 
-COPY build/libs/*-all.jar /app/app.jar
+COPY build/libs/rebar-scanner*.jar /app/app.jar
 
 ARG GIT_COMMIT=unknown
 ARG GIT_REPO=unknwon

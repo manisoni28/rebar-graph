@@ -1,7 +1,7 @@
 FROM rebar/scanner-core:latest
 
 
-COPY build/libs/*-all.jar /app/app.jar
+COPY build/libs/rebar-scanner*.jar /app/app.jar
 
 ARG GIT_COMMIT=unknown
 ARG GIT_REPO=unknwon
