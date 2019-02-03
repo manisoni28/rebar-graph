@@ -122,7 +122,7 @@ public class AwsScannerModule extends ScannerModule {
 
 	}
 	
-	public void init() {
+	public void doInit() {
 
 		List<String> regions = Splitter.on(CharMatcher.anyOf(",;: ")).omitEmptyStrings().trimResults()
 				.splitToList(getConfig().get("AWS_REGIONS").orElse(""));

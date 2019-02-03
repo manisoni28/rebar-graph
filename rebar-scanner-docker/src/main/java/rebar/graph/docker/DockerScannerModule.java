@@ -32,7 +32,7 @@ public class DockerScannerModule extends ScannerModule {
 	Logger logger = LoggerFactory.getLogger(DockerScannerModule.class);
 
 	@Override
-	public void init() {
+	public void doInit() {
 
 		while (true == true) {
 			Exceptions.log(logger).run(() -> {

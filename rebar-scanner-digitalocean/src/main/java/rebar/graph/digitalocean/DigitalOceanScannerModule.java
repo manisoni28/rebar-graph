@@ -24,7 +24,7 @@ public class DigitalOceanScannerModule extends ScannerModule {
 	}
 
 	@Override
-	protected void init() {
+	protected void doInit() {
 		// we will use the more sophisticated scheduling system once we get it factored up and out of AWS module
 		getExecutor().scheduleWithFixedDelay(this::scanAll, 0, 5, TimeUnit.MINUTES);
 	}

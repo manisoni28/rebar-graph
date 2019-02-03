@@ -117,7 +117,7 @@ public class KubeScannerModule extends ScannerModule {
 		}
 
 	}
-	public void init() {
+	public void doInit() {
 
 		if (scanner == null) {
 			

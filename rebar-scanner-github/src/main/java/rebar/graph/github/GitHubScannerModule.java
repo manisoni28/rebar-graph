@@ -27,7 +27,7 @@ public class GitHubScannerModule extends ScannerModule {
 	}
 
 	@Override
-	protected void init() {
+	protected void doInit() {
 
 		getExecutor().scheduleWithFixedDelay(this::scanAll, 0, 15, TimeUnit.MINUTES);
 	}

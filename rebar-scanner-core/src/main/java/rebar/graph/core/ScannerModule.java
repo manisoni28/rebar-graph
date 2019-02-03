@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory;
 import com.google.common.base.Strings;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
+import rebar.graph.core.resource.CompositeResourceLoader;
 import rebar.graph.neo4j.GraphDriver;
 import rebar.util.EnvConfig;
 
@@ -42,9 +43,17 @@ public abstract class ScannerModule {
 
 	RebarGraph rebarGraph;
 
+	RebarScheduler scheduler = null;
+	
+	CompositeResourceLoader resourceLoader;
+	public RebarScheduler getScheduler() {
+		return scheduler;
+	}
 	
 	public ScannerModule() {
-
+		this.resourceLoader = new CompositeResourceLoader(config); 
+		scheduler = new RebarScheduler(this);
+		scheduler.start();
 	}
 
 
@@ -134,5 +143,8 @@ public abstract class ScannerModule {
 		return getClass().getPackage().getName().replace("rebar.graph.", "");
 	}
 	
-	protected abstract  void init();
+	public final void init() {
+		doInit();
+	}
+	protected abstract  void doInit();
 }
