@@ -15,83 +15,126 @@
  */
 package rebar.graph.test;
 
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.jupiter.api.Assumptions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+import com.google.common.collect.Sets;
 
 import io.micrometer.core.instrument.Metrics;
 import io.micrometer.core.instrument.logging.LoggingMeterRegistry;
+import rebar.graph.core.BaseConfig;
+import rebar.graph.core.GraphDB;
 import rebar.graph.core.RebarGraph;
 import rebar.graph.neo4j.GraphDriver;
-import rebar.util.EnvConfig;
 
-
-
+@ExtendWith(SpringExtension.class)
+@SpringBootTest
+@ContextConfiguration(classes = { BaseConfig.class })
 @TestInstance(Lifecycle.PER_CLASS)
 public abstract class AbstractIntegrationTest {
 
+	
+	static Set<Class> beforeInvoked = Sets.newHashSet();
 	static AtomicBoolean loggingRegistryAdded = new AtomicBoolean(false);
 	Logger logger = LoggerFactory.getLogger(AbstractIntegrationTest.class);
 
-	
-	private static RebarGraph rebarGraph;
+	@Autowired
+	RebarGraph rebarGraph;
 
-	static Boolean integrationTestEnabled=null;
-	static String reason=null;
-	
+	static AtomicInteger failureCount = new AtomicInteger(0);
 	/**
 	 * Adds logging registry, used primarily for testing.
 	 */
 	public static void enableLoggingRegistry() {
 		Logger logger = LoggerFactory.getLogger(AbstractIntegrationTest.class);
-		synchronized(Metrics.globalRegistry) {
-			long logRegCount = Metrics.globalRegistry.getRegistries().stream().filter(p->p instanceof LoggingMeterRegistry).count();
-			if (logRegCount==0) {
+		synchronized (Metrics.globalRegistry) {
+			long logRegCount = Metrics.globalRegistry.getRegistries().stream()
+					.filter(p -> p instanceof LoggingMeterRegistry).count();
+			if (logRegCount == 0) {
 				logger.info("adding LoggingMeterRegistry to micrometer...");
-			
+
 				Metrics.addRegistry(new LoggingMeterRegistry());
+
+		
 			
 			}
 		}
 	}
+
 	public AbstractIntegrationTest() {
 
+		enableLoggingRegistry();
+
+	}
+
+	@BeforeEach
+	private final void checkNeo4j() {
+		try {
+			Assumptions.assumeTrue(failureCount.get()<3);
+			getGraphDriver().cypher("match (a:ConnectivityCheck) return a limit 1").findFirst();
+		}
+		catch (RuntimeException e) {
+			if (isNeo4jRequired()) {
+				throw e;
+			}
+			Assumptions.assumeTrue(false,e.toString());
+		}
 		
 	
-		enableLoggingRegistry();
-			
-			
-	
 	}
-	@BeforeAll
-	public final void __beforeAll() {
+	
+	/**
+	 * We use @BeforeEach to implement beforeAll() because assumptions don't work correctly in @BeforeAll.
+	 */
+	@BeforeEach
+	private final void internalBeforeAll() {
+		checkNeo4j();
+		checkAssumptions();
+		if (beforeInvoked.contains(getClass())) {
+			return;
+		}
+		
+		beforeInvoked.add(getClass());
 		logger.info("invoking beforeAll()...");
+		
 		beforeAll();
 	}
-	protected void beforeAll() {
+
+	protected void checkAssumptions() {
 		
+	}
+	protected void beforeAll() {
+
 	}
 
 	/**
-	 * By setting NEO4J_REQUIRED=true, we prevent tests from being skipped.  We set this to true in the CI environment
-	 * so that all builds run against NEO4J.
+	 * By setting NEO4J_REQUIRED=true, we prevent tests from being skipped. We set
+	 * this to true in the CI environment so that all builds run against NEO4J.
 	 * 
 	 * @return
 	 */
 	public boolean isNeo4jRequired() {
-		
+
 		return Boolean.parseBoolean(System.getenv("NEO4J_REQUIRED"));
 	}
+
 	@BeforeEach
 	protected final void __setupRebarGraph() {
 
-		Assumptions.assumeTrue(getRebarGraph()!=null);
+		Assumptions.assumeTrue(getRebarGraph() != null);
 
 	}
 
@@ -99,55 +142,19 @@ public abstract class AbstractIntegrationTest {
 		GraphDriver driver = getRebarGraph().getGraphDB().getNeo4jDriver();
 		driver.newTemplate().cypher("match (a) where exists (a.testData) detach delete a").list();
 		driver.newTemplate().cypher("match (a) return distinct labels(a)[0] as label").stream()
-		.map(x -> x.path("label").asText()).distinct().filter(p -> p.toLowerCase().startsWith("junit") || p.toLowerCase().startsWith("test"))
-		.forEach(it -> {
-			logger.info("deleting nodes with label: {}", it);
-			driver.newTemplate().cypher("match (a:" + it + ") detach delete a").exec();
-		});
+				.map(x -> x.path("label").asText()).distinct()
+				.filter(p -> p.toLowerCase().startsWith("junit") || p.toLowerCase().startsWith("test")).forEach(it -> {
+					logger.info("deleting nodes with label: {}", it);
+					driver.newTemplate().cypher("match (a:" + it + ") detach delete a").exec();
+				});
 	}
-	public final RebarGraph getRebarGraph() {
-		if (this.rebarGraph!=null) {
-			return this.rebarGraph;
-		}
-		if (integrationTestEnabled!=null && integrationTestEnabled==false) {
-			logger.info("integration test disabled because: "+reason);
-			Assumptions.assumeTrue(false);
-			return null;
-		}
-		EnvConfig checkConfig = new EnvConfig();
-		
-	
-		try {
-			RebarGraph.Builder b = new RebarGraph.Builder();
-			
-			if (!new EnvConfig().get("GRAPH_URL").isPresent()) {
-				LoggerFactory.getLogger(AbstractIntegrationTest.class).info("GRAPH_URL not set ... defaulting to bolt://localhost:7687");
-				b = b.withGraphUrl("bolt://localhost:7687");
-			}
-			
-			RebarGraph graph = b.build();
-			
-			graph.getGraphDB().nodes("JUnitTest").match().forEach(it->{
-			
-			});
 
-	
-			rebarGraph = graph;
-			
-			cleanupTestData();
-			integrationTestEnabled=true;
-		} catch (RuntimeException e) {
-			if (isNeo4jRequired()) {
-				throw e;
-			}
-			integrationTestEnabled=false;
-			logger.warn("could not connect to neo4j",e);
-			reason=e.getMessage();
-			Assumptions.assumeTrue(false);
-		}
+	public final RebarGraph getRebarGraph() {
 		return rebarGraph;
 	}
-	
+	public final GraphDB getGraphDB() {
+		return getRebarGraph().getGraphDB();
+	}
 	public final GraphDriver getGraphDriver() {
 		return getRebarGraph().getGraphDB().getNeo4jDriver();
 	}

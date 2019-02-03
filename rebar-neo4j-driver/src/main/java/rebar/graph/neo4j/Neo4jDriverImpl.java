@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import org.neo4j.driver.v1.AuthTokens;
 import org.neo4j.driver.v1.Config;
@@ -29,15 +30,31 @@ import org.neo4j.driver.v1.Driver;
 import org.neo4j.driver.v1.GraphDatabase;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.Suppliers;
 
 class Neo4jDriverImpl extends GraphDriver {
 
 	static ObjectMapper mapper = new ObjectMapper();
-	Driver driver;
 
-	Neo4jDriverImpl(Driver driver) {
-		this.driver = driver;
+
+	Supplier<Driver> driverSupplier;
+	
+
+	public Neo4jDriverImpl(final Supplier<Driver> supplier) {
+		com.google.common.base.Supplier<Driver> guavaSupplier = new com.google.common.base.Supplier<Driver>() {
+			
+			@Override
+			public Driver get() {
+				return supplier.get();
+			}
+		};
+		
+		this.driverSupplier = Suppliers.memoize(guavaSupplier);
 	}
+//	private Neo4jDriverImpl(Driver driver) {
+//		this.driverSupplier = Suppliers.ofInstance(driver);
+	
+//	}
 
 	
 
@@ -46,7 +63,7 @@ class Neo4jDriverImpl extends GraphDriver {
 	}
 
 	public Driver getDriver() {
-		return driver;
+		return driverSupplier.get();
 	}
 
 	public CypherTemplate cypher(String cypher) {

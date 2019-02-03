@@ -18,12 +18,16 @@ package rebar.graph.aws;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import com.google.common.base.Preconditions;
+
 import rebar.util.Json;
 
 public class AsgScannerTest extends AwsIntegrationTest {
 
 	@Override
 	protected void beforeAll() {
+		
+		Preconditions.checkNotNull(getAwsScanner());
 		deleteAllAwsEntities();
 		getAwsScanner().getEntityScanner(VpcScannerGroup.class).scan();
 		getAwsScanner().getEntityScanner(Ec2ScannerGroup.class).scan();

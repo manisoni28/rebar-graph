@@ -47,7 +47,7 @@ public abstract class KubeIntegrationTest extends AbstractIntegrationTest {
 		}
 
 		try {
-			KubeScanner s = getRebarGraph().createBuilder(KubeScannerBuilder.class).build();
+			KubeScanner s = getRebarGraph().newScanner(KubeScanner.class);
 			s.getKubernetesClient().getVersion().getBuildDate();
 			kubeScanner = s;
 

@@ -14,9 +14,9 @@ import com.myjeeva.digitalocean.pojo.Droplets;
 
 import rebar.util.Json;
 
-public class DIgitalOceanDropletScanner extends DigitalOceanEntityScanner<Droplet> {
+public class DigitalOceanDropletScanner extends DigitalOceanEntityScanner<Droplet> {
 
-	DIgitalOceanDropletScanner(DigitalOceanScanner scanner) {
+	DigitalOceanDropletScanner(DigitalOceanScanner scanner) {
 
 		super(scanner);
 

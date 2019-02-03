@@ -1,3 +1,4 @@
+
 apply plugin: 'java'
 
 
@@ -13,11 +14,19 @@ dependencies {
     compile "com.fasterxml.jackson.dataformat:jackson-dataformat-cbor:${JACKSON_VERSION}"
     compile 'io.reactivex.rxjava2:rxjava:2.2.6'
     compile "org.eclipse.jgit:org.eclipse.jgit:${JGIT_VERSION}" 
+    compile 'it.sauronsoftware.cron4j:cron4j:2.2.5'
+    compile 'org.codehaus.groovy:groovy-all:2.5.5'
 
     compile "com.google.guava:guava:${GUAVA_VERSION}"
     compile "com.machinezoo.noexception:noexception:${NOEXCEPTION_VERSION}"
 
+compile "org.springframework.boot:spring-boot-starter:${SPRING_BOOT_VERSION}"
+testCompile "org.springframework.boot:spring-boot-starter-test:${SPRING_BOOT_VERSION}"
+
     testCompile "org.assertj:assertj-core:${ASSERTJ_VERSION}"
     testCompile "ch.qos.logback:logback-classic:${LOGBACK_VERSION}"
-    testCompile "org.junit.jupiter:junit-jupiter-engine:${JUNIT_VERSION}"
+
+    testImplementation("org.junit.jupiter:junit-jupiter-api:$JUNIT_VERSION")
+    testCompile("org.junit.jupiter:junit-jupiter-params:$JUNIT_VERSION")
+    testRuntime("org.junit.jupiter:junit-jupiter-engine:$JUNIT_VERSION")
 }

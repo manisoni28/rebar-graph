@@ -15,7 +15,7 @@ public class CatalogScannerModule extends ScannerModule {
 	private void scanAll() {
 		try {
 			if (scanner==null) {
-				scanner = getRebarGraph().createBuilder(CatalogScannerBuilder.class).build();
+				scanner = getRebarGraph().newScanner(CatalogScanner.class);
 			}
 			scanner.scan();
 		} catch (Exception e) {
@@ -24,12 +24,12 @@ public class CatalogScannerModule extends ScannerModule {
 	}
 
 	@Override
-	protected void init() {
+	protected void doStartModule() {
 		// we will use the more sophisticated scheduling system once we get it factored up and out of AWS module
 		getExecutor().scheduleWithFixedDelay(this::scanAll, 0, 5, TimeUnit.MINUTES);
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		Main.main(args);
 	}
 

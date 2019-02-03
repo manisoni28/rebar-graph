@@ -22,6 +22,7 @@ import static rebar.graph.neo4j.GraphDriver.GRAPH_USERNAME;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Supplier;
 
 import org.slf4j.LoggerFactory;
@@ -47,7 +48,8 @@ public class RebarGraph {
 	ScanQueue queue;
 
 	String scannerId = UUID.randomUUID().toString();
-	
+
+	AtomicBoolean running = new AtomicBoolean(true);
 	private RebarGraph() {
 
 	}
@@ -58,10 +60,8 @@ public class RebarGraph {
 
 		EnvConfig env = new EnvConfig();
 
-	
-
 		String scannerId;
-		
+
 		public Builder withEnv(EnvConfig cfg) {
 			this.env = cfg.copy();
 			return this;
@@ -88,9 +88,10 @@ public class RebarGraph {
 		}
 
 		public Builder withScannerId(String id) {
-			this.scannerId=id;
+			this.scannerId = id;
 			return this;
 		}
+
 		public Builder withInMemoryTinkerGraph() {
 			env = env.withEnv(GRAPH_URL, "memory");
 			return this;
@@ -108,11 +109,10 @@ public class RebarGraph {
 				rg.graphWriter = graphDb;
 				rg.env = env;
 
-				
-					Neo4jScanQueue queue = new Neo4jScanQueue(graphDb.getNeo4jDriver());
-					queue.start();
-					rg.queue = queue;
-				
+				Neo4jScanQueue queue = new Neo4jScanQueue(graphDb.getNeo4jDriver());
+				queue.start();
+				rg.queue = queue;
+
 				return rg;
 			}
 
@@ -150,47 +150,32 @@ public class RebarGraph {
 		}
 	}
 
-	protected <T extends ScannerBuilder<? extends Scanner>> T createBuilder() {
+	public <T extends Scanner> T newScanner(Class<T> clazz) {
+		return newScanner(clazz,Maps.newHashMap());
+	}
+	public <T extends Scanner> T newScanner(Class<T> clazz, Map<String,String> config) {
+
 		try {
-			Optional<String> scannerClass = env.get("REBAR_SCANNER");
-			if (!scannerClass.isPresent()) {
-				throw new RebarException("REBAR_SCANNER not set");
-			}
-			String className = scannerClass.get();
-			if (!className.endsWith("Builder")) {
-				className = className + "Builder";
-			}
-			Class clazz = Class.forName(className);
-
-			T t = (T) createBuilder(clazz);
-
-			return t;
-		} catch (ClassNotFoundException e) {
+			logger.info("creating {}",clazz.getSimpleName());
+			T scanner = (T) clazz.newInstance();
+			scanner._init(this,config);
+			return (T) scanner;
+		}
+		catch (RuntimeException e) {
+			throw e;
+		} catch (Exception e) {
 			throw new RebarException(e);
 		}
-
 	}
 
-	public <T extends ScannerBuilder<? extends Scanner>> T createBuilder(Class<T> clazz) {
-		try {
-			T t = (T) clazz.newInstance();
-			t.setRebarGraph(this);
-			t.withEnv(env);
-			Preconditions.checkNotNull(t.getRebarGraph());
-			return t;
-		} catch (IllegalAccessException | InstantiationException e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	
 	public GraphDB getGraphDB() {
-		return  graphWriter;
+		return graphWriter;
 	}
 
 	public String getScannerId() {
 		return scannerId;
 	}
+
 	public <T extends Scanner> void registerScanner(Class<T> scannerType, String name, Supplier<T> supplier) {
 		String key = scannerType.getName() + ":" + name;
 		if (supplierMap.containsKey(key)) {
@@ -211,8 +196,13 @@ public class RebarGraph {
 	public ScanQueue getScanQueue() {
 		return queue;
 	}
-	
+
 	public final EnvConfig getEnvConfig() {
+		Preconditions.checkNotNull(env);
 		return env;
+	}
+	
+	public boolean isRunning() {
+		return running.get();
 	}
 }

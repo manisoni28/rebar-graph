@@ -23,7 +23,6 @@ import org.junit.jupiter.api.Test;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import rebar.graph.kubernetes.KubeScanner;
-import rebar.graph.kubernetes.KubeScannerBuilder;
 
 public class ClusterScannerTest extends KubeIntegrationTest {
 
@@ -63,7 +62,7 @@ public class ClusterScannerTest extends KubeIntegrationTest {
 		});
 		
 	}
-	@Test
+	/*@Test
 	public void testX() {
 
 		KubeScanner scanner = getRebarGraph().createBuilder(KubeScannerBuilder.class)
@@ -71,7 +70,7 @@ public class ClusterScannerTest extends KubeIntegrationTest {
 
 		Assertions.assertThat(scanner).isNotNull();
 		Assertions.assertThat(getRebarGraph().getScanner(KubeScanner.class, "foo")).isSameAs(scanner);
-	}
+	}*/
 
 	@Test
 	public void testCleanup() throws InterruptedException {

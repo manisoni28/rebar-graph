@@ -15,11 +15,14 @@
  */
 package rebar.graph.kubernetes;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -32,6 +35,7 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.CaseFormat;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
@@ -59,16 +63,23 @@ import io.fabric8.kubernetes.api.model.apps.Deployment;
 import io.fabric8.kubernetes.api.model.apps.DeploymentStatus;
 import io.fabric8.kubernetes.api.model.apps.ReplicaSet;
 import io.fabric8.kubernetes.api.model.batch.CronJob;
+import io.fabric8.kubernetes.client.Config;
+import io.fabric8.kubernetes.client.DefaultKubernetesClient;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.kubernetes.client.KubernetesClientException;
 import io.fabric8.kubernetes.client.VersionInfo;
 import io.fabric8.kubernetes.client.Watcher;
+import io.fabric8.kubernetes.client.internal.KubeConfigUtils;
 import rebar.graph.core.GraphDB.NodeOperation;
+import rebar.graph.neo4j.GraphException;
+import rebar.graph.core.RebarGraph;
 import rebar.graph.core.GraphDB;
 import rebar.graph.core.Scanner;
 import rebar.util.Json;
 
 public class KubeScanner extends Scanner {
+
+
 
 	static Logger logger = LoggerFactory.getLogger(KubeScanner.class);
 	KubernetesClient client;
@@ -93,10 +104,7 @@ public class KubeScanner extends Scanner {
 		return clusterId;
 	}
 
-	public KubeScanner(KubeScannerBuilder builder) {
-		super(builder);
 
-	}
 
 	public void scanCluster() {
 
@@ -1060,5 +1068,91 @@ public class KubeScanner extends Scanner {
 
 	private void ensureEc2Relationships() {
 		getGraphDB().nodes("KubeNode").relationship("PROVIDED_BY").on("label_kubernetes.io/hostname", "privateDnsName").to("AwsEc2Instance").merge();
+	}
+	
+	@Override
+	protected void init(RebarGraph g, Map<String, String> params) throws Exception {
+		String contextName=null;
+		Config config = Config.autoConfigure(contextName);
+		client = new DefaultKubernetesClient(config);
+		
+		if (client.getMasterUrl().toExternalForm().toLowerCase().contains(".eks.amazonaws.com")) {
+			
+			// We need to know the AMAZON cluster name for auth to work...need to enhance EKS to go find it.
+			
+			client = EKS.newClientBuilder().withUrl(client.getMasterUrl().toExternalForm()).build();
+			
+		}
+		
+		
+		clusterId = discoverClusterId(client, this.clusterId, contextName);
+	
+	}
+	/**
+	 * Find a stable clusterId. Oddly this is something that Kubernetes doesn't have
+	 * natively.
+	 * 
+	 * @param client
+	 * @param clusterId
+	 * @param contextName
+	 * @return
+	 */
+	@VisibleForTesting
+	protected static String discoverClusterId(KubernetesClient client, String clusterId, String contextName) {
+
+		if (!Strings.isNullOrEmpty(clusterId)) {
+			logger.info("using explicitly specified clusterId: {}", clusterId);
+			return clusterId;
+		}
+		
+		if (!Strings.isNullOrEmpty(System.getenv("KUBE_CLUSTER_ID"))) {
+			return System.getenv("KUBE_CLUSTER_ID");
+		}
+		try {
+			// look in ConfigMap named 'rebar-graph' for a property named 'clusterId'
+
+			ConfigMap m = client.configMaps().inNamespace("default").withName("rebar-graph").get();
+			if (m != null) {
+
+				String id = m.getData().get("clusterId");
+				if (!Strings.isNullOrEmpty(id)) {
+					logger.info("using clusterId from ConfigMap: {}", id);
+					return id;
+				}
+
+			}
+		} catch (RuntimeException e) {
+			logger.info("could not read configmap: {}", "rebar-graph");
+		}
+
+		// If the contextName is set , use that
+		if (!Strings.isNullOrEmpty(contextName)) {
+			logger.info("using context name as clusterId: {}", contextName);
+			return contextName;
+		}
+
+		// if contextName is null, let's look at the default context
+		// No guarantee that this is actually what was used to configure the client, but
+		// good enough.
+		try {
+			File f = new File(System.getProperty("user.home"), ".kube/config");
+			if (f.exists()) {
+				io.fabric8.kubernetes.api.model.Config fc = KubeConfigUtils.parseConfig(f);
+
+				String id = fc.getCurrentContext();
+				if (!Strings.isNullOrEmpty(id)) {
+					logger.info("using current-context as clusterId: {}", id);
+				}
+				return id;
+
+			}
+
+		} catch (IOException e) {
+			throw new GraphException(e);
+		}
+
+		
+		throw new GraphException("could not determine clusterId");
+
 	}
 }

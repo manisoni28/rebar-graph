@@ -24,10 +24,28 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import rebar.graph.core.RebarGraph;
 import rebar.graph.core.Scanner;
-import rebar.graph.core.ScannerBuilder;
+import rebar.util.EnvConfig;
 
 public class CatalogScanner extends Scanner {
+
+	@Override
+	protected void init(RebarGraph g, Map<String, String> config) {
+	
+			EnvConfig cfg = g.getEnvConfig();
+				
+			
+				
+				File baseDir = new File(cfg.get("CATALOG_DIR").orElse("."));
+				
+				filesystemLoader = new FilesystemCatalogLoader().withFile(baseDir);
+				gitLoader = new GitCatalogLoader();
+				
+			
+		
+			
+	}
 
 	org.slf4j.Logger logger = LoggerFactory.getLogger(CatalogScanner.class);
 
@@ -38,10 +56,7 @@ public class CatalogScanner extends Scanner {
 	GitCatalogLoader gitLoader = null;
 	FilesystemCatalogLoader filesystemLoader = null;
 	
-	public CatalogScanner(ScannerBuilder<? extends Scanner> builder) {
-		super(builder);
-
-	}
+	
 
 	public File getScanBaseDir() {
 		return new File(".");

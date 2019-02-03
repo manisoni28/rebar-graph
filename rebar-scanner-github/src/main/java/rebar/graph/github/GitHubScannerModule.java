@@ -17,7 +17,7 @@ public class GitHubScannerModule extends ScannerModule {
 		try {
 			if (scanner == null) {
 
-				scanner = getRebarGraph().createBuilder(GitHubScannerBuilder.class).build();
+				scanner = getRebarGraph().newScanner(GitHubScanner.class);
 			}
 
 			scanner.scan();
@@ -27,12 +27,12 @@ public class GitHubScannerModule extends ScannerModule {
 	}
 
 	@Override
-	protected void init() {
+	protected void doStartModule() {
 
 		getExecutor().scheduleWithFixedDelay(this::scanAll, 0, 15, TimeUnit.MINUTES);
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		Main.main(args);
 	}
 }

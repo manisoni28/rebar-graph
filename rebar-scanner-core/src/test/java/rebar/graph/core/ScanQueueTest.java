@@ -7,6 +7,7 @@ import java.util.function.Consumer;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -15,7 +16,7 @@ import com.google.common.collect.Lists;
 import rebar.graph.core.Neo4jScanQueue.Subscription;
 import rebar.util.Sleep;
 
-public class ScanQueueTest extends Neo4jIntegrationTest {
+public class ScanQueueTest extends CoreIntegrationTest {
 
 	
 	@AfterEach
@@ -34,6 +35,7 @@ public class ScanQueueTest extends Neo4jIntegrationTest {
 
 	}
 	@Test
+	@Disabled
 	public void testIt() throws InterruptedException {
 		Assertions.assertThat(getRebarGraph()).isNotNull();
 		Assertions.assertThat(getRebarGraph().getScanQueue()).isNotNull();

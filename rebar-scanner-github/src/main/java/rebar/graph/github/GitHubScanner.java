@@ -17,13 +17,14 @@ package rebar.graph.github;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.kohsuke.github.GHException;
 import org.kohsuke.github.GHOrganization;
 import org.kohsuke.github.GHRepository;
 import org.kohsuke.github.GitHub;
+import org.kohsuke.github.GitHubBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,28 +33,49 @@ import com.google.common.base.CharMatcher;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Sets;
 
+import rebar.graph.core.RebarGraph;
 import rebar.graph.core.Scanner;
-import rebar.graph.core.ScannerBuilder;
 import rebar.util.EnvConfig;
 import rebar.util.Json;
 import rebar.util.RebarException;
 
 public class GitHubScanner extends Scanner {
 
+	@Override
+	protected void init(RebarGraph g, Map<String, String> config) throws IOException {
+
+		EnvConfig cfg = g.getEnvConfig();
+
+		GitHubBuilder b = new GitHubBuilder();
+		if (cfg.get("GITHUB_TOKEN").isPresent()) {
+			if (cfg.get("GITHUB_USERNAME").isPresent()) {
+				b.withOAuthToken(cfg.get("GITHUB_TOKEN").get(), cfg.get("GITHUB_USERNAME").get());
+			} else {
+				b.withOAuthToken(cfg.get("GITHUB_TOKEN").get());
+			}
+		} else {
+			if (cfg.get("GITHUB_PASSWORD").isPresent()) {
+				b.withPassword(cfg.get("GITHUB_USERNAME").get(), cfg.get("GITHUB_PASSWORD").get());
+			}
+		}
+
+		cfg.get("GITHUB_URL").ifPresent(it -> {
+			b.withEndpoint(it);
+		});
+
+		this.github = b.build();
+	}
+
 	Logger logger = LoggerFactory.getLogger(GitHubScanner.class);
 	GitHub github;
-
-	public GitHubScanner(ScannerBuilder<? extends Scanner> builder) {
-		super(builder);
-
-	}
 
 	@Override
 	public void doScan() {
 
 		Set<String> orgs = Sets.newHashSet();
 		EnvConfig cfg = new EnvConfig();
-		orgs.addAll(Splitter.on(CharMatcher.anyOf(" ,;")).omitEmptyStrings().trimResults().splitToList(cfg.get("GITHUB_ORGS").orElse("")));
+		orgs.addAll(Splitter.on(CharMatcher.anyOf(" ,;")).omitEmptyStrings().trimResults()
+				.splitToList(cfg.get("GITHUB_ORGS").orElse("")));
 		orgs.forEach(name -> {
 			try {
 				scanOrg(name);
@@ -159,7 +181,7 @@ public class GitHubScanner extends Scanner {
 
 	@Override
 	public void applyConstraints() {
-		
+
 	}
 
 }

@@ -5,6 +5,8 @@ import java.nio.file.Files;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import rebar.graph.core.resource.SimpleGit;
+
 public class SimpleGitTest {
 
 	@Test
@@ -15,5 +17,6 @@ public class SimpleGitTest {
 	
 		String contents = sgit.tree().getFileAsString("README.md");
 		Assertions.assertThat(contents).contains("# git-test");
+		
 	}
 }

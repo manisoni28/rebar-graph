@@ -3,6 +3,7 @@ package rebar.graph.aws;
 import org.junit.jupiter.api.Test;
 
 import com.amazonaws.regions.Regions;
+import com.google.common.collect.ImmutableMap;
 
 public class S3ScannerTest extends AwsIntegrationTest {
 
@@ -13,7 +14,7 @@ public class S3ScannerTest extends AwsIntegrationTest {
 	@Test
 	public void testIt() {
 		
-		AwsScanner scanner = getAwsScanner().getRebarGraph().createBuilder(AwsScannerBuilder.class).withRegion(Regions.US_WEST_2).build();
+		AwsScanner scanner = getAwsScanner().getRebarGraph().newScanner(AwsScanner.class,ImmutableMap.of("region",Regions.US_WEST_2.getName()));
 	
 		scanner.getEntityScanner(AccountScanner.class).scan();
 		scanner.getEntityScanner(RegionScanner.class).scan();

@@ -2,6 +2,7 @@
 
 # Rebar Graph
 
+
 [![CircleCI](https://circleci.com/gh/rebar-cloud/rebar-graph.svg?style=svg)](https://circleci.com/gh/rebar-cloud/rebar-graph)
 
 Builds and maintains a graph model of your infrastructure.

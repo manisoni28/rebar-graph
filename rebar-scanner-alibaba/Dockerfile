@@ -2,7 +2,7 @@ FROM rebar/scanner-core:latest
 
 
 
-COPY build/libs/*-all.jar /app/app.jar
+COPY build/libs/rebar-scanner*.jar /app/app.jar
 
 
 RUN chmod +x /app/docker-init
