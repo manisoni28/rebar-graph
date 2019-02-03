@@ -14,7 +14,7 @@ public class S3ScannerTest extends AwsIntegrationTest {
 	@Test
 	public void testIt() {
 		
-		AwsScanner scanner = getAwsScanner().getRebarGraph().newScanner(AwsScanner.class,ImmutableMap.of("region",Regions.US_WEST_2.name()));
+		AwsScanner scanner = getAwsScanner().getRebarGraph().newScanner(AwsScanner.class,ImmutableMap.of("region",Regions.US_WEST_2.getName()));
 	
 		scanner.getEntityScanner(AccountScanner.class).scan();
 		scanner.getEntityScanner(RegionScanner.class).scan();

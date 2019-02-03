@@ -92,8 +92,9 @@ public final class AwsScanner extends Scanner {
 			} else {
 				this.region = Regions.fromName(regionVal);
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (RuntimeException e) {
+			logger.warn("",e);
+			throw e;
 		}
 
 		Preconditions.checkState(this.region != null, "region must be set");
