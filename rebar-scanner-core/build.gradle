@@ -20,8 +20,8 @@ dependencies {
     compile "com.google.guava:guava:${GUAVA_VERSION}"
     compile "com.machinezoo.noexception:noexception:${NOEXCEPTION_VERSION}"
 
-compile "org.springframework.boot:spring-boot-starter:2.1.2.RELEASE"
-compile "org.springframework.boot:spring-boot-starter-test:2.1.2.RELEASE"
+compile "org.springframework.boot:spring-boot-starter:${SPRING_BOOT_VERSION}"
+testCompille "org.springframework.boot:spring-boot-starter-test:${SPRING_BOOT_VERSION}"
 
     testCompile "org.assertj:assertj-core:${ASSERTJ_VERSION}"
     testCompile "ch.qos.logback:logback-classic:${LOGBACK_VERSION}"
