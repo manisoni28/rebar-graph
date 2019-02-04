@@ -52,7 +52,7 @@ push_image aws
 push_image alibaba
 push_image github
 push_image digitalocean
-push_image goocle-cloud
+push_image google-cloud
 
 docker push rebar/rebar-dashboard || exit 99
 docker push rebar/rebar-dashboard:${DOCKER_SRC_TAG} || exit 99
