@@ -34,23 +34,38 @@ public class GoogleCredentialSupplier implements com.google.common.base.Supplier
 
 	File locateCredentialFile() {
 		try {
-			File dir = new File(System.getProperty("user.home"), ".config/gcloud/legacy_credentials");
+			File dir = new File(System.getProperty("user.home"), ".config/gcloud");
 
 			List<File> foundFiles = Lists.newArrayList();
-			SimpleFileVisitor<Path> v = new SimplleFileVisitor<Path>() {
 
-				@Override
-				public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-					if (file.toFile().getName().endsWith(".json")) {
-						foundFiles.add(file.toFile());
-						return FileVisitResult.TERMINATE;
+			if (dir.exists()) {
+				Files.walkFileTree(dir.toPath(), new SimplleFileVisitor<Path>() {
 
+					@Override
+					public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+						if (file.toFile().getName().endsWith("application_default_credentials.json")) {
+							foundFiles.add(file.toFile());
+							return FileVisitResult.TERMINATE;
+
+						}
+						return FileVisitResult.CONTINUE;
 					}
-					return FileVisitResult.CONTINUE;
-				}
 
-			};
-			Files.walkFileTree(dir.toPath(), v);
+				});
+				Files.walkFileTree(dir.toPath(), new SimplleFileVisitor<Path>() {
+
+					@Override
+					public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+						if (file.toFile().getName().endsWith("adc.json")) {
+							foundFiles.add(file.toFile());
+							return FileVisitResult.TERMINATE;
+
+						}
+						return FileVisitResult.CONTINUE;
+					}
+
+				});
+			}
 
 			logger.info("found: {}", foundFiles);
 			if (!foundFiles.isEmpty()) {

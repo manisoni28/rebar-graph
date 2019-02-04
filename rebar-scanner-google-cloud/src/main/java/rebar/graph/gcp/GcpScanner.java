@@ -77,7 +77,44 @@ public class GcpScanner extends Scanner {
 
 	Logger logger = LoggerFactory.getLogger(GcpScanner.class);
 
-	JsonNode get(String base, String path, String... params) {
+	public JsonNode getUrl(String url) {
+
+		Closer closer = Closer.create();
+		try {
+			Request request = new Request.Builder().url(url).get().build();
+
+			Response response = client.newCall(request).execute();
+
+			if (response.code()==404) {
+				throw new ResourceNotFoundException("could not load {}"+url);
+			}
+			if (response.isSuccessful()) {
+				Reader r = response.body().charStream();
+				closer.register(r);
+				closer.register(response.body());
+				closer.register(response);
+				JsonNode n = Json.objectMapper().readTree(r);
+
+				return n;
+			} else {
+				response.body().bytes(); // consume
+			}
+			
+		}
+		catch (IOException e) {
+			throw new RebarException(e);
+		} finally {
+			try {
+				closer.close();
+			} catch (IOException e) {
+				logger.warn("problem", e);
+			}
+		}
+		return MissingNode.getInstance();
+
+	}
+
+	protected JsonNode get(String base, String path, String... params) {
 
 		Closer closer = Closer.create();
 		try {

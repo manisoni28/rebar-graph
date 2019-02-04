@@ -42,7 +42,29 @@ public abstract class GcpEntityScanner extends EntityScanner<GcpScanner, GcpEnti
 		return Optional.empty();
 
 	}
+	
+	protected void scan(JsonNode n) {
 
+		String selfLink = n.path("selfLink").asText();
+
+		try {
+			JsonNode nx = getScanner().getUrl(selfLink );
+			project(nx);
+
+		} catch (ResourceNotFoundException e) {
+			logger.info("deleting resource: {}",selfLink);
+			deleteBySelfLink(getEntityType(), selfLink);
+		}
+
+	}
+	protected void deleteByUrn(GcpEntityType type, String urn) {
+		String cypher = "match (a:" + type.name() + " {urn:{urn}}) detach delete a";
+		getScanner().getGraphDB().getNeo4jDriver().cypher(cypher).cypher(cypher).param("urn", urn).exec();
+	}
+	protected void deleteBySelfLink(GcpEntityType type, String url) {
+		String cypher = "match (a:" + type.name() + " {selfLink:{selfLink}}) detach delete a";
+		getScanner().getGraphDB().getNeo4jDriver().cypher(cypher).cypher(cypher).param("selfLink", url).exec();
+	}
 	protected Optional<String> extractProjectId(String url) {
 		Pattern p = Pattern.compile(".*\\/projects\\/(.*?)\\/.*");
 		Matcher m = p.matcher(Strings.nullToEmpty(url));
@@ -65,6 +87,7 @@ public abstract class GcpEntityScanner extends EntityScanner<GcpScanner, GcpEnti
 
 			n.put("urn", it);
 		});
+		n.put("account", getAccount());
 		n.put("graphEntityType", getEntityType().name());
 		n.put("graphEntityGroup", "gcp");
 
@@ -90,6 +113,9 @@ public abstract class GcpEntityScanner extends EntityScanner<GcpScanner, GcpEnti
 				.map(n -> n.path("projectId").asText()).collect(Collectors.toList());
 	}
 
+	public String getAccount() {
+		return "000000000000";
+	}
 	public List<String> getZones() {
 		return getScanner().getRebarGraph().getGraphDB().getNeo4jDriver()
 				.cypher("match (a:GcpZone) return a.name as name").stream().map(n -> n.path("name").asText())
@@ -119,10 +145,10 @@ public abstract class GcpEntityScanner extends EntityScanner<GcpScanner, GcpEnti
 		if (m.matches()) {
 
 			String emptyProduct = getProduct();
-			String emptyAccount = "";
+		
 			String emptyRegion = "";
 
-			String urn = String.format("urn:gcp:%s:%s:%s:%s:%s", emptyProduct, emptyRegion, emptyAccount, m.group(1),
+			String urn = String.format("urn:gcp:%s:%s:%s:%s:%s", emptyProduct, emptyRegion, getAccount(), m.group(1),
 					m.group(2));
 
 			return Optional.ofNullable(urn);
