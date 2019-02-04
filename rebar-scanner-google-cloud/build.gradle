@@ -1,0 +1,25 @@
+  buildscript {
+	ext {
+		springBootVersion = '2.1.2.RELEASE'
+	}
+	repositories {
+		mavenCentral()
+	}
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+	}
+  }
+apply plugin: 'java'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+
+dependencies {
+
+    compile project(':rebar-scanner-core')
+
+    compile 'com.google.cloud:google-cloud-compute:0.79.0-alpha'
+    compile "ch.qos.logback:logback-classic:${LOGBACK_VERSION}"
+    testCompile project(':rebar-scanner-test')
+    
+
+}

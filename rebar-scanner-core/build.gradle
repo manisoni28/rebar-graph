@@ -16,7 +16,7 @@ dependencies {
     compile "org.eclipse.jgit:org.eclipse.jgit:${JGIT_VERSION}" 
     compile 'it.sauronsoftware.cron4j:cron4j:2.2.5'
     compile 'org.codehaus.groovy:groovy-all:2.5.5'
-
+    compile 'com.squareup.okhttp3:okhttp:3.12.1'
     compile "com.google.guava:guava:${GUAVA_VERSION}"
     compile "com.machinezoo.noexception:noexception:${NOEXCEPTION_VERSION}"
 
