@@ -12,5 +12,5 @@ LABEL GIT_REPO=$GIT_REPO
 LABEL CI_BUILD_URL=$CI_BUILD_URL
 
 
-USER rebar
+# do NOT use "rebar" user
 CMD ["/app/docker-init"]

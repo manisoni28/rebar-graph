@@ -34,21 +34,23 @@ public class DockerScannerModule extends ScannerModule {
 
 	Logger logger = LoggerFactory.getLogger(DockerScannerModule.class);
 
+	DockerScanner scanner;
+
 	@Override
 	public void doStartModule() {
-
+		scanner = getRebarGraph().newScanner(DockerScanner.class);
 		while (true == true) {
 			Exceptions.log(logger).run(() -> {
 				logger.info("running docker scanner...");
-			
-				sleep(30,TimeUnit.SECONDS);
-			});
+				scanner.scan();
 
+			});
+			sleep(30, TimeUnit.SECONDS);
 		}
 
 	}
 
-	public static void main(String [] args) throws Exception {
+	public static void main(String[] args) throws Exception {
 		Main.main(args);
 	}
 }

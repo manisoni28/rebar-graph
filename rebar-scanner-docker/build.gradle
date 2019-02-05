@@ -19,7 +19,7 @@ dependencies {
 
     compile project(':rebar-scanner-core')
 
-    compile 'com.spotify:docker-client:8.14.3'
+    compile 'com.spotify:docker-client:8.14.3:shaded'
     compile "ch.qos.logback:logback-classic:${LOGBACK_VERSION}"
   
         testCompile project(':rebar-scanner-test')

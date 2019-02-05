@@ -22,10 +22,18 @@ import com.spotify.docker.client.DefaultDockerClient;
 import com.spotify.docker.client.DockerClient;
 import com.spotify.docker.client.messages.ImageInfo;
 
+import rebar.graph.test.AbstractIntegrationTest;
 import rebar.util.Json;
 
-public class TestMe {
+public class TestMe extends AbstractIntegrationTest {
 
+	@Test
+	public void testIt2() {
+		DockerScanner scanner = getRebarGraph().newScanner(DockerScanner.class);
+		
+		scanner.scan();
+	}
+	
 	@Test
 	@Disabled
 	public void testIt() throws Exception {

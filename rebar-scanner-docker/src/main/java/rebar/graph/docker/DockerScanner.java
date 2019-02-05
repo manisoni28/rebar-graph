@@ -15,22 +15,83 @@
  */
 package rebar.graph.docker;
 
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
+import com.google.common.base.Supplier;
+import com.google.common.base.Suppliers;
+import com.spotify.docker.client.DefaultDockerClient;
 import com.spotify.docker.client.DockerClient;
-import com.spotify.docker.client.messages.ImageInfo;
+import com.spotify.docker.client.exceptions.DockerCertificateException;
+import com.spotify.docker.client.exceptions.DockerException;
 
-public class DockerScanner {
+import rebar.graph.core.RebarGraph;
+import rebar.graph.core.Scanner;
+import rebar.util.RebarException;
+
+public class DockerScanner extends Scanner {
 
 	DockerClient client;
-	
-	public DockerScanner(DockerClient client) {
-		this.client = client;
-	}
-	
-	public DockerClient getDockerClient() {
-		
-	
-		return client;
+
+	Supplier<String> hostIdSupplier;
+	public DockerScanner() {
+		hostIdSupplier = (Supplier<String>) Suppliers.memoizeWithExpiration(this::lookupHostId, 5,TimeUnit.MINUTES);
 	}
 
+	public void doScan() {
+		hostScanner().scan();
+		containerScanner().scan();
+	}
+
+
+	public String getHostId() {
+		return hostIdSupplier.get();
+	}
+	private String lookupHostId() {
+		try {
+			String hostId = getDockerClient().info().id();
+			return hostId;
+		} catch (DockerException | InterruptedException e) {
+			throw new RebarException(e);
+		}
+	}
+	public DockerClient getDockerClient() {
+		try {
+
+			if (client == null) {
+				DockerClient docker = DefaultDockerClient.fromEnv().build();
+				this.client = docker;
+			}
+			return client;
+		} catch (DockerCertificateException e) {
+			throw new RebarException(e);
+		}
+	}
+
+	@Override
+	protected void init(RebarGraph g, Map<String, String> config) throws Exception {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void scan(String scannerType, String a, String b, String c, String d) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void applyConstraints() {
+		getGraphDB().schema().createUniqueConstraint(DockerEntityType.DockerContainer.name(), "urn");
+		getGraphDB().schema().createUniqueConstraint(DockerEntityType.DockerHost.name(), "urn");
+	
+	}
+
+	
+	public ContainerScanner containerScanner() {
+		return new ContainerScanner(this);
+	}
+	public HostScanner hostScanner() {
+		return new HostScanner(this);
+	}
 }

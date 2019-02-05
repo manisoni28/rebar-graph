@@ -33,11 +33,14 @@ public abstract class EntityScanner<SCANNER extends Scanner,ENTITYTYPE,OBJECTTYP
 	protected abstract void project(OBJECTTYPE t);
 	
 	protected ObjectNode toJson(OBJECTTYPE x) {
-		ObjectNode n = Json.objectMapper().valueToTree(x);
+		ObjectNode n = Json.objectNode(); // do not use mapper, it doesn't work
 		
 		n.put("graphEntityType", getEntityType().toString());
-	
 		n.put("graphEntityGroup", getScanner().getEntityGroup());
+		
+		toUrn(x).ifPresent(urn->{
+			n.put("urn",urn);
+		});
 		return n;
 	}
 	
