@@ -11,6 +11,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Supplier;
 import com.google.common.collect.ImmutableSet;
 import com.spotify.docker.client.DockerClient;
+import com.spotify.docker.client.DockerClient.EventsParam;
 import com.spotify.docker.client.DockerClient.ListContainersFilterParam;
 import com.spotify.docker.client.DockerClient.ListContainersParam;
 import com.spotify.docker.client.exceptions.DockerException;
@@ -120,7 +121,7 @@ public class ContainerScanner extends DockerEntityScanner<Container> {
 
 		long ts = getScanner().getGraphDB().getTimestamp();
 		try {
-
+		
 			getClient().listContainers( ).forEach(it -> {
 				
 				tryExecute(() -> project(it));
