@@ -121,7 +121,8 @@ public class ContainerScanner extends DockerEntityScanner<Container> {
 		long ts = getScanner().getGraphDB().getTimestamp();
 		try {
 
-			getClient().listContainers().forEach(it -> {
+			getClient().listContainers( ).forEach(it -> {
+				
 				tryExecute(() -> project(it));
 			});
 		} catch (DockerException | InterruptedException e) {
@@ -144,7 +145,7 @@ public class ContainerScanner extends DockerEntityScanner<Container> {
 	}
 
 	private void deleteContainerId(String id) {
-		getScanner().getGraphDB().nodes(DockerEntityType.DockerContainer.name()).id("id", "id")
+		getScanner().getGraphDB().nodes(DockerEntityType.DockerContainer.name()).id("id", id)
 				.id("hostId", getHostId()).delete();
 	}
 
@@ -153,7 +154,10 @@ public class ContainerScanner extends DockerEntityScanner<Container> {
 			Optional<Container> c = getScanner().getDockerClient()
 					.listContainers(ListContainersFilterParam.allContainers(true)).stream()
 					.filter(p -> p.id().equals(id)).findFirst();
+			
+		
 			if (!c.isPresent()) {
+				
 				deleteContainerId(id);
 			}
 			
@@ -166,6 +170,7 @@ public class ContainerScanner extends DockerEntityScanner<Container> {
 	@Override
 	void scan(JsonNode n) {
 		String id = n.path("id").asText();
+		
 		scanContainerId(id);
 
 	}
