@@ -21,14 +21,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Preconditions;
+import com.microsoft.azure.management.resources.Subscription;
 
-import rebar.graph.gcp.GcpScanner;
+import rebar.graph.azure.AzureScanner;
 import rebar.graph.test.AbstractIntegrationTest;
 
-public class GcpIntegrationTest extends AbstractIntegrationTest {
+public abstract class AzureIntegrationTest extends AbstractIntegrationTest {
 
 		
-	static GcpScanner scanner;
+	static AzureScanner scanner;
 	static boolean skipAll=false;
 	@Override
 	protected void beforeAll() {
@@ -37,44 +38,35 @@ public class GcpIntegrationTest extends AbstractIntegrationTest {
 		super.beforeAll();
 		
 	
-		int count = getGraphDriver().cypher("match (a) where labels(a)[0]=~'Gcp.*' detach delete a return count(a) as count").findFirst().get().path("count").asInt();
-		logger.info("deleted {} Gcp nodes",count);
+		int count = getGraphDriver().cypher("match (a) where labels(a)[0]=~'Azure.*' detach delete a return count(a) as count").findFirst().get().path("count").asInt();
+		logger.info("deleted {} Azure nodes",count);
 		checkAccess();
-
+	
 	}
 
-	Logger logger = LoggerFactory.getLogger(GcpIntegrationTest.class);
+	Logger logger = LoggerFactory.getLogger(AzureIntegrationTest.class);
 	
 	@BeforeEach
 	private void checkAccess() {
 		try {
 			if (scanner==null) {
-				scanner = getRebarGraph().newScanner(GcpScanner.class);
-				scanner.projectScanner().scan();
+				scanner = getRebarGraph().newScanner(AzureScanner.class);
+				Subscription sub = scanner.getAzureClient().getCurrentSubscription();
 				skipAll=false;
 			}
 		
 		}
 		catch (Exception e) {
-			logger.info("GCP integration tests will be disabled - "+e.toString());
+			logger.info("Azure integration tests will be disabled - "+e.toString());
 			skipAll = true;
 		}
 		Assumptions.assumeTrue(scanner!=null && (!skipAll));
 	}
-	public GcpScanner getScanner() {
+	public AzureScanner getScanner() {
 		Preconditions.checkState(scanner!=null,"scanner not initialized");
 		return scanner;
 	}
 	
 	
-	@Test
-	public void testIt() throws Exception {
-	
-		
-		getRebarGraph().newScanner(GcpScanner.class).zoneScanner().scan();
-		
-		
-	
-		
-	}
+
 }
