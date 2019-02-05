@@ -11,7 +11,7 @@ public class ProjectScanner extends GcpEntityScanner {
 
 	protected ProjectScanner(GcpScanner scanner) {
 		super(scanner);
-	
+
 	}
 
 	@Override
@@ -21,29 +21,31 @@ public class ProjectScanner extends GcpEntityScanner {
 
 	@Override
 	protected void project(ObjectNode t) {
-		
+
 		ObjectNode n = toJson(t);
-		
-		
-		getScanner().getRebarGraph().getGraphDB().nodes(GcpEntityType.GcpProject.name()).idKey("urn").properties(n).merge();
+
+		getScanner().getRebarGraph().getGraphDB().nodes(GcpEntityType.GcpProject.name()).idKey("urn").properties(n)
+				.merge();
 
 	}
 
 	@Override
 	protected void doScan() {
-		JsonNode n = getScanner().get("https://cloudresourcemanager.googleapis.com","/v1/projects");
-		n.path("projects").forEach(it->{
+		JsonNode n = getScanner().request().url("https://cloudresourcemanager.googleapis.com").path("/v1/projects")
+				.exec();
+		n.path("projects").forEach(it -> {
 			project(it);
 		});
 	}
 
 	@Override
 	public Optional<String> toUrn(ObjectNode t) {
-		String product="resource";
-		String emptyRegion=""; // intentionally empty
-		String emptyAccount="";
-		return Optional.ofNullable(String.format("urn:gcp:%s:%s:%s:%s",product,emptyRegion,emptyAccount,t.path("projectId").asText()));
-		
+		String product = "resource";
+		String emptyRegion = ""; // intentionally empty
+		String emptyAccount = "";
+		return Optional.ofNullable(
+				String.format("urn:gcp:%s:%s:%s:%s", product, emptyRegion, emptyAccount, t.path("projectId").asText()));
+
 	}
 
 }

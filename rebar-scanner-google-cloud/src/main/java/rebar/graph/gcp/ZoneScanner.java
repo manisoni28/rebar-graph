@@ -25,11 +25,11 @@ public class ZoneScanner extends GcpEntityScanner {
 		String regionName = t.path("region").asText();
 		int idx = regionName.lastIndexOf("/");
 		regionName = regionName.substring(idx + 1);
-		t.put("regionName",regionName);
+		t.put("regionName", regionName);
 		getScanner().getGraphDB().nodes(getEntityType().name()).idKey("urn").properties(t).merge();
 
 		{
-		
+
 			ObjectNode region = Json.objectNode();
 
 			region.put("graphEntityType", GcpEntityType.GcpRegion.name());
@@ -44,18 +44,23 @@ public class ZoneScanner extends GcpEntityScanner {
 
 	@Override
 	protected void doScan() {
-		JsonNode n = getScanner().get("https://www.googleapis.com", "/compute/v1/projects/rebar-219217/zones");
 
-		n.path("items").forEach(it -> {
-			tryExecute(() -> project(toJson(it)));
+		getProjectIds().forEach(projectId -> {
+			JsonNode n = getScanner().request().url("https://www.googleapis.com").path("/compute/v1/projects/")
+					.path(projectId).path("zones").exec();
+
+			n.path("items").forEach(it -> {
+				tryExecute(() -> project(toJson(it)));
+			});
 		});
 
 		mergeRelationships();
 	}
 
 	private void mergeRelationships() {
-		getScanner().getGraphDB().nodes(GcpEntityType.GcpZone.name()).relationship("RESIDES_IN").on("region", "region").to(GcpEntityType.GcpRegion.name()).merge();
-		
+		getScanner().getGraphDB().nodes(GcpEntityType.GcpZone.name()).relationship("RESIDES_IN").on("region", "region")
+				.to(GcpEntityType.GcpRegion.name()).merge();
+
 	}
 
 	@Override

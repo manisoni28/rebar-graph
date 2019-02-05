@@ -43,6 +43,7 @@ import rebar.graph.neo4j.GraphSchema;
 import rebar.util.EnvConfig;
 import rebar.util.Json;
 import rebar.util.RebarException;
+import rebar.util.UrlBuilder;
 
 public class GcpScanner extends Scanner {
 
@@ -97,6 +98,21 @@ public class GcpScanner extends Scanner {
 
 				return n;
 			} else {
+				int code = response.code();
+				List<String> headers = response.headers("content-type");
+				if (!headers.isEmpty()) {
+					String val = headers.get(0);
+					if (val.contains("json")) {
+
+						JsonNode n = Json.objectMapper().readTree(response.body().bytes());
+
+						if (n.path("error").path("errors").path(0).path("reason").asText()
+								.equals("accessNotConfigured")) {
+							return MissingNode.getInstance();
+						}
+					}
+
+				}
 				response.body().bytes(); // consume
 			}
 			
@@ -114,71 +130,17 @@ public class GcpScanner extends Scanner {
 
 	}
 
-	protected JsonNode get(String base, String path, String... params) {
-
-		Closer closer = Closer.create();
-		try {
-			Preconditions.checkArgument(path != null && path.startsWith("/"));
-
-			String url = String.format("%s%s", base, path);
-
-			Request request = new Request.Builder().url(url).get().build();
-
-			Response response = client.newCall(request).execute();
-
-			if (response.isSuccessful()) {
-				Reader r = response.body().charStream();
-				closer.register(r);
-				closer.register(response.body());
-				closer.register(response);
-				JsonNode n = Json.objectMapper().readTree(r);
-
-				return n;
-			} else {
-
-				int code = response.code();
-				List<String> headers = response.headers("content-type");
-				if (!headers.isEmpty()) {
-					String val = headers.get(0);
-					if (val.contains("json")) {
-
-						JsonNode n = Json.objectMapper().readTree(response.body().bytes());
-
-						if (n.path("error").path("errors").path(0).path("reason").asText()
-								.equals("accessNotConfigured")) {
-							return MissingNode.getInstance();
-						}
-					}
-
-				}
-				throw new RebarException("response code=" + code);
-			}
-		} catch (
-
-		IOException e) {
-			throw new RebarException(e);
-		} finally {
-			try {
-				closer.close();
-			} catch (IOException e) {
-				logger.error("problem closing resources", e);
-			}
-		}
-	}
+	
 
 	@Override
 	public void doScan() {
 
-		zoneScanner().scan();
 		projectScanner().scan();
+		zoneScanner().scan();
+		
 		computeInstanceScanner().scan();
 
-		// get("https://cloudresourcemanager.googleapis.com","/v1/projects");
-		// "https://cloudresourcemanager.googleapis.com"
-		// get("https://www.googleapis.com","/compute/v1/projects/rebar-219217/zones");
-
-//		JsonNode n = get("https://www.googleapis.com","/compute/v1/projects/rebar-219217/zones/us-west1-a/instances");
-		// Json.logger().info(n);
+	
 	}
 
 	@Override
@@ -213,5 +175,40 @@ public class GcpScanner extends Scanner {
 
 	public boolean isRegionEnabled(String name) {
 		return Strings.nullToEmpty(name).startsWith("us-");
+	}
+	public GcpRequest request() {
+		return new GcpRequest();
+	}
+	public class GcpRequest extends UrlBuilder {
+		
+		
+		
+		@Override
+		public GcpRequest url(String u) {
+		
+			return super.url(u);
+		}
+
+		@Override
+		public GcpRequest path(String path) {
+			
+			return super.path(path);
+		}
+
+		@Override
+		public GcpRequest pathParam(String key, String val) {
+			// TODO Auto-generated method stub
+			return super.pathParam(key, val);
+		}
+
+		@Override
+		public GcpRequest queryParam(String key, String val) {
+		
+			return super.queryParam(key, val);
+		}
+
+		public JsonNode exec() {
+			return getUrl(toString());
+		}
 	}
 }

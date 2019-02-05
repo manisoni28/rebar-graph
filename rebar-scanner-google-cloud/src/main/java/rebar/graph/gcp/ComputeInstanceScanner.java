@@ -91,8 +91,9 @@ public class ComputeInstanceScanner extends GcpEntityScanner {
 
 		logger.info("Scanning {} {}", projectId, zone);
 
-		JsonNode n = getScanner().get("https://www.googleapis.com",
-				String.format("/compute/v1/projects/%s/zones/%s/instances", projectId, zone));
+		JsonNode n = getScanner().request().url("https://www.googleapis.com").path("compute").path("v1").path("projects").path(projectId).path("zones")
+				.path(zone).path("instances").exec();
+				
 
 		n.path("items").forEach(it -> {
 			tryExecute(() -> {

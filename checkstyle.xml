@@ -26,6 +26,7 @@
      <module name="Regexp">
   <!-- . matches any character, so we need to escape it and use \. to match dots. -->
   <property name="format" value="System\.out\.println"/>
+   <property name="format" value="com\.google\.api\.client\.util"/>
   <property name="illegalPattern" value="true"/>
   </module>
 </module>

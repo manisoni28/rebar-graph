@@ -1,4 +1,4 @@
-package rebar.graph.github;
+package rebar.graph.gcp;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.BeforeEach;
 /**
