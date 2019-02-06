@@ -39,7 +39,7 @@ public class GcpScannerModule extends ScannerModule {
 	
 	@Override
 	public void applyConstraints(boolean apply) {
-		GraphSchema schema = getRebarGraph().getGraphDB().schema();
+		GraphSchema schema = getRebarGraph().getGraphBuilder().schema();
 		schema.createUniqueConstraint(GcpEntityType.GcpProject.name(), "urn",apply);
 		schema.createUniqueConstraint(GcpEntityType.GcpProject.name(), "projectNumber",apply);
 		schema.createUniqueConstraint(GcpEntityType.GcpProject.name(), "projectId",apply);

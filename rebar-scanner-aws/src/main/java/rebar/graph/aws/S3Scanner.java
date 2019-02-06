@@ -27,7 +27,7 @@ public class S3Scanner extends AwsEntityScanner<Bucket, AmazonS3Client> {
 
 	@Override
 	protected void doScan() {
-		long ts = getGraphDB().getTimestamp();
+		long ts = getGraphBuilder().getTimestamp();
 		ListBucketsRequest request = new ListBucketsRequest();
 
 		List<Bucket> buckets = getClient().listBuckets(request);
@@ -41,7 +41,7 @@ public class S3Scanner extends AwsEntityScanner<Bucket, AmazonS3Client> {
 				n.set("ownerId", n.path("owner").path("id"));
 				n.remove("owner");
 				fetchAttributes(it.getName(), n);
-				getGraphDB().nodes(AwsEntityType.AwsS3Bucket.name()).id("name", it.getName()).properties(n).merge();
+				getGraphBuilder().nodes(AwsEntityType.AwsS3Bucket.name()).id("name", it.getName()).properties(n).merge();
 			} catch (RuntimeException e) {
 				maybeThrow(e);
 			}
@@ -129,12 +129,12 @@ public class S3Scanner extends AwsEntityScanner<Bucket, AmazonS3Client> {
 		n.put("arn", toArn(id));
 		boolean exists = getClient().doesBucketExistV2(id);
 		if (!exists) {
-			getGraphDB().nodes(AwsEntityType.AwsS3Bucket.name()).id("name", id).id("account", getAccount()).delete();
+			getGraphBuilder().nodes(AwsEntityType.AwsS3Bucket.name()).id("name", id).id("account", getAccount()).delete();
 			return;
 		} else {
 			fetchAttributes(id, n);
 		}
-		getGraphDB().nodes(AwsEntityType.AwsS3Bucket.name()).id("name", id).properties(n).merge();
+		getGraphBuilder().nodes(AwsEntityType.AwsS3Bucket.name()).id("name", id).properties(n).merge();
 		mergeAccountOwner(AwsEntityType.AwsS3Bucket);
 	}
 

@@ -43,7 +43,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.machinezoo.noexception.Exceptions;
 
-import rebar.graph.core.GraphDB;
+import rebar.graph.core.GraphBuilder;
 import rebar.graph.core.GraphOperation;
 import rebar.graph.core.Scanner;
 import rebar.graph.neo4j.GraphDriver;
@@ -141,7 +141,7 @@ public class ElbClassicScanner extends AwsEntityScanner<LoadBalancerDescription,
 	protected void project(LoadBalancerDescription elb) {
 		ObjectNode n = toJson(elb);
 		
-		getGraphDB().nodes("AwsElb").idKey("arn").properties(n).merge();
+		getGraphBuilder().nodes("AwsElb").idKey("arn").properties(n).merge();
 
 		getAwsScanner().execGraphOperation(ElbRelationshipGraphOperation.class, n);
 
@@ -164,7 +164,7 @@ public class ElbClassicScanner extends AwsEntityScanner<LoadBalancerDescription,
 			scanTagsByLoadBalancerNames(name);
 
 		} catch (LoadBalancerNotFoundException e) {
-			getGraphDB().nodes("AwsElb").id("region", getRegionName()).id("account", getAccount()).id("name", name)
+			getGraphBuilder().nodes("AwsElb").id("region", getRegionName()).id("account", getAccount()).id("name", name)
 					.delete();
 		}
 	}
@@ -189,7 +189,7 @@ public class ElbClassicScanner extends AwsEntityScanner<LoadBalancerDescription,
 			data.put(TAG_PREFIX + it.getKey(), it.getValue());
 		});
 
-		getGraphDB().nodes("AwsElb").id("type","classic").id("account", getAccount()).id("region", getRegion().getName()).id("name", td.getLoadBalancerName())
+		getGraphBuilder().nodes("AwsElb").id("type","classic").id("account", getAccount()).id("region", getRegion().getName()).id("name", td.getLoadBalancerName())
 				.withTagPrefixes(TAG_PREFIXES).properties(data).merge();
 
 	}
@@ -230,7 +230,7 @@ public class ElbClassicScanner extends AwsEntityScanner<LoadBalancerDescription,
 		
 	
 		if (names==null || names.length==0) {
-			List<String> allNames = getGraphDB().nodes("AwsElb").id("account",getAccount(),"region",getRegionName()).id("type","classic").match().map(n->n.path("name").asText()).collect(Collectors.toList());
+			List<String> allNames = getGraphBuilder().nodes("AwsElb").id("account",getAccount(),"region",getRegionName()).id("type","classic").match().map(n->n.path("name").asText()).collect(Collectors.toList());
 			if (allNames.isEmpty()) {
 				return;
 			}

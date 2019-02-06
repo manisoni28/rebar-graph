@@ -39,7 +39,7 @@ public class AsgScannerTest extends AwsIntegrationTest {
 		
 		
 		// Verify that there are not any rogue relationships
-		getRebarGraph().getGraphDB().getNeo4jDriver().cypher("match (a:AwsAsg)-[r]-(e:AwsEc2Instance) return a,r,e").forEach(it->{
+		getRebarGraph().getGraphBuilder().getNeo4jDriver().cypher("match (a:AwsAsg)-[r]-(e:AwsEc2Instance) return a,r,e").forEach(it->{
 		
 			String instanceId = it.path("e").path("instanceId").asText();	
 			Assertions.assertThat(it.path("a").path("instances").iterator()).anyMatch(p->p.asText().equals(instanceId));	

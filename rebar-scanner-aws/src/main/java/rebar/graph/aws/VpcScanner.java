@@ -50,7 +50,7 @@ public class VpcScanner extends AwsEntityScanner<Vpc, AmazonEC2Client> {
 		} catch (AmazonEC2Exception e) {
 			if (Strings.nullToEmpty(e.getErrorCode()).equals("InvalidVpcID.NotFound")) {
 
-				getGraphDB().nodes(getEntityTypeName()).id( "account", getAccount(), "vpcId", vpcId).delete();
+				getGraphBuilder().nodes(getEntityTypeName()).id( "account", getAccount(), "vpcId", vpcId).delete();
 			} else {
 				throw e;
 			}
@@ -62,13 +62,13 @@ public class VpcScanner extends AwsEntityScanner<Vpc, AmazonEC2Client> {
 
 		ObjectNode n = toJson(it);
 
-		getGraphDB().nodes(getEntityTypeName()).withTagPrefixes(TAG_PREFIXES).properties( n).idKey("arn").merge();
+		getGraphBuilder().nodes(getEntityTypeName()).withTagPrefixes(TAG_PREFIXES).properties( n).idKey("arn").merge();
 
-		getGraphDB().nodes(AwsEntityType.AwsAccountRegion.name()).id("account", getAccount()).id("region",getRegionName()).relationship("HAS").on("account","account")
+		getGraphBuilder().nodes(AwsEntityType.AwsAccountRegion.name()).id("account", getAccount()).id("region",getRegionName()).relationship("HAS").on("account","account")
 		.on("region", getRegionName())
 				.to(AwsEntityType.AwsVpc.name()).id("arn", n.path("arn").asText()).id("region",getRegionName()).merge();
 
-		getGraphDB().nodes(AwsEntityType.AwsVpc.name()).id("arn",n.path("arn").asText()).relationship("RESIDES_IN").on("region", "region").to(AwsEntityType.AwsRegion.name()).merge();
+		getGraphBuilder().nodes(AwsEntityType.AwsVpc.name()).id("arn",n.path("arn").asText()).relationship("RESIDES_IN").on("region", "region").to(AwsEntityType.AwsRegion.name()).merge();
 	}
 
 	protected Optional<String> toArn(Vpc vpc) {
@@ -86,7 +86,7 @@ public class VpcScanner extends AwsEntityScanner<Vpc, AmazonEC2Client> {
 
 	protected void doScan() {
 
-		long ts = getGraphDB().getTimestamp();
+		long ts = getGraphBuilder().getTimestamp();
 		AmazonEC2 ec2 = getClient(AmazonEC2ClientBuilder.class);
 	
 	

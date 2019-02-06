@@ -74,7 +74,7 @@ public class ElbTargetGroupScanner extends AwsEntityScanner<TargetGroup, AmazonE
 
 	@Override
 	protected void doScan() {
-		long ts = getGraphDB().getTimestamp();
+		long ts = getGraphBuilder().getTimestamp();
 		AmazonElasticLoadBalancingClient client = getAwsScanner()
 				.getClient(AmazonElasticLoadBalancingClientBuilder.class);
 
@@ -105,7 +105,7 @@ public class ElbTargetGroupScanner extends AwsEntityScanner<TargetGroup, AmazonE
 		n.put("name", n.path("targetGroupName").asText());
 		n.put("arn", tg.getTargetGroupArn());
 		
-		getGraphDB().nodes("AwsElbTargetGroup").idKey("name", "region", "account").properties(n).merge();
+		getGraphBuilder().nodes("AwsElbTargetGroup").idKey("name", "region", "account").properties(n).merge();
 		getAwsScanner().execGraphOperation(TargetGroupGraphOperation.class, n);
 	}
 

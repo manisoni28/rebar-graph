@@ -70,10 +70,10 @@ import io.fabric8.kubernetes.client.KubernetesClientException;
 import io.fabric8.kubernetes.client.VersionInfo;
 import io.fabric8.kubernetes.client.Watcher;
 import io.fabric8.kubernetes.client.internal.KubeConfigUtils;
-import rebar.graph.core.GraphDB.NodeOperation;
+import rebar.graph.core.GraphBuilder.NodeOperation;
 import rebar.graph.neo4j.GraphException;
 import rebar.graph.core.RebarGraph;
-import rebar.graph.core.GraphDB;
+import rebar.graph.core.GraphBuilder;
 import rebar.graph.core.Scanner;
 import rebar.util.Json;
 
@@ -118,16 +118,16 @@ public class KubeScanner extends Scanner {
 		n.put("masterUrl", url.toExternalForm());
 		n.put(CLUSTER_ID, getClusterId());
 		n.remove("data");
-		n.put(GraphDB.ENTITY_GROUP, "kubernetes");
-		n.put(GraphDB.ENTITY_TYPE, "KubeCluster");
+		n.put(GraphBuilder.ENTITY_GROUP, "kubernetes");
+		n.put(GraphBuilder.ENTITY_TYPE, "KubeCluster");
 
-		Optional<JsonNode> existing = getRebarGraph().getGraphDB().nodes(KUBE_CLUSTER_LABEL)
+		Optional<JsonNode> existing = getRebarGraph().getGraphBuilder().nodes(KUBE_CLUSTER_LABEL)
 				.id(CLUSTER_ID, getClusterId()).match().findFirst();
 		if ((!existing.isPresent()) || (!existing.get().has("name"))) {
 			n.put("name", clusterId);
 		}
 
-		getRebarGraph().getGraphDB().nodes(KUBE_CLUSTER_LABEL).id(CLUSTER_ID, getClusterId()).properties(n).merge();
+		getRebarGraph().getGraphBuilder().nodes(KUBE_CLUSTER_LABEL).id(CLUSTER_ID, getClusterId()).properties(n).merge();
 
 	}
 
@@ -173,7 +173,7 @@ public class KubeScanner extends Scanner {
 		n.remove("ports");
 		n.remove("status");
 
-		getRebarGraph().getGraphDB().nodes(toEntityType(Service.class)).withTagPrefixes(TAG_PREFIXES)
+		getRebarGraph().getGraphBuilder().nodes(toEntityType(Service.class)).withTagPrefixes(TAG_PREFIXES)
 				.idKey(CLUSTER_ID, NAMESPACE, NAME).properties(n).merge();
 
 		ensureNamespaceRelationships(Service.class);
@@ -190,7 +190,7 @@ public class KubeScanner extends Scanner {
 
 		String val = n.path("kind").asText(null);
 		if (Strings.isNullOrEmpty(val)) {
-			val = n.path(GraphDB.ENTITY_TYPE).asText(null);
+			val = n.path(GraphBuilder.ENTITY_TYPE).asText(null);
 			Preconditions.checkArgument(!Strings.isNullOrEmpty(val), "kind or entityType must be set");
 			return val;
 		}
@@ -377,14 +377,14 @@ public class KubeScanner extends Scanner {
 
 	private void ensureNamespaceRelationships(Class<? extends HasMetadata> clazz) {
 
-		getRebarGraph().getGraphDB().nodes(toEntityType(Namespace.class)).id(CLUSTER_ID, getClusterId())
+		getRebarGraph().getGraphBuilder().nodes(toEntityType(Namespace.class)).id(CLUSTER_ID, getClusterId())
 				.relationship(HAS).on(NAME, NAMESPACE).to(toEntityType(clazz)).id(CLUSTER_ID, getClusterId()).merge();
 
 	}
 
 	public void scanServices() {
 
-		long ts = getRebarGraph().getGraphDB().getTimestamp();
+		long ts = getRebarGraph().getGraphBuilder().getTimestamp();
 		getKubernetesClient().services().inAnyNamespace().list().getItems().forEach(it -> {
 
 			projectService(it, it.getMetadata().getNamespace(), it.getMetadata().getName());
@@ -399,8 +399,8 @@ public class KubeScanner extends Scanner {
 	ObjectNode toJson(HasMetadata hmd) {
 
 		ObjectNode x = Json.objectMapper().valueToTree(hmd);
-		x.put(GraphDB.ENTITY_GROUP, "kubernetes");
-		x.put(GraphDB.ENTITY_TYPE, toEntityType(hmd));
+		x.put(GraphBuilder.ENTITY_GROUP, "kubernetes");
+		x.put(GraphBuilder.ENTITY_TYPE, toEntityType(hmd));
 		x.remove("data");
 		x.remove("metadata");
 
@@ -444,7 +444,7 @@ public class KubeScanner extends Scanner {
 
 		});
 
-		x.put(GraphDB.ENTITY_TYPE, toEntityType(x));
+		x.put(GraphBuilder.ENTITY_TYPE, toEntityType(x));
 
 		return x;
 
@@ -452,7 +452,7 @@ public class KubeScanner extends Scanner {
 
 	protected void projectNode(Node node, String name) {
 		if (node == null && !Strings.isNullOrEmpty(name)) {
-			getRebarGraph().getGraphDB().nodes(toEntityType(Node.class)).id("clusterId", getClusterId()).id(NAME, name)
+			getRebarGraph().getGraphBuilder().nodes(toEntityType(Node.class)).id("clusterId", getClusterId()).id(NAME, name)
 					.delete();
 			return;
 		}
@@ -475,10 +475,10 @@ public class KubeScanner extends Scanner {
 		});
 		nx.remove("status");
 
-		getRebarGraph().getGraphDB().nodes(toEntityType(Node.class)).withTagPrefixes(TAG_PREFIXES)
+		getRebarGraph().getGraphBuilder().nodes(toEntityType(Node.class)).withTagPrefixes(TAG_PREFIXES)
 				.id("clusterId", getClusterId()).id(NAME, name).properties(nx).merge();
 
-		getRebarGraph().getGraphDB().nodes(KUBE_CLUSTER_LABEL).id(CLUSTER_ID, getClusterId()).relationship(HAS)
+		getRebarGraph().getGraphBuilder().nodes(KUBE_CLUSTER_LABEL).id(CLUSTER_ID, getClusterId()).relationship(HAS)
 				.to(toEntityType(Node.class)).id(NAME, node.getMetadata().getName()).merge();
 
 	}
@@ -486,7 +486,7 @@ public class KubeScanner extends Scanner {
 	protected void projectNamespace(Namespace n, String name) {
 
 		if (n == null && !Strings.isNullOrEmpty(name)) {
-			getRebarGraph().getGraphDB().nodes(toEntityType(Namespace.class)).id(NAME, name)
+			getRebarGraph().getGraphBuilder().nodes(toEntityType(Namespace.class)).id(NAME, name)
 					.id(CLUSTER_ID, getClusterId()).delete();
 			return;
 		}
@@ -497,32 +497,32 @@ public class KubeScanner extends Scanner {
 		nx.remove("spec");
 		nx.set("phase", nx.path("status").path("phase"));
 		nx.remove("status");
-		getRebarGraph().getGraphDB().nodes(toEntityType(Namespace.class)).idKey(CLUSTER_ID, NAME)
+		getRebarGraph().getGraphBuilder().nodes(toEntityType(Namespace.class)).idKey(CLUSTER_ID, NAME)
 				.withTagPrefixes(TAG_PREFIXES).properties(nx).merge();
-		getRebarGraph().getGraphDB().nodes(KUBE_CLUSTER_LABEL).id(CLUSTER_ID, getClusterId()).relationship(HAS)
+		getRebarGraph().getGraphBuilder().nodes(KUBE_CLUSTER_LABEL).id(CLUSTER_ID, getClusterId()).relationship(HAS)
 				.to(toEntityType(Namespace.class)).id(UID, n.getMetadata().getUid()).merge();
 
 	}
 
 	protected void projectContainerSpec(Pod p) {
-		long ts = getRebarGraph().getGraphDB().getTimestamp();
+		long ts = getRebarGraph().getGraphBuilder().getTimestamp();
 		p.getSpec().getContainers().forEach(it -> {
 			ObjectNode cs = Json.objectMapper().valueToTree(it);
 
 			cs.put("podUid", p.getMetadata().getUid());
 			cs.put("containerSpecId", p.getMetadata().getUid() + "-" + cs.path("name").asText());
-			cs.put(GraphDB.ENTITY_GROUP, "kubernetes");
-			cs.put(GraphDB.ENTITY_TYPE, "KubeContainerSpec");
+			cs.put(GraphBuilder.ENTITY_GROUP, "kubernetes");
+			cs.put(GraphBuilder.ENTITY_TYPE, "KubeContainerSpec");
 			cs.put("clusterId", getClusterId());
-			cs.put(GraphDB.UPDATE_TS, ts + 1);
-			getRebarGraph().getGraphDB().nodes("KubeContainerSpec").withTagPrefixes(TAG_PREFIXES)
+			cs.put(GraphBuilder.UPDATE_TS, ts + 1);
+			getRebarGraph().getGraphBuilder().nodes("KubeContainerSpec").withTagPrefixes(TAG_PREFIXES)
 					.idKey("containerSpecId").properties(cs).merge();
 
 		});
-		getRebarGraph().getGraphDB().nodes("KubeContainerSpec").whereAttributeLessThan(GraphDB.UPDATE_TS, ts)
+		getRebarGraph().getGraphBuilder().nodes("KubeContainerSpec").whereAttributeLessThan(GraphBuilder.UPDATE_TS, ts)
 				.id("podUid", p.getMetadata().getUid()).delete();
 
-		getRebarGraph().getGraphDB().nodes("KubePod").id("uid", p.getMetadata().getUid()).relationship("DEFINED_BY")
+		getRebarGraph().getGraphBuilder().nodes("KubePod").id("uid", p.getMetadata().getUid()).relationship("DEFINED_BY")
 				.on("uid", "podUid").to("KubeContainerSpec").id("podUid", p.getMetadata().getUid()).merge();
 
 	}
@@ -530,11 +530,11 @@ public class KubeScanner extends Scanner {
 	protected void projectContainerStatus(Pod p, List<ContainerStatus> cs) {
 		List<String> containerIdList = cs.stream().map(x -> x.getContainerID()).collect(Collectors.toList());
 
-		long ts = getRebarGraph().getGraphDB().getTimestamp();
+		long ts = getRebarGraph().getGraphBuilder().getTimestamp();
 		cs.forEach(it -> {
 			ObjectNode n = Json.objectMapper().valueToTree(it);
-			n.put(GraphDB.ENTITY_GROUP, "kubernetes");
-			n.put(GraphDB.ENTITY_TYPE, "KubeContainer");
+			n.put(GraphBuilder.ENTITY_GROUP, "kubernetes");
+			n.put(GraphBuilder.ENTITY_TYPE, "KubeContainer");
 			n.put("startedAt", n.path("state").path("running").path("startedAt").asText());
 			n.remove("lastState");
 			n.remove("state");
@@ -542,30 +542,30 @@ public class KubeScanner extends Scanner {
 			String containerID = it.getContainerID();
 			if (!Strings.isNullOrEmpty(containerID)) {
 				// containers in the process of starting will not have containerID set
-				getRebarGraph().getGraphDB().nodes(KUBE_CONTAINER_LABEL).id(CLUSTER_ID, getClusterId())
+				getRebarGraph().getGraphBuilder().nodes(KUBE_CONTAINER_LABEL).id(CLUSTER_ID, getClusterId())
 						.id("containerID", it.getContainerID()).properties(n).merge();
 			}
 		});
 
-		getRebarGraph().getGraphDB().nodes(toEntityType(Pod.class)).id(CLUSTER_ID, getClusterId())
+		getRebarGraph().getGraphBuilder().nodes(toEntityType(Pod.class)).id(CLUSTER_ID, getClusterId())
 				.id(UID, p.getMetadata().getUid()).relationship(HAS).on(UID, "podUid").to(KUBE_CONTAINER_LABEL)
 				.id(CLUSTER_ID, getClusterId()).merge();
 
-		getRebarGraph().getGraphDB().nodes("KubeContainer").id("podUid", p.getMetadata().getUid())
+		getRebarGraph().getGraphBuilder().nodes("KubeContainer").id("podUid", p.getMetadata().getUid())
 				.relationship("DEFINED_BY").to("KubeContainerSpec").id("podUid", p.getMetadata().getUid()).merge();
 
 		ObjectNode arg = Json.objectNode();
 		arg.put(CLUSTER_ID, getClusterId());
-		arg.put(GraphDB.ENTITY_TYPE, KUBE_CONTAINER_LABEL);
-		arg.put(GraphDB.ENTITY_GROUP, "kubernetes");
-		arg.put(GraphDB.UPDATE_TS, ts);
+		arg.put(GraphBuilder.ENTITY_TYPE, KUBE_CONTAINER_LABEL);
+		arg.put(GraphBuilder.ENTITY_GROUP, "kubernetes");
+		arg.put(GraphBuilder.UPDATE_TS, ts);
 		arg.put("podUid", p.getMetadata().getUid());
 		arg.set("containers", Json.objectMapper().valueToTree(containerIdList));
 		execGraphOperation(RemoveStalePodContainersOperation.class, arg);
 	}
 
 	private void ensurePodNodeRelationships() {
-		getRebarGraph().getGraphDB().nodes(toEntityType(Pod.class)).id("clusterId", getClusterId())
+		getRebarGraph().getGraphBuilder().nodes(toEntityType(Pod.class)).id("clusterId", getClusterId())
 				.relationship("RUNS_ON").on("nodeName", NAME).to(toEntityType(Node.class))
 				.id("clusterId", getClusterId()).merge();
 	}
@@ -602,7 +602,7 @@ public class KubeScanner extends Scanner {
 		// TODO list of conditions in status object that we might want to map
 		nx.remove("status");
 
-		getRebarGraph().getGraphDB().nodes(nx.path(GraphDB.ENTITY_TYPE).asText()).withTagPrefixes(TAG_PREFIXES)
+		getRebarGraph().getGraphBuilder().nodes(nx.path(GraphBuilder.ENTITY_TYPE).asText()).withTagPrefixes(TAG_PREFIXES)
 				.idKey(CLUSTER_ID, NAMESPACE, NAME).properties(nx).merge();
 		projectContainerSpec(p);
 		projectContainerStatus(p, csList);
@@ -642,7 +642,7 @@ public class KubeScanner extends Scanner {
 
 		n.remove("spec");
 
-		getRebarGraph().getGraphDB().nodes(toEntityType(Deployment.class)).withTagPrefixes(TAG_PREFIXES)
+		getRebarGraph().getGraphBuilder().nodes(toEntityType(Deployment.class)).withTagPrefixes(TAG_PREFIXES)
 				.idKey(CLUSTER_ID, NAMESPACE, NAME).properties(n).merge();
 
 	}
@@ -689,7 +689,7 @@ public class KubeScanner extends Scanner {
 	}
 
 	public void scanDeployments() {
-		long ts = getRebarGraph().getGraphDB().getTimestamp();
+		long ts = getRebarGraph().getGraphBuilder().getTimestamp();
 		getKubernetesClient().apps().deployments().inAnyNamespace().list().getItems().forEach(it -> {
 			projectDeployment(it, it.getMetadata().getNamespace(), it.getMetadata().getName());
 		});
@@ -709,7 +709,7 @@ public class KubeScanner extends Scanner {
 
 	public void scanPods() {
 
-		long ts = getRebarGraph().getGraphDB().getTimestamp();
+		long ts = getRebarGraph().getGraphBuilder().getTimestamp();
 		getKubernetesClient().pods().inAnyNamespace().list().getItems().forEach(it -> {
 			projectPod(it, it.getMetadata().getNamespace(), it.getMetadata().getName());
 		});
@@ -721,11 +721,11 @@ public class KubeScanner extends Scanner {
 	}
 
 	protected void deleteNodeByUid(String type, String uid) {
-		getRebarGraph().getGraphDB().nodes(type).id(CLUSTER_ID, getClusterId()).id(UID, uid).delete();
+		getRebarGraph().getGraphBuilder().nodes(type).id(CLUSTER_ID, getClusterId()).id(UID, uid).delete();
 	}
 
 	protected void deleteNodeByName(String type, String ns, String name) {
-		getRebarGraph().getGraphDB().nodes(type).id(CLUSTER_ID, getClusterId()).id(NAMESPACE, ns).id(NAME, name)
+		getRebarGraph().getGraphBuilder().nodes(type).id(CLUSTER_ID, getClusterId()).id(NAMESPACE, ns).id(NAME, name)
 				.delete();
 	}
 
@@ -733,7 +733,7 @@ public class KubeScanner extends Scanner {
 
 		String entityType = toEntityType(cz);
 		if (md == null && (!Strings.isNullOrEmpty(ns) && (!Strings.isNullOrEmpty(name)))) {
-			getRebarGraph().getGraphDB().nodes(entityType).id(CLUSTER_ID, getClusterId()).id(NAMESPACE, ns)
+			getRebarGraph().getGraphBuilder().nodes(entityType).id(CLUSTER_ID, getClusterId()).id(NAMESPACE, ns)
 					.id(NAME, name).delete();
 			return true;
 		}
@@ -759,7 +759,7 @@ public class KubeScanner extends Scanner {
 
 		n.remove("status");
 		n.remove("spec"); // spec is very complicated
-		getRebarGraph().getGraphDB().nodes(toEntityType(ReplicaSet.class)).withTagPrefixes(TAG_PREFIXES)
+		getRebarGraph().getGraphBuilder().nodes(toEntityType(ReplicaSet.class)).withTagPrefixes(TAG_PREFIXES)
 				.id(NAMESPACE, ns).id(NAME, name).properties(n).merge();
 
 		ensureNamespaceRelationships(ReplicaSet.class);
@@ -774,8 +774,8 @@ public class KubeScanner extends Scanner {
 		}
 
 		ObjectNode n = Json.objectNode();
-		n.put(GraphDB.ENTITY_GROUP, "kubernetes");
-		n.put(GraphDB.ENTITY_TYPE, toEntityType(Service.class));
+		n.put(GraphBuilder.ENTITY_GROUP, "kubernetes");
+		n.put(GraphBuilder.ENTITY_TYPE, toEntityType(Service.class));
 		n.put(NAMESPACE, ns);
 		n.put(NAME, name);
 		n.put(CLUSTER_ID, getClusterId());
@@ -793,7 +793,7 @@ public class KubeScanner extends Scanner {
 			});
 		});
 
-		getRebarGraph().getGraphDB().nodes(toEntityType(Service.class)).id(CLUSTER_ID, getClusterId()).id(NAMESPACE, ns)
+		getRebarGraph().getGraphBuilder().nodes(toEntityType(Service.class)).id(CLUSTER_ID, getClusterId()).id(NAMESPACE, ns)
 				.id(NAME, name).properties(n).match(); // we use match here so that we don't create phantom services
 		ensureNamespaceRelationships(Service.class);
 		execGraphOperation(MergeServiceEndpointsOperation.class, n);
@@ -810,7 +810,7 @@ public class KubeScanner extends Scanner {
 
 	public void scanReplicaSets() {
 
-		long ts = getRebarGraph().getGraphDB().getTimestamp();
+		long ts = getRebarGraph().getGraphBuilder().getTimestamp();
 		getKubernetesClient().apps().replicaSets().inAnyNamespace().list().getItems().forEach(it -> {
 
 			tryExecute(() -> projectReplicaSet(it, it.getMetadata().getNamespace(), it.getMetadata().getName()));
@@ -831,8 +831,8 @@ public class KubeScanner extends Scanner {
 	private void gc(Class<? extends HasMetadata> md, long ts) {
 
 		String type = toEntityType(md);
-		getRebarGraph().getGraphDB().nodes(type).id(CLUSTER_ID, getClusterId())
-				.whereAttributeLessThan(GraphDB.UPDATE_TS, ts).match().forEach(it -> {
+		getRebarGraph().getGraphBuilder().nodes(type).id(CLUSTER_ID, getClusterId())
+				.whereAttributeLessThan(GraphBuilder.UPDATE_TS, ts).match().forEach(it -> {
 					logger.info("running gc on {} namespace={} name={}", type, it.path(NAMESPACE).asText(),
 							it.path(NAME).asText());
 
@@ -847,7 +847,7 @@ public class KubeScanner extends Scanner {
 	}
 
 	public void scanNodes() {
-		long ts = getRebarGraph().getGraphDB().getTimestamp();
+		long ts = getRebarGraph().getGraphBuilder().getTimestamp();
 		getKubernetesClient().nodes().list().getItems().forEach(it -> {
 
 			tryExecute(() -> projectNode(it, it.getMetadata().getName()));
@@ -860,7 +860,7 @@ public class KubeScanner extends Scanner {
 
 	public void scanNamespaces() {
 
-		long ts = getRebarGraph().getGraphDB().getTimestamp();
+		long ts = getRebarGraph().getGraphBuilder().getTimestamp();
 		getKubernetesClient().namespaces().list().getItems().forEach(it -> {
 
 			tryExecute(() -> projectNamespace(it, null));
@@ -886,7 +886,7 @@ public class KubeScanner extends Scanner {
 
 		String ownerTypeKey = toOwnerRefProperty(toEntityType(ownerClass));
 
-		getRebarGraph().getGraphDB().nodes(ownerType).id(CLUSTER_ID, getClusterId()).relationship(HAS)
+		getRebarGraph().getGraphBuilder().nodes(ownerType).id(CLUSTER_ID, getClusterId()).relationship(HAS)
 				.on(UID, ownerTypeKey).to(childType).id(CLUSTER_ID, getClusterId()).merge();
 
 		ObjectNode arg = Json.objectNode();
@@ -906,14 +906,14 @@ public class KubeScanner extends Scanner {
 
 		n.remove("status");
 		n.remove("spec");
-		getRebarGraph().getGraphDB().nodes(toEntityType(ds.getClass())).withTagPrefixes(TAG_PREFIXES)
+		getRebarGraph().getGraphBuilder().nodes(toEntityType(ds.getClass())).withTagPrefixes(TAG_PREFIXES)
 				.idKey(CLUSTER_ID, NAMESPACE, NAME).properties(n).merge();
 
 	}
 
 	public void scanDaemonSets() {
 
-		long ts = getRebarGraph().getGraphDB().getTimestamp();
+		long ts = getRebarGraph().getGraphBuilder().getTimestamp();
 		getKubernetesClient().apps().daemonSets().list().getItems().forEach(it -> {
 
 			tryExecute(() -> projectDaemonSet(it, it.getMetadata().getNamespace(), it.getMetadata().getName()));
@@ -945,7 +945,7 @@ public class KubeScanner extends Scanner {
 	}
 
 	public void scan(JsonNode n) {
-		scan(n.path(GraphDB.ENTITY_TYPE).asText(), n.path(NAMESPACE).asText(), n.path(NAME).asText());
+		scan(n.path(GraphBuilder.ENTITY_TYPE).asText(), n.path(NAMESPACE).asText(), n.path(NAME).asText());
 	}
 
 	public void scan(String typeToScan, String namespace, String name) {
@@ -986,7 +986,7 @@ public class KubeScanner extends Scanner {
 		String namespace = md.getMetadata().getNamespace();
 		String name = md.getMetadata().getName();
 
-		NodeOperation op = getRebarGraph().getGraphDB().nodes(entityType).id("clusterId", getClusterId()).id(NAME,
+		NodeOperation op = getRebarGraph().getGraphBuilder().nodes(entityType).id("clusterId", getClusterId()).id(NAME,
 				name);
 
 		if (!Strings.isNullOrEmpty(namespace)) {
@@ -1055,7 +1055,7 @@ public class KubeScanner extends Scanner {
 
 
 	private void ensureEc2Relationships() {
-		getGraphDB().nodes("KubeNode").relationship("PROVIDED_BY").on("label_kubernetes.io/hostname", "privateDnsName").to("AwsEc2Instance").merge();
+		getGraphBuilder().nodes("KubeNode").relationship("PROVIDED_BY").on("label_kubernetes.io/hostname", "privateDnsName").to("AwsEc2Instance").merge();
 	}
 	
 	@Override

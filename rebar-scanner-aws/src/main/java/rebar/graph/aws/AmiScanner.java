@@ -37,7 +37,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.machinezoo.noexception.Exceptions;
 
-import rebar.graph.core.GraphDB;
+import rebar.graph.core.GraphBuilder;
 import rebar.util.Json;
 
 public class AmiScanner extends AwsEntityScanner<Image, AmazonEC2Client> {
@@ -48,7 +48,7 @@ public class AmiScanner extends AwsEntityScanner<Image, AmazonEC2Client> {
 		ObjectNode n = toJson(image);
 		n.set("account", n.get("ownerId"));
 
-		getGraphDB().nodes("AwsAmi").idKey("arn").properties(n).merge();
+		getGraphBuilder().nodes("AwsAmi").idKey("arn").properties(n).merge();
 
 	}
 
@@ -62,10 +62,10 @@ public class AmiScanner extends AwsEntityScanner<Image, AmazonEC2Client> {
 		}
 		Stopwatch sw = Stopwatch.createStarted();
 
-		getGraphDB().nodes(type).whereAttributeLessThan(GraphDB.UPDATE_TS, cutoff)
+		getGraphBuilder().nodes(type).whereAttributeLessThan(GraphBuilder.UPDATE_TS, cutoff)
 				.id("region", getRegion().getName()).match().forEach(it -> {
 					Exceptions.log(logger).run(() -> {
-						logger.info("running gc on {}", it.path(GraphDB.ENTITY_TYPE).asText());
+						logger.info("running gc on {}", it.path(GraphBuilder.ENTITY_TYPE).asText());
 						doScan(it);
 					});
 				});
@@ -76,7 +76,7 @@ public class AmiScanner extends AwsEntityScanner<Image, AmazonEC2Client> {
 	@Override
 	protected void doScan() {
 
-		long ts = getGraphDB().getTimestamp();
+		long ts = getGraphBuilder().getTimestamp();
 		AmazonEC2 ec2 = getClient(AmazonEC2ClientBuilder.class);
 
 		DescribeImagesRequest request = new DescribeImagesRequest().withOwners("self");
@@ -105,7 +105,7 @@ public class AmiScanner extends AwsEntityScanner<Image, AmazonEC2Client> {
 		gc("AwsAmi", ts);
 		
 		// We do NOT use awsRelationships() here because it will restrict AwsAmi by account and we don't necessarily own the AMI!
-		getGraphDB().nodes("AwsEc2Instance").id("region", getRegion().getName()).id("account", getAccount())
+		getGraphBuilder().nodes("AwsEc2Instance").id("region", getRegion().getName()).id("account", getAccount())
 				.relationship("USES").on("imageId", "imageId").to("AwsAmi").id("region", getRegionName()).merge();
 		
 	}
@@ -118,7 +118,7 @@ public class AmiScanner extends AwsEntityScanner<Image, AmazonEC2Client> {
 
 	Set<String> findImagesInUse() {
 
-		return getGraphDB().nodes("AwsEc2Instance").id("region", getRegionName()).id("account", getAccount()).match()
+		return getGraphBuilder().nodes("AwsEc2Instance").id("region", getRegionName()).id("account", getAccount()).match()
 				.map(n -> n.path("imageId").asText()).collect(Collectors.toSet());
 
 	}
@@ -135,7 +135,7 @@ public class AmiScanner extends AwsEntityScanner<Image, AmazonEC2Client> {
 			});
 		} catch (AmazonEC2Exception e) {
 			if ("InvalidAMIID.NotFound".equals(e.getErrorCode())) {
-				getGraphDB().nodes("AwsAmi").id("region", getRegionName()).id("imageId", imageId).delete();
+				getGraphBuilder().nodes("AwsAmi").id("region", getRegionName()).id("imageId", imageId).delete();
 			}
 		}
 	}

@@ -24,8 +24,8 @@ import com.google.common.base.Stopwatch;
 import com.google.common.base.Strings;
 import com.machinezoo.noexception.Exceptions;
 
-import rebar.graph.core.GraphDB;
-import rebar.graph.core.GraphDB.NodeOperation;
+import rebar.graph.core.GraphBuilder;
+import rebar.graph.core.GraphBuilder.NodeOperation;
 import rebar.graph.core.RelationshipBuilder.Cardinality;
 import rebar.util.Json;
 
@@ -47,7 +47,7 @@ public class IamInstanceProfileScanner extends AwsEntityScanner<InstanceProfile,
 	protected void doMergeRelationships() {
 		mergeAccountOwner();
 
-		getGraphDB().nodes(getEntityTypeName()).id("account", getAccount()).relationship("USES")
+		getGraphBuilder().nodes(getEntityTypeName()).id("account", getAccount()).relationship("USES")
 				.on("roleArns", "arn", Cardinality.MANY).to(AwsEntityType.AwsIamRole.name()).id("account", getAccount())
 				.merge();
 
@@ -80,7 +80,7 @@ public class IamInstanceProfileScanner extends AwsEntityScanner<InstanceProfile,
 	@Override
 	protected void doScan() {
 
-		long ts = getGraphDB().getTimestamp();
+		long ts = getGraphBuilder().getTimestamp();
 		ListInstanceProfilesRequest request = new ListInstanceProfilesRequest();
 		do {
 			ListInstanceProfilesResult result = getClient().listInstanceProfiles(request);
@@ -122,7 +122,7 @@ public class IamInstanceProfileScanner extends AwsEntityScanner<InstanceProfile,
 	}
 
 	private void deleteByName(String name) {
-		getGraphDB().nodes(AwsEntityType.AwsIamInstanceProfile.name()).id("account", getAccount())
+		getGraphBuilder().nodes(AwsEntityType.AwsIamInstanceProfile.name()).id("account", getAccount())
 				.id("instanceProfileName", name).delete();
 	}
 

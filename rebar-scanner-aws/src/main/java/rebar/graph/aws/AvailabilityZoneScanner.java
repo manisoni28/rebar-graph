@@ -23,7 +23,7 @@ import com.amazonaws.services.ec2.AmazonEC2ClientBuilder;
 import com.amazonaws.services.ec2.model.AvailabilityZone;
 import com.fasterxml.jackson.databind.JsonNode;
 
-import rebar.graph.core.GraphDB;
+import rebar.graph.core.GraphBuilder;
 import rebar.util.Json;
 
 public class AvailabilityZoneScanner extends AwsEntityScanner<AvailabilityZone,AmazonEC2Client> {
@@ -48,14 +48,14 @@ public class AvailabilityZoneScanner extends AwsEntityScanner<AvailabilityZone,A
 	private void scanAvailabilityZones(AmazonEC2 ec2) {
 		ec2.describeAvailabilityZones().getAvailabilityZones().forEach(it -> {
 
-			getGraphDB()
+			getGraphBuilder()
 					.nodes("AwsAvailabilityZone").properties(Json.objectNode().put("region", it.getRegionName())
-							.put("name", it.getZoneName()).put(GraphDB.ENTITY_TYPE, "AwsAvailabilityZone").put(GraphDB.ENTITY_GROUP, "aws"))
+							.put("name", it.getZoneName()).put(GraphBuilder.ENTITY_TYPE, "AwsAvailabilityZone").put(GraphBuilder.ENTITY_GROUP, "aws"))
 					.idKey("name").merge();
 
 		});
 
-		getGraphDB().nodes("AwsRegion").relationship("HAS").on("region", "region").to("AwsAvailabilityZone").merge();
+		getGraphBuilder().nodes("AwsRegion").relationship("HAS").on("region", "region").to("AwsAvailabilityZone").merge();
 	}
 
 	@Override

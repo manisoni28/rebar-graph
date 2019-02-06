@@ -76,7 +76,7 @@ public abstract class AwsIntegrationTest extends AbstractIntegrationTest {
 	protected void deleteAllAwsEntities() {
 	
 		logger.info("deleting all Aws nodes from graph...");
-		getRebarGraph().getGraphDB().getNeo4jDriver()
+		getRebarGraph().getGraphBuilder().getNeo4jDriver()
 		.cypher("match (a) where labels(a)[0]=~'Aws.*' detach delete a").exec();
 	
 	}

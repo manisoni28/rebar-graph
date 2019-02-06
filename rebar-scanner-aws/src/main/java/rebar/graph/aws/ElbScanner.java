@@ -91,7 +91,7 @@ public class ElbScanner extends AwsEntityScanner<LoadBalancer,AmazonElasticLoadB
 	protected void project(LoadBalancer lb) {
 		ObjectNode n = toJson(lb);
 		
-		getGraphDB().nodes("AwsElb").idKey("name", "region", "account","type").withTagPrefixes(TAG_PREFIXES).properties(n)
+		getGraphBuilder().nodes("AwsElb").idKey("name", "region", "account","type").withTagPrefixes(TAG_PREFIXES).properties(n)
 				.merge();
 
 		getAwsScanner().execGraphOperation(RelationshipGraphOperation.class, n);
@@ -111,7 +111,7 @@ public class ElbScanner extends AwsEntityScanner<LoadBalancer,AmazonElasticLoadB
 
 		ObjectNode data = toJson(td);
 
-		getGraphDB().nodes("AwsElb").id("arn", td.getResourceArn()).withTagPrefixes(TAG_PREFIXES).properties(data)
+		getGraphBuilder().nodes("AwsElb").id("arn", td.getResourceArn()).withTagPrefixes(TAG_PREFIXES).properties(data)
 				.merge();
 
 	}
@@ -119,7 +119,7 @@ public class ElbScanner extends AwsEntityScanner<LoadBalancer,AmazonElasticLoadB
 	@Override
 	protected void doScan() {
 
-		long ts = getGraphDB().getTimestamp();
+		long ts = getGraphBuilder().getTimestamp();
 		AmazonElasticLoadBalancingClient client = getAwsScanner()
 				.getClient(AmazonElasticLoadBalancingClientBuilder.class);
 
@@ -157,9 +157,9 @@ public class ElbScanner extends AwsEntityScanner<LoadBalancer,AmazonElasticLoadB
 			});
 		} catch (LoadBalancerNotFoundException e) {
 			// important to NOT delete classic
-			getGraphDB().nodes("AwsLoadBalancer").id("name", name).id("region", getRegionName())
+			getGraphBuilder().nodes("AwsLoadBalancer").id("name", name).id("region", getRegionName())
 					.id("account", getAccount()).id("type","network").delete();
-			getGraphDB().nodes("AwsLoadBalancer").id("name", name).id("region", getRegionName())
+			getGraphBuilder().nodes("AwsLoadBalancer").id("name", name).id("region", getRegionName())
 			.id("account", getAccount()).id("type","application").delete();
 		}
 	}
@@ -199,7 +199,7 @@ public class ElbScanner extends AwsEntityScanner<LoadBalancer,AmazonElasticLoadB
 
 		if (arns == null || arns.length == 0) {
 			Set<String> types = ImmutableSet.of("network", "application");
-			List<String> allNames = getGraphDB().nodes("AwsElb").id("account", getAccount(), "region", getRegionName())
+			List<String> allNames = getGraphBuilder().nodes("AwsElb").id("account", getAccount(), "region", getRegionName())
 					.match().filter(n -> types.contains(n.path("type").asText())).map(n -> n.path("arn").asText())
 					.collect(Collectors.toList());
 			if (allNames.isEmpty()) {

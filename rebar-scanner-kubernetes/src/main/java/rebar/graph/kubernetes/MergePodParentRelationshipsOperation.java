@@ -46,7 +46,7 @@ public class MergePodParentRelationshipsOperation implements GraphOperation {
 		if (!Strings.isNullOrEmpty(replicaSetUid)) {
 		//	logger.info("Pod {} has replicaset parent {}",podName,replicaSetUid);
 
-		//	scanner.getRebarGraph().getGraphDB().nodes("KubeReplicaSet").id("clusterId",scanner.getClusterId()).id("uid",replicaSetUid).relationship("HAS")
+		//	scanner.getRebarGraph().getGraphBuilder().nodes("KubeReplicaSet").id("clusterId",scanner.getClusterId()).id("uid",replicaSetUid).relationship("HAS")
 		//	.to("KubePod").id("clusterId",scanner.getClusterId()).id("uid",podUid).merge();
 		}
 		scanner.ensureOwnerReferences(Deployment.class, ReplicaSet.class);

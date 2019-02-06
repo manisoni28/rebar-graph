@@ -32,7 +32,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableSet;
 
-import rebar.graph.core.GraphDB;
+import rebar.graph.core.GraphBuilder;
 import rebar.graph.core.GraphOperation;
 import rebar.graph.core.Scanner;
 import rebar.graph.neo4j.GraphDriver;
@@ -48,7 +48,7 @@ public class Ec2InstanceScanner extends AwsEntityScanner<Instance, AmazonEC2Clie
 		@Override
 		public Stream<JsonNode> exec(Scanner ctx, JsonNode n, GraphDriver neo4j) {
 			
-			long ts = ctx.getRebarGraph().getGraphDB().getTimestamp();
+			long ts = ctx.getRebarGraph().getGraphBuilder().getTimestamp();
 			String arn = n.path("arn").asText();
 			String cypher = "match (a:AwsEc2Instance {arn:{arn}}),"
 					+ " (s:AwsSecurityGroup {account:{account},region:{region}}) "
@@ -111,12 +111,12 @@ public class Ec2InstanceScanner extends AwsEntityScanner<Instance, AmazonEC2Clie
 
 		ObjectNode n = toJson(instance, r);
 
-		getGraphDB().nodes("AwsEc2Instance").idKey("arn").withTagPrefixes(TAG_PREFIXES).properties(n).merge();
+		getGraphBuilder().nodes("AwsEc2Instance").idKey("arn").withTagPrefixes(TAG_PREFIXES).properties(n).merge();
 
 		String subnetId = instance.getSubnetId();
 		if (!Strings.isNullOrEmpty(subnetId)) {
 			mergeSubnetRelationships();//"arn",n.get("arn").asText());
-			getGraphDB().nodes("AwsEc2Instance").id("arn", n.get("arn").asText()).relationship("RESIDES_IN")
+			getGraphBuilder().nodes("AwsEc2Instance").id("arn", n.get("arn").asText()).relationship("RESIDES_IN")
 					.to("AwsSubnet")
 					.id("subnetId", instance.getSubnetId())
 					.id("region", getRegionName()).id( "account", getAccount()).merge();
@@ -149,7 +149,7 @@ public class Ec2InstanceScanner extends AwsEntityScanner<Instance, AmazonEC2Clie
 		} catch (AmazonEC2Exception e) {
 			if (ImmutableSet.of("InvalidInstanceID.Malformed", "InvalidInstanceID.NotFound")
 					.contains(e.getErrorCode())) {
-				getGraphDB().nodes("AwsEc2Instance").id("instanceId", instanceId, "account", getAccount())
+				getGraphBuilder().nodes("AwsEc2Instance").id("instanceId", instanceId, "account", getAccount())
 						.delete();
 			} else {
 				throw e;
@@ -189,7 +189,7 @@ public class Ec2InstanceScanner extends AwsEntityScanner<Instance, AmazonEC2Clie
 			scanInstance(instanceId);
 
 		} else {
-			throw new RebarException("cannot process entity type: " + entity.path(GraphDB.ENTITY_TYPE).asText());
+			throw new RebarException("cannot process entity type: " + entity.path(GraphBuilder.ENTITY_TYPE).asText());
 		}
 	}
 

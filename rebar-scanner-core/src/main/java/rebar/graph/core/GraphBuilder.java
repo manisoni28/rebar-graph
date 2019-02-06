@@ -53,10 +53,10 @@ import rebar.graph.neo4j.GraphDriver;
 import rebar.graph.neo4j.GraphException;
 import rebar.graph.neo4j.GraphSchema;
 
-public class GraphDB {
+public class GraphBuilder {
 
 	GraphDriver neo4j;
-	Logger logger = org.slf4j.LoggerFactory.getLogger(GraphDB.class);
+	Logger logger = org.slf4j.LoggerFactory.getLogger(GraphBuilder.class);
 	static ObjectMapper mapper = new ObjectMapper();
 
 	public long getTimestamp() {
@@ -93,7 +93,7 @@ public class GraphDB {
 	public static final String ENTITY_GROUP = "graphEntityGroup";
 	public static final String UPDATE_TS = "graphUpdateTs";
 
-	GraphDB(GraphDriver driver) {
+	GraphBuilder(GraphDriver driver) {
 		this.neo4j = driver;
 	}
 
@@ -248,7 +248,7 @@ public class GraphDB {
 
 		@SuppressWarnings("unchecked")
 		public <T extends NodeOperation> T id(Object... kv) {
-			idAttributes.putAll(GraphDB.toKVMap(kv));
+			idAttributes.putAll(GraphBuilder.toKVMap(kv));
 			return (T) this;
 		}
 

@@ -19,7 +19,7 @@ import com.myjeeva.digitalocean.impl.DigitalOceanClient;
 import com.myjeeva.digitalocean.pojo.RateLimit;
 
 import rebar.graph.core.EntityScanner;
-import rebar.graph.core.GraphDB.NodeOperation;
+import rebar.graph.core.GraphBuilder.NodeOperation;
 import rebar.graph.neo4j.GraphDriver;
 import rebar.util.Json;
 
@@ -74,7 +74,7 @@ public abstract class DigitalOceanEntityScanner<T>
 	protected void gc(DigitalOceanEntityType t, long ts) {
 		Stopwatch sw = Stopwatch.createStarted();
 		AtomicInteger count = new AtomicInteger(0);
-		getScanner().getRebarGraph().getGraphDB().getNeo4jDriver()
+		getScanner().getRebarGraph().getGraphBuilder().getNeo4jDriver()
 				.cypher("match (a:" + t.name() + " {account:{account}}) where a.graphUpdateTs<{ts} return a")
 				.param("ts", ts).param("account", getAccount()).forEach(it -> {
 					if (it.path("graphEntityType").asText().equals(getEntityType().toString())) {
@@ -94,7 +94,7 @@ public abstract class DigitalOceanEntityScanner<T>
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(id));
 		logger.info("deleting {}",MoreObjects.toStringHelper(getEntityType().name()).add("account", getAccount()).add("keyName", id).toString());
 	
-		getScanner().getGraphDB().nodes(getEntityType().name()).id(keyName, id).idKey("account").delete();
+		getScanner().getGraphBuilder().nodes(getEntityType().name()).id(keyName, id).idKey("account").delete();
 
 	}
 	public static String toUrn(String region, String account, String resourceType, String resource) {

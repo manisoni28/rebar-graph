@@ -24,8 +24,8 @@ import com.google.common.base.Stopwatch;
 import com.google.common.base.Strings;
 import com.machinezoo.noexception.Exceptions;
 
-import rebar.graph.core.GraphDB;
-import rebar.graph.core.GraphDB.NodeOperation;
+import rebar.graph.core.GraphBuilder;
+import rebar.graph.core.GraphBuilder.NodeOperation;
 import rebar.util.Json;
 
 public class IamPolicyScanner extends AwsEntityScanner<Policy,AmazonIdentityManagementClient> {
@@ -58,7 +58,7 @@ public class IamPolicyScanner extends AwsEntityScanner<Policy,AmazonIdentityMana
 	@Override
 	protected void doScan() {
 
-		long ts = getGraphDB().getTimestamp();
+		long ts = getGraphBuilder().getTimestamp();
 		ListPoliciesRequest request = new ListPoliciesRequest();
 		do {
 			ListPoliciesResult result = getClient().listPolicies(request);
@@ -102,7 +102,7 @@ public class IamPolicyScanner extends AwsEntityScanner<Policy,AmazonIdentityMana
 	private void deleteByArn(String arn) {
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(arn));
 		logger.info("deleting AwsIamPolicy arn={}",arn);
-		getGraphDB().nodes(AwsEntityType.AwsIamPolicy.name()).id("account",getAccount()).id("arn",arn).delete();
+		getGraphBuilder().nodes(AwsEntityType.AwsIamPolicy.name()).id("account",getAccount()).id("arn",arn).delete();
 	}
 	@Override
 	public AwsEntityType getEntityType() {

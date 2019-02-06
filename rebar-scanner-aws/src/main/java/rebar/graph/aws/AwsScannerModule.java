@@ -54,14 +54,14 @@ public class AwsScannerModule extends ScannerModule {
 		}
 
 		public void markFullScanStart() {
-			scanner.getGraphDB().getNeo4jDriver().cypher(
+			scanner.getGraphBuilder().getNeo4jDriver().cypher(
 					"match (a:RebarScannerTarget {type:{type},target:{target},region:{region}}) set a.fullScanStartTs=timestamp() return a")
 					.param("type", getScannerType()).param("target", scanner.getAccount())
 					.param("region", scanner.getRegion().getName()).exec();
 		}
 
 		public void markFullScanEnd() {
-			scanner.getGraphDB().getNeo4jDriver().cypher(
+			scanner.getGraphBuilder().getNeo4jDriver().cypher(
 					"match (a:RebarScannerTarget {type:{type},target:{target},region:{region}}) set a.fullScanEndTs=timestamp() return a")
 					.param("type", getScannerType()).param("target", scanner.getAccount())
 					.param("region", scanner.getRegion().getName()).exec();
@@ -73,7 +73,7 @@ public class AwsScannerModule extends ScannerModule {
 
 			try {
 
-				Optional<JsonNode> target = scanner.getGraphDB().getNeo4jDriver()
+				Optional<JsonNode> target = scanner.getGraphBuilder().getNeo4jDriver()
 						.cypher("match (a:RebarScannerTarget {type:{type},target:{target},region:{region}}) return a")
 						.param("type", getScannerType()).param("target", scanner.getAccount())
 						.param("region", scanner.getRegion().getName()).findFirst();
@@ -143,7 +143,7 @@ public class AwsScannerModule extends ScannerModule {
 	}
 
 	public void applyConstraints(boolean apply) {
-		GraphSchema s = getRebarGraph().getGraphDB().getNeo4jDriver().schema();
+		GraphSchema s = getRebarGraph().getGraphBuilder().getNeo4jDriver().schema();
 		s.createUniqueConstraint("AwsRegion", "name",apply);
 		s.createUniqueConstraint("AwsAvailabilityZone", "name",apply);
 		s.createUniqueConstraint("AwsAccount", "account",apply);

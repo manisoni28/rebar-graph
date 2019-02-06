@@ -40,8 +40,8 @@ import com.google.common.collect.Lists;
 import com.machinezoo.noexception.Exceptions;
 
 import rebar.graph.core.EntityScanner;
-import rebar.graph.core.GraphDB;
-import rebar.graph.core.GraphDB.NodeOperation;
+import rebar.graph.core.GraphBuilder;
+import rebar.graph.core.GraphBuilder.NodeOperation;
 import rebar.graph.core.Invokable;
 import rebar.graph.core.RelationshipBuilder;
 import rebar.graph.core.RelationshipBuilder.Cardinality;
@@ -74,7 +74,7 @@ public abstract class AwsEntityScanner<OBJECTTYPE,CLIENT> extends EntityScanner<
 	 * @return
 	 */
 	protected NodeOperation awsGraphNodes(String labelType) {
-		return getGraphDB().nodes(labelType).id("region", getRegionName()).id("account", getAccount());
+		return getGraphBuilder().nodes(labelType).id("region", getRegionName()).id("account", getAccount());
 	}
 	
 	protected NodeOperation awsGraphNodes(AwsEntityType type) {
@@ -82,7 +82,7 @@ public abstract class AwsEntityScanner<OBJECTTYPE,CLIENT> extends EntityScanner<
 	}
 
 	protected NodeOperation awsGraphNodesWithoutRegion() {
-		return getGraphDB().nodes(getEntityTypeName()).id("account", getAccount());
+		return getGraphBuilder().nodes(getEntityTypeName()).id("account", getAccount());
 	}
 	protected NodeOperation awsGraphNodes() {
 		return awsGraphNodes(getEntityTypeName());
@@ -113,7 +113,7 @@ public abstract class AwsEntityScanner<OBJECTTYPE,CLIENT> extends EntityScanner<
 		}
 		Stopwatch sw = Stopwatch.createStarted();
 
-		NodeOperation op = getGraphDB().nodes(type).whereAttributeLessThan(GraphDB.UPDATE_TS, cutoff).id("account",
+		NodeOperation op = getGraphBuilder().nodes(type).whereAttributeLessThan(GraphBuilder.UPDATE_TS, cutoff).id("account",
 				getAccount());
 
 		AtomicInteger count = new AtomicInteger(0);
@@ -121,7 +121,7 @@ public abstract class AwsEntityScanner<OBJECTTYPE,CLIENT> extends EntityScanner<
 			Exceptions.log(logger).run(() -> {
 				count.incrementAndGet();
 
-				logger.info("running gc on {}", it.path(GraphDB.ENTITY_TYPE).asText());
+				logger.info("running gc on {}", it.path(GraphBuilder.ENTITY_TYPE).asText());
 				doScan(it);
 			});
 		});
@@ -138,7 +138,7 @@ public abstract class AwsEntityScanner<OBJECTTYPE,CLIENT> extends EntityScanner<
 		}
 		Stopwatch sw = Stopwatch.createStarted();
 
-		NodeOperation op = getGraphDB().nodes(type).whereAttributeLessThan(GraphDB.UPDATE_TS, cutoff).label(type)
+		NodeOperation op = getGraphBuilder().nodes(type).whereAttributeLessThan(GraphBuilder.UPDATE_TS, cutoff).label(type)
 				.id("region", getRegion().getName(), "account", getAccount());
 
 		// extra attributes are useful for some entities like Elb/Nlb/Alb
@@ -152,7 +152,7 @@ public abstract class AwsEntityScanner<OBJECTTYPE,CLIENT> extends EntityScanner<
 			Exceptions.log(logger).run(() -> {
 				count.incrementAndGet();
 
-				logger.info("running gc on {}", it.path(GraphDB.ENTITY_TYPE).asText());
+				logger.info("running gc on {}", it.path(GraphBuilder.ENTITY_TYPE).asText());
 				doScan(it);
 			});
 		});
@@ -190,8 +190,8 @@ public abstract class AwsEntityScanner<OBJECTTYPE,CLIENT> extends EntityScanner<
 		return getAwsScanner().getClient(xx);
 	}
 
-	public GraphDB getGraphDB() {
-		return getAwsScanner().getGraphDB();
+	public GraphBuilder getGraphBuilder() {
+		return getAwsScanner().getGraphBuilder();
 	}
 
 	public String getRegionName() {
@@ -258,8 +258,8 @@ public abstract class AwsEntityScanner<OBJECTTYPE,CLIENT> extends EntityScanner<
 
 		Preconditions.checkNotNull(awsObject);
 		ObjectNode n = Json.objectMapper().valueToTree(awsObject);
-		n.put(GraphDB.ENTITY_TYPE, getEntityTypeName());
-		n.put(GraphDB.ENTITY_GROUP, "aws");
+		n.put(GraphBuilder.ENTITY_TYPE, getEntityTypeName());
+		n.put(GraphBuilder.ENTITY_GROUP, "aws");
 		n.put("region", getRegionName());
 		n.put("account", getAccount());
 
@@ -275,7 +275,7 @@ public abstract class AwsEntityScanner<OBJECTTYPE,CLIENT> extends EntityScanner<
 		if (n == null) {
 			return false;
 		}
-		return n.path(GraphDB.ENTITY_TYPE).asText().equals(type);
+		return n.path(GraphBuilder.ENTITY_TYPE).asText().equals(type);
 	}
 
 	protected String generateStandardArn(String serviceType, String entity, String id) {
@@ -327,7 +327,7 @@ public abstract class AwsEntityScanner<OBJECTTYPE,CLIENT> extends EntityScanner<
 
 		return new RelationshipBuilder().sourceIdAttribute("region", getRegionName())
 				.sourceIdAttribute("account", getAccount()).targetIdAttribute("region", getRegionName())
-				.targetIdAttribute("account", getAccount()).driver(getGraphDB().getNeo4jDriver()).from(labelName);
+				.targetIdAttribute("account", getAccount()).driver(getGraphBuilder().getNeo4jDriver()).from(labelName);
 	}
 
 	protected void mergeAccountOwner(AwsEntityType t) {
@@ -335,7 +335,7 @@ public abstract class AwsEntityScanner<OBJECTTYPE,CLIENT> extends EntityScanner<
 			return;
 		}
 		logger.info("merging owner AwsAccount({}) -> {}", getAccount(), t.name());
-		getGraphDB().nodes(AwsEntityType.AwsAccountRegion.name()).id("region",getRegionName()).id("account", getAccount()).relationship("HAS")
+		getGraphBuilder().nodes(AwsEntityType.AwsAccountRegion.name()).id("region",getRegionName()).id("account", getAccount()).relationship("HAS")
 				.on("account", "account").on("region", "region").to(t.name()).id("region", getRegionName()).id("account", getAccount()).merge();
 		;
 	}

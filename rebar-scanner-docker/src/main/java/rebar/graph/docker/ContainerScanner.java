@@ -111,7 +111,7 @@ public class ContainerScanner extends DockerEntityScanner<Container> {
 	@Override
 	protected void project(Container t) {
 		ObjectNode n = toJson(t);
-		getScanner().getRebarGraph().getGraphDB().nodes(DockerEntityType.DockerContainer.name()).idKey("urn")
+		getScanner().getRebarGraph().getGraphBuilder().nodes(DockerEntityType.DockerContainer.name()).idKey("urn")
 				.properties(n).withTagPrefixes(TAG_PREFIXES).merge();
 
 	}
@@ -119,7 +119,7 @@ public class ContainerScanner extends DockerEntityScanner<Container> {
 	@Override
 	protected void doScan() {
 
-		long ts = getScanner().getGraphDB().getTimestamp();
+		long ts = getScanner().getGraphBuilder().getTimestamp();
 		try {
 		
 			getClient().listContainers( ).forEach(it -> {
@@ -135,7 +135,7 @@ public class ContainerScanner extends DockerEntityScanner<Container> {
 	}
 
 	private void mergeRelationships() {
-		getScanner().getRebarGraph().getGraphDB().nodes(DockerEntityType.DockerHost.name()).id("id", getHostId())
+		getScanner().getRebarGraph().getGraphBuilder().nodes(DockerEntityType.DockerHost.name()).id("id", getHostId())
 				.relationship("HAS").on("id", "hostId").to(DockerEntityType.DockerContainer.name()).merge();
 
 	}
@@ -146,7 +146,7 @@ public class ContainerScanner extends DockerEntityScanner<Container> {
 	}
 
 	private void deleteContainerId(String id) {
-		getScanner().getGraphDB().nodes(DockerEntityType.DockerContainer.name()).id("id", id)
+		getScanner().getGraphBuilder().nodes(DockerEntityType.DockerContainer.name()).id("id", id)
 				.id("hostId", getHostId()).delete();
 	}
 

@@ -46,7 +46,7 @@ public class VpcEndpointScanner extends AbstractNetworkScanner<VpcEndpoint> {
 	@Override
 	protected void doScan() {
 
-		long ts = getGraphDB().getTimestamp();
+		long ts = getGraphBuilder().getTimestamp();
 		scan((String) WILDCARD);
 		gc(getEntityType(), ts);
 		doMergeRelationships();

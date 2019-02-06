@@ -63,7 +63,7 @@ public class RouteTableScanner extends AbstractNetworkScanner<RouteTable> {
 	protected void doScan(String id) {
 		checkScanArgument(id);
 		try {
-		long ts = getGraphDB().getTimestamp();
+		long ts = getGraphBuilder().getTimestamp();
 		DescribeRouteTablesRequest req = new DescribeRouteTablesRequest();
 		
 		if (isWildcard(id)) {
@@ -102,11 +102,11 @@ public class RouteTableScanner extends AbstractNetworkScanner<RouteTable> {
 
 		
 		// our relationship builder can't reverse the relationship (yet) so we do it manually
-		getGraphDB().getNeo4jDriver().cypher("match (s:AwsSubnet {account:{account},region:{region}}),(r:AwsRouteTable {account:{account},region:{region}})"
+		getGraphBuilder().getNeo4jDriver().cypher("match (s:AwsSubnet {account:{account},region:{region}}),(r:AwsRouteTable {account:{account},region:{region}})"
 				+ " where s.subnetId in r.associatedSubnets merge (s)-[x:USES]->(r)")
 		.param("region",getRegionName()).params("account",getAccount()).exec();
 		
-		getGraphDB().getNeo4jDriver().cypher("match (s:AwsSubnet {account:{account},region:{region}})-[x:USES]->(r) where NOT s.subnetId in r.associatedSubnets delete x")
+		getGraphBuilder().getNeo4jDriver().cypher("match (s:AwsSubnet {account:{account},region:{region}})-[x:USES]->(r) where NOT s.subnetId in r.associatedSubnets delete x")
 		.param("region",getRegionName()).params("account",getAccount()).exec();
 	}
 

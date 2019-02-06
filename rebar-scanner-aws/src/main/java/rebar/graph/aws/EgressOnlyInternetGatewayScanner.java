@@ -54,7 +54,7 @@ public class EgressOnlyInternetGatewayScanner extends AbstractNetworkScanner<Egr
 	protected void doScan() {
 		
 		
-		long ts = getGraphDB().getTimestamp();
+		long ts = getGraphBuilder().getTimestamp();
 		DescribeEgressOnlyInternetGatewaysRequest request = new DescribeEgressOnlyInternetGatewaysRequest();
 		do {
 			DescribeEgressOnlyInternetGatewaysResult result = getClient().describeEgressOnlyInternetGateways(request);

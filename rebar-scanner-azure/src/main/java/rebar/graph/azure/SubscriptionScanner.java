@@ -42,7 +42,7 @@ public class SubscriptionScanner extends AzureEntityScanner<Subscription> {
 	
 		ObjectNode n = toJson(t);
 		
-		getScanner().getRebarGraph().getGraphDB().nodes(getEntityType().name()).idKey("urn").properties(n).merge();
+		getScanner().getRebarGraph().getGraphBuilder().nodes(getEntityType().name()).idKey("urn").properties(n).merge();
 		
 		
 	}

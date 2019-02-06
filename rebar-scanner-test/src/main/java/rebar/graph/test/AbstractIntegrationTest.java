@@ -36,7 +36,7 @@ import com.google.common.collect.Sets;
 import io.micrometer.core.instrument.Metrics;
 import io.micrometer.core.instrument.logging.LoggingMeterRegistry;
 import rebar.graph.core.BaseConfig;
-import rebar.graph.core.GraphDB;
+import rebar.graph.core.GraphBuilder;
 import rebar.graph.core.RebarGraph;
 import rebar.graph.neo4j.GraphDriver;
 
@@ -139,7 +139,7 @@ public abstract class AbstractIntegrationTest {
 	}
 
 	protected void cleanupTestData() {
-		GraphDriver driver = getRebarGraph().getGraphDB().getNeo4jDriver();
+		GraphDriver driver = getRebarGraph().getGraphBuilder().getNeo4jDriver();
 		driver.newTemplate().cypher("match (a) where exists (a.testData) detach delete a").list();
 		driver.newTemplate().cypher("match (a) return distinct labels(a)[0] as label").stream()
 				.map(x -> x.path("label").asText()).distinct()
@@ -152,11 +152,11 @@ public abstract class AbstractIntegrationTest {
 	public final RebarGraph getRebarGraph() {
 		return rebarGraph;
 	}
-	public final GraphDB getGraphDB() {
-		return getRebarGraph().getGraphDB();
+	public final GraphBuilder getGraphBuilder() {
+		return getRebarGraph().getGraphBuilder();
 	}
 	public final GraphDriver getGraphDriver() {
-		return getRebarGraph().getGraphDB().getNeo4jDriver();
+		return getRebarGraph().getGraphBuilder().getNeo4jDriver();
 	}
 
 }

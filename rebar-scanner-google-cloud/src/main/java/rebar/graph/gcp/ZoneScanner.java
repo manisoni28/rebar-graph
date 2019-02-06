@@ -26,7 +26,7 @@ public class ZoneScanner extends GcpEntityScanner {
 		int idx = regionName.lastIndexOf("/");
 		regionName = regionName.substring(idx + 1);
 		t.put("regionName", regionName);
-		getScanner().getGraphDB().nodes(getEntityType().name()).idKey("urn").properties(t).merge();
+		getScanner().getGraphBuilder().nodes(getEntityType().name()).idKey("urn").properties(t).merge();
 
 		{
 
@@ -38,7 +38,7 @@ public class ZoneScanner extends GcpEntityScanner {
 			region.put("region", t.path("region").asText());
 			region.put("urn", "urn:gcp:compute:" + regionName);
 
-			getScanner().getGraphDB().nodes(GcpEntityType.GcpRegion.name()).idKey("urn").properties(region).merge();
+			getScanner().getGraphBuilder().nodes(GcpEntityType.GcpRegion.name()).idKey("urn").properties(region).merge();
 		}
 	}
 
@@ -58,7 +58,7 @@ public class ZoneScanner extends GcpEntityScanner {
 	}
 
 	private void mergeRelationships() {
-		getScanner().getGraphDB().nodes(GcpEntityType.GcpZone.name()).relationship("RESIDES_IN").on("region", "region")
+		getScanner().getGraphBuilder().nodes(GcpEntityType.GcpZone.name()).relationship("RESIDES_IN").on("region", "region")
 				.to(GcpEntityType.GcpRegion.name()).merge();
 
 	}

@@ -29,7 +29,7 @@ public class HostScanner extends DockerEntityScanner<Info> {
 		com.fasterxml.jackson.databind.node.ObjectNode n = toJson(t);
 		
 		
-		getScanner().getGraphDB().nodes(getEntityType().name()).idKey("urn").properties(n).merge();
+		getScanner().getGraphBuilder().nodes(getEntityType().name()).idKey("urn").properties(n).merge();
 
 	}
 

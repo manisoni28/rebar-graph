@@ -68,7 +68,7 @@ public class RdsClusterScanner extends AwsEntityScanner<DBCluster, AmazonRDSClie
 
 	@Override
 	protected void doScan() {
-		long ts = getGraphDB().getTimestamp();
+		long ts = getGraphBuilder().getTimestamp();
 		AmazonRDSClient rds = getClient(AmazonRDSClientBuilder.class);
 		DescribeDBClustersRequest request = new DescribeDBClustersRequest();
 
@@ -88,7 +88,7 @@ public class RdsClusterScanner extends AwsEntityScanner<DBCluster, AmazonRDSClie
 	protected void project(DBCluster cluster) {
 		ObjectNode n = toJson(cluster);
 
-		getGraphDB().nodes("AwsRdsCluster").id("account", getAccount()).id("region", getRegionName())
+		getGraphBuilder().nodes("AwsRdsCluster").id("account", getAccount()).id("region", getRegionName())
 				.id("dbClusterIdentifier", cluster.getDBClusterIdentifier()).properties(n).merge();
 
 	}
@@ -112,7 +112,7 @@ public class RdsClusterScanner extends AwsEntityScanner<DBCluster, AmazonRDSClie
 			});
 			request.setMarker(result.getMarker());
 		} catch (DBClusterNotFoundException e) {
-			getGraphDB().nodes("AwsRdsCluster").id("account", getAccount()).id("region", getRegionName())
+			getGraphBuilder().nodes("AwsRdsCluster").id("account", getAccount()).id("region", getRegionName())
 					.id("dbclusterIdentifier", dbClusterIdentifier).delete();
 		}
 		mergeAccountOwner();

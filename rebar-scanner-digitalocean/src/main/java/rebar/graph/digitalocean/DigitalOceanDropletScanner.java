@@ -27,7 +27,7 @@ public class DigitalOceanDropletScanner extends DigitalOceanEntityScanner<Drople
 
 		tryExecute(() -> {
 
-			long ts = getScanner().getGraphDB().getTimestamp();
+			long ts = getScanner().getGraphBuilder().getTimestamp();
 			Droplets result = null;
 			boolean done = false;
 			final int PAGE_SIZE = 100;

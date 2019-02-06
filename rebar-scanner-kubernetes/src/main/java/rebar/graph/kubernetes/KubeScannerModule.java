@@ -60,14 +60,14 @@ public class KubeScannerModule extends ScannerModule {
 
 		
 		public void markFullScanStart() {
-			scanner.getRebarGraph().getGraphDB().getNeo4jDriver().	cypher("match (a:RebarScannerTarget {type:{type},target:{target},region:{region}}) set a.fullScanStartTs=timestamp() return a")
+			scanner.getRebarGraph().getGraphBuilder().getNeo4jDriver().	cypher("match (a:RebarScannerTarget {type:{type},target:{target},region:{region}}) set a.fullScanStartTs=timestamp() return a")
 			.param("type", getScannerType())
 			.param("target", scanner.getClusterId())
 			.param("region", "undefined").exec();
 		}
 		
 		public void markFullScanEnd() {
-			scanner.getRebarGraph().getGraphDB().getNeo4jDriver().	cypher("match (a:RebarScannerTarget {type:{type},target:{target},region:{region}}) set a.fullScanEndTs=timestamp() return a")
+			scanner.getRebarGraph().getGraphBuilder().getNeo4jDriver().	cypher("match (a:RebarScannerTarget {type:{type},target:{target},region:{region}}) set a.fullScanEndTs=timestamp() return a")
 			.param("type", getScannerType())
 			.param("target", scanner.getClusterId())
 			.param("region", "undefined").exec();
@@ -78,7 +78,7 @@ public class KubeScannerModule extends ScannerModule {
 
 			try {
 				
-				Optional<JsonNode> target = scanner.getGraphDB().getNeo4jDriver()
+				Optional<JsonNode> target = scanner.getGraphBuilder().getNeo4jDriver()
 						.cypher("match (a:RebarScannerTarget {type:{type},target:{target},region:{region}}) return a")
 						.param("type", getScannerType())
 						.param("target", scanner.getClusterId())
@@ -87,7 +87,7 @@ public class KubeScannerModule extends ScannerModule {
 				if (!target.isPresent()) {
 					// we lost the entry, so re-register it
 					registerScannerTarget(scanner.getClusterId(), "undefined");
-					target = scanner.getGraphDB().getNeo4jDriver()
+					target = scanner.getGraphBuilder().getNeo4jDriver()
 							.cypher("match (a:RebarScannerTarget {type:{type},target:{target},region:{region}}) return a")
 							.param("type", getScannerType())
 							.param("target", scanner.getClusterId())
@@ -135,15 +135,15 @@ public class KubeScannerModule extends ScannerModule {
 	
 	public void applyConstraints(boolean apply) {
 
-		getRebarGraph().getGraphDB().schema().createUniqueConstraint("KubeCluster", "name",apply);
-		getRebarGraph().getGraphDB().schema().createUniqueConstraint("KubeCluster", "clusterId",apply);
-		getRebarGraph().getGraphDB().schema().createUniqueConstraint("KubeNode", "uid",apply);
-		getRebarGraph().getGraphDB().schema().createUniqueConstraint("KubePod", "uid",apply);
-		getRebarGraph().getGraphDB().schema().createUniqueConstraint("KubeDeployment", "uid",apply);
-		getRebarGraph().getGraphDB().schema().createUniqueConstraint("KubeReplicaSet", "uid",apply);
-		getRebarGraph().getGraphDB().schema().createUniqueConstraint("KubeDaemonSet", "uid",apply);
-		getRebarGraph().getGraphDB().schema().createUniqueConstraint("KubeService", "uid",apply);
-		getRebarGraph().getGraphDB().schema().createUniqueConstraint("KubeNamespace", "uid",apply);
+		getRebarGraph().getGraphBuilder().schema().createUniqueConstraint("KubeCluster", "name",apply);
+		getRebarGraph().getGraphBuilder().schema().createUniqueConstraint("KubeCluster", "clusterId",apply);
+		getRebarGraph().getGraphBuilder().schema().createUniqueConstraint("KubeNode", "uid",apply);
+		getRebarGraph().getGraphBuilder().schema().createUniqueConstraint("KubePod", "uid",apply);
+		getRebarGraph().getGraphBuilder().schema().createUniqueConstraint("KubeDeployment", "uid",apply);
+		getRebarGraph().getGraphBuilder().schema().createUniqueConstraint("KubeReplicaSet", "uid",apply);
+		getRebarGraph().getGraphBuilder().schema().createUniqueConstraint("KubeDaemonSet", "uid",apply);
+		getRebarGraph().getGraphBuilder().schema().createUniqueConstraint("KubeService", "uid",apply);
+		getRebarGraph().getGraphBuilder().schema().createUniqueConstraint("KubeNamespace", "uid",apply);
 
 	}
 

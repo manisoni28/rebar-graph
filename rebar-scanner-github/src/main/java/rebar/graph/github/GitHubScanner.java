@@ -117,7 +117,7 @@ public class GitHubScanner extends Scanner {
 				// this is broken
 			}
 
-			getGraphDB().nodes("GitHubRepo").idKey("orgName", "name").properties(n).merge();
+			getGraphBuilder().nodes("GitHubRepo").idKey("orgName", "name").properties(n).merge();
 
 		} catch (IOException e) {
 			maybeThrow(e);
@@ -135,7 +135,7 @@ public class GitHubScanner extends Scanner {
 			n.put("company", org.getCompany());
 			n.put("blog", org.getBlog());
 
-			getGraphDB().nodes("GitHubOrg").idKey("name").properties(n).merge();
+			getGraphBuilder().nodes("GitHubOrg").idKey("name").properties(n).merge();
 
 		} catch (Exception e) {
 			maybeThrow(e);
@@ -168,7 +168,7 @@ public class GitHubScanner extends Scanner {
 				}
 			});
 
-			getGraphDB().nodes("GitHubOrg").relationship("HAS").on("name", "orgName").to("GitHubRepo").merge();
+			getGraphBuilder().nodes("GitHubOrg").relationship("HAS").on("name", "orgName").to("GitHubRepo").merge();
 		} catch (IOException e) {
 			throw new RebarException(e);
 		}

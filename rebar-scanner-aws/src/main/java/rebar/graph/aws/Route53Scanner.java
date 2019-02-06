@@ -33,19 +33,19 @@ public class Route53Scanner extends AwsEntityScanner<HostedZone,AmazonRoute53Cli
 
 		ObjectNode n = toJson(z);
 		
-		getGraphDB().nodes(AwsEntityType.AwsHostedZone.name()).idKey("arn").properties(n).merge(); 
+		getGraphBuilder().nodes(AwsEntityType.AwsHostedZone.name()).idKey("arn").properties(n).merge(); 
 	}
 
 	protected void doMergeRelationships() {
 		
 		// Do not use awsGraphNodes here since hosted zones are not regional.  The selector predicates on region will 
 		// cause things to not relate properly.
-		getGraphDB().nodes(AwsEntityType.AwsHostedZone.name()).id("account", getAccount()).relationship("HAS")
+		getGraphBuilder().nodes(AwsEntityType.AwsHostedZone.name()).id("account", getAccount()).relationship("HAS")
 				.on("id", "hostedZoneId").to(AwsEntityType.AwsHostedZoneRecordSet.name()).id("account", getAccount())
 				.merge();
 
 		
-		getGraphDB().nodes(AwsEntityType.AwsAccount.name()).id("account", getAccount()).relationship("HAS")
+		getGraphBuilder().nodes(AwsEntityType.AwsAccount.name()).id("account", getAccount()).relationship("HAS")
 				.on("account", "account").to(AwsEntityType.AwsHostedZone.name()).id("account", getAccount()).merge();
 	}
 
@@ -72,7 +72,7 @@ public class Route53Scanner extends AwsEntityScanner<HostedZone,AmazonRoute53Cli
 	@Override
 	protected void doScan() {
 
-		long ts = getGraphDB().getTimestamp();
+		long ts = getGraphBuilder().getTimestamp();
 		AmazonRoute53 r53 = getAwsScanner().getClient(AmazonRoute53ClientBuilder.class);
 
 		ListHostedZonesRequest request = new ListHostedZonesRequest();
@@ -121,7 +121,7 @@ public class Route53Scanner extends AwsEntityScanner<HostedZone,AmazonRoute53Cli
 
 			project(z);
 		} catch (NoSuchHostedZoneException e) {
-			getGraphDB().nodes(AwsEntityType.AwsHostedZone.name()).id("account", getAccount()).id("id", id).delete();
+			getGraphBuilder().nodes(AwsEntityType.AwsHostedZone.name()).id("account", getAccount()).id("id", id).delete();
 		}
 
 	}

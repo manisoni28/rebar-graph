@@ -74,7 +74,7 @@ public class RdsInstanceScanner extends AwsEntityScanner<DBInstance,AmazonRDSCli
 		
 		ObjectNode n = toJson(instance);
 	
-		getGraphDB().nodes("AwsRdsInstance").id("arn",instance.getDBInstanceArn()).properties(n).merge();
+		getGraphBuilder().nodes("AwsRdsInstance").id("arn",instance.getDBInstanceArn()).properties(n).merge();
 	}
 
 	@Override
@@ -98,7 +98,7 @@ public class RdsInstanceScanner extends AwsEntityScanner<DBInstance,AmazonRDSCli
 			mergeClusterInstanceRelationships();
 			mergeAccountOwner();
 		} catch (DBInstanceNotFoundException e) {
-			getGraphDB().nodes("AwsRdsInstance").id("account", getAccount()).id("region", getRegionName())
+			getGraphBuilder().nodes("AwsRdsInstance").id("account", getAccount()).id("region", getRegionName())
 					.id("dbInstanceIdentifier", id).delete();
 		}
 

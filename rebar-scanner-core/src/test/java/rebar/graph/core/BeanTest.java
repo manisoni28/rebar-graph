@@ -12,7 +12,7 @@ public class BeanTest extends CoreIntegrationTest {
 	GraphDriver driver;
 	
 	@Autowired
-	GraphDB graphDB;
+	GraphBuilder graphDB;
 	
 	
 	@Test

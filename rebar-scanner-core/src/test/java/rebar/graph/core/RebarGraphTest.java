@@ -35,19 +35,19 @@ public class RebarGraphTest extends CoreIntegrationTest {
 		RebarGraph graph = getRebarGraph();
 
 		Assertions.assertThat(graph).isNotNull();
-		Assertions.assertThat(graph.getGraphDB()).isNotNull().isSameAs(graph.getGraphDB());
+		Assertions.assertThat(graph.getGraphBuilder()).isNotNull().isSameAs(graph.getGraphBuilder());
 
-		GraphDriver driver = ((GraphDB) graph.getGraphDB()).getNeo4jDriver();
+		GraphDriver driver = ((GraphBuilder) graph.getGraphBuilder()).getNeo4jDriver();
 
-		Assertions.assertThat(driver).isSameAs(((GraphDB) graph.getGraphDB()).getNeo4jDriver());
+		Assertions.assertThat(driver).isSameAs(((GraphBuilder) graph.getGraphBuilder()).getNeo4jDriver());
 
 		Assertions.assertThat(driver.getDriver()).isSameAs(driver.getDriver());
 
-		graph.getGraphDB().nodes("JUnitPerson").idKey("name").property("name", "Rob")
+		graph.getGraphBuilder().nodes("JUnitPerson").idKey("name").property("name", "Rob")
 				.property("occupation", "developer").merge();
 		
 	
-		graph.getGraphDB().nodes("JUnitPerson").idKey("name").property("name", "Rob")
+		graph.getGraphBuilder().nodes("JUnitPerson").idKey("name").property("name", "Rob")
 		.property("occupation", "developer").merge().forEach(it->{
 			System.out.println(it);
 		});
@@ -57,7 +57,7 @@ public class RebarGraphTest extends CoreIntegrationTest {
 	public void testRelationship() {
 
 		RebarGraph graph = getRebarGraph();
-		GraphDB db = graph.getGraphDB();
+		GraphBuilder db = graph.getGraphBuilder();
 		
 		db.nodes("TestFrom").property("name", "a").idKey("name").merge();
 		db.nodes("TestFrom").property("name", "b").idKey("name").merge();
@@ -76,74 +76,74 @@ public class RebarGraphTest extends CoreIntegrationTest {
 
 	@Test
 	public void testIt4() {
-		getRebarGraph().getGraphDB().nodes("TestFoo").property("foo", "bar").property("fizz", "buzz")
+		getRebarGraph().getGraphBuilder().nodes("TestFoo").property("foo", "bar").property("fizz", "buzz")
 				.idKey("foo").merge().forEach(it -> {
-					Assertions.assertThat(it.path(GraphDB.UPDATE_TS).asLong()).isCloseTo(System.currentTimeMillis(),
+					Assertions.assertThat(it.path(GraphBuilder.UPDATE_TS).asLong()).isCloseTo(System.currentTimeMillis(),
 							Offset.offset(1000L));
 					Assertions.assertThat(it.path("foo").asText()).isEqualTo("bar");
 					Assertions.assertThat(it.path("fizz").asText()).isEqualTo("buzz");
 				});
-		getRebarGraph().getGraphDB().nodes("TestFoo").property("foo", "bar").property("fizz", "buzzbuzz")
+		getRebarGraph().getGraphBuilder().nodes("TestFoo").property("foo", "bar").property("fizz", "buzzbuzz")
 				.idKey("foo").merge().forEach(it -> {
-					Assertions.assertThat(it.path(GraphDB.UPDATE_TS).asLong()).isCloseTo(System.currentTimeMillis(),
+					Assertions.assertThat(it.path(GraphBuilder.UPDATE_TS).asLong()).isCloseTo(System.currentTimeMillis(),
 							Offset.offset(1000L));
 					Assertions.assertThat(it.path("foo").asText()).isEqualTo("bar");
 					Assertions.assertThat(it.path("fizz").asText()).isEqualTo("buzzbuzz");
 				});
 
-		Assertions.assertThat(getRebarGraph().getGraphDB().nodes("TestFoo").property("foo", "bar")
+		Assertions.assertThat(getRebarGraph().getGraphBuilder().nodes("TestFoo").property("foo", "bar")
 				.property("fizz", "buzzbuzz").idKey("foo").removeProperties("abba", "zabba").match()
 				.count()).isEqualTo(1);
 	}
 
 	@Test
 	public void testIt3() {
-		getRebarGraph().getGraphDB().nodes("TestBar").property("foo", "bar").property("fizz", "buzz")
+		getRebarGraph().getGraphBuilder().nodes("TestBar").property("foo", "bar").property("fizz", "buzz")
 				.idKey("foo").merge();
-		getRebarGraph().getGraphDB().nodes("TestBar").property("foo", "bop").property("fizz", "fuzz")
+		getRebarGraph().getGraphBuilder().nodes("TestBar").property("foo", "bop").property("fizz", "fuzz")
 				.idKey("foo").merge();
 
-		Assertions.assertThat(getRebarGraph().getGraphDB().nodes("TestBar").match().count()).isEqualTo(2);
+		Assertions.assertThat(getRebarGraph().getGraphBuilder().nodes("TestBar").match().count()).isEqualTo(2);
 
-		Assertions.assertThat(getRebarGraph().getGraphDB().nodes("TestBar").id("foo", "bop")
+		Assertions.assertThat(getRebarGraph().getGraphBuilder().nodes("TestBar").id("foo", "bop")
 				.match().findFirst().get().path("fizz").asText()).isEqualTo("fuzz");
 		
-		Assertions.assertThat(getRebarGraph().getGraphDB().nodes("TestBar").id("nope", "nope")
+		Assertions.assertThat(getRebarGraph().getGraphBuilder().nodes("TestBar").id("nope", "nope")
 				.match().findFirst().isPresent()).isFalse();
 	}
 
 	@Test
 	public void testIt2() {
 
-		getRebarGraph().getGraphDB().nodes("TestFoo").property("foo", "bar").property("fizz", "buzz")
+		getRebarGraph().getGraphBuilder().nodes("TestFoo").property("foo", "bar").property("fizz", "buzz")
 				.idKey("foo").merge().forEach(it -> {
-					Assertions.assertThat(it.path(GraphDB.UPDATE_TS).asLong()).isCloseTo(System.currentTimeMillis(),
+					Assertions.assertThat(it.path(GraphBuilder.UPDATE_TS).asLong()).isCloseTo(System.currentTimeMillis(),
 							Offset.offset(1000L));
 					Assertions.assertThat(it.path("foo").asText()).isEqualTo("bar");
 					Assertions.assertThat(it.path("fizz").asText()).isEqualTo("buzz");
 				});
 
-		Assertions.assertThat(getRebarGraph().getGraphDB().nodes("TestFoo").match().count()).isEqualTo(1);
+		Assertions.assertThat(getRebarGraph().getGraphBuilder().nodes("TestFoo").match().count()).isEqualTo(1);
 
-		getRebarGraph().getGraphDB().nodes("TestFoo").delete();
+		getRebarGraph().getGraphBuilder().nodes("TestFoo").delete();
 
-		Assertions.assertThat(getRebarGraph().getGraphDB().nodes("TestFoo").match().count()).isEqualTo(0);
+		Assertions.assertThat(getRebarGraph().getGraphBuilder().nodes("TestFoo").match().count()).isEqualTo(0);
 
 	}
 	
 	@Test
 	public void testX() {
 		
-		getRebarGraph().getGraphDB().nodes("TestFoo").id("name", "a").merge().forEach(Json.logger()::info);
-		getRebarGraph().getGraphDB().nodes("TestFoo").id("name", "b").merge().forEach(Json.logger()::info);
-		getRebarGraph().getGraphDB().nodes("TestBar").id("name", "x").merge().forEach(Json.logger()::info);
-		getRebarGraph().getGraphDB().nodes("TestBar").id("name", "y").merge().forEach(Json.logger()::info);
+		getRebarGraph().getGraphBuilder().nodes("TestFoo").id("name", "a").merge().forEach(Json.logger()::info);
+		getRebarGraph().getGraphBuilder().nodes("TestFoo").id("name", "b").merge().forEach(Json.logger()::info);
+		getRebarGraph().getGraphBuilder().nodes("TestBar").id("name", "x").merge().forEach(Json.logger()::info);
+		getRebarGraph().getGraphBuilder().nodes("TestBar").id("name", "y").merge().forEach(Json.logger()::info);
 		
-		getRebarGraph().getGraphDB().nodes("TestFoo").id("name", "a").relationship("HAS").to("TestBar").id("name", "x").merge();
+		getRebarGraph().getGraphBuilder().nodes("TestFoo").id("name", "a").relationship("HAS").to("TestBar").id("name", "x").merge();
 		
 		Assertions.assertThat(getNeo4jDriver().cypher("match (a:TestFoo)--(b:TestBar) return a,b").stream().count()).isEqualTo(1);
 		
-		getRebarGraph().getGraphDB().nodes("TestFoo").id("name", "b").relationship("HAS").to("TestBar").id("name", "y").merge();
+		getRebarGraph().getGraphBuilder().nodes("TestFoo").id("name", "b").relationship("HAS").to("TestBar").id("name", "y").merge();
 		
 		
 		Assertions.assertThat(getNeo4jDriver().cypher("match (a:TestFoo)--(b:TestBar) return a,b").stream().count()).isEqualTo(2);
@@ -152,9 +152,9 @@ public class RebarGraphTest extends CoreIntegrationTest {
 		
 	
 		
-	//	Assertions.assertThat(getRebarGraph().getGraphDB().nodes("TestFoo").match().count()).isEqualTo(2);
+	//	Assertions.assertThat(getRebarGraph().getGraphBuilder().nodes("TestFoo").match().count()).isEqualTo(2);
 		
-	//	Assertions.assertThat(getRebarGraph().getGraphDB().nodes("TestBar").match().count()).isEqualTo(2);
+	//	Assertions.assertThat(getRebarGraph().getGraphBuilder().nodes("TestBar").match().count()).isEqualTo(2);
 		
 	//	Assertions.assertThat(getNeo4jDriver().cypher("match (a:TestFoo)--(b:TestBar) return a,b").stream().count()).isEqualTo(0);
 		

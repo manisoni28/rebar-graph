@@ -33,7 +33,7 @@ public abstract class DockerEntityScanner<OBJECTTYPE>
 	abstract void scan(JsonNode n);
 
 	protected void gc(DockerEntityType type, long ts) {
-		getScanner().getGraphDB().getNeo4jDriver()
+		getScanner().getGraphBuilder().getNeo4jDriver()
 				.cypher("match (a:" + type.name() + " {hostId:{hostId}}) where a.graphUpdateTs<{ts} return a")
 				.param("ts", ts).param("hostId", getHostId()).forEach(it -> {
 				

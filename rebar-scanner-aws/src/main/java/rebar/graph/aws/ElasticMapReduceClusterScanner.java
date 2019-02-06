@@ -33,7 +33,7 @@ public class ElasticMapReduceClusterScanner extends AwsEntityScanner<Cluster,Ama
 	@Override
 	protected void doScan() {
 		AmazonElasticMapReduce emr = getClient();
-		long ts = getGraphDB().getTimestamp();
+		long ts = getGraphBuilder().getTimestamp();
 		ListClustersRequest request = new ListClustersRequest();
 		do {
 			ListClustersResult result = emr.listClusters(request);

@@ -41,7 +41,7 @@ public class RebarGraph {
 
 	Map<String, Supplier<? extends Scanner>> supplierMap = Maps.newConcurrentMap();
 
-	GraphDB graphWriter;
+	GraphBuilder graphWriter;
 
 	EnvConfig env = null;
 
@@ -56,7 +56,7 @@ public class RebarGraph {
 
 	public static class Builder {
 
-		GraphDB graphDb;
+		GraphBuilder graphDb;
 
 		EnvConfig env = new EnvConfig();
 
@@ -67,7 +67,7 @@ public class RebarGraph {
 			return this;
 		}
 
-		public Builder withGraphDB(GraphDB graphWriter) {
+		public Builder withGraphBuilder(GraphBuilder graphWriter) {
 			this.graphDb = graphWriter;
 			return this;
 		}
@@ -132,7 +132,7 @@ public class RebarGraph {
 				}
 				GraphDriver driver = b.build();
 				if (driver.getClass().getName().toLowerCase().contains("neo4j")) {
-					GraphDB gw = new GraphDB((GraphDriver) driver);
+					GraphBuilder gw = new GraphBuilder((GraphDriver) driver);
 					rg.graphWriter = gw;
 					rg.env = env;
 					Neo4jScanQueue queue = new Neo4jScanQueue((GraphDriver) driver);
@@ -168,7 +168,7 @@ public class RebarGraph {
 		}
 	}
 
-	public GraphDB getGraphDB() {
+	public GraphBuilder getGraphBuilder() {
 		return graphWriter;
 	}
 

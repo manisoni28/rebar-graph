@@ -54,11 +54,11 @@ public abstract class AzureEntityScanner<OBJECTTYPE> extends EntityScanner<Azure
 	}
 	protected void deleteByUrn(AzureEntityType type, String urn) {
 		String cypher = "match (a:" + type.name() + " {urn:{urn}}) detach delete a";
-		getScanner().getGraphDB().getNeo4jDriver().cypher(cypher).cypher(cypher).param("urn", urn).exec();
+		getScanner().getGraphBuilder().getNeo4jDriver().cypher(cypher).cypher(cypher).param("urn", urn).exec();
 	}
 	protected void deleteBySelfLink(AzureEntityType type, String url) {
 		String cypher = "match (a:" + type.name() + " {selfLink:{selfLink}}) detach delete a";
-		getScanner().getGraphDB().getNeo4jDriver().cypher(cypher).cypher(cypher).param("selfLink", url).exec();
+		getScanner().getGraphBuilder().getNeo4jDriver().cypher(cypher).cypher(cypher).param("selfLink", url).exec();
 	}
 	protected Optional<String> extractProjectId(String url) {
 		Pattern p = Pattern.compile(".*\\/projects\\/(.*?)\\/.*");

@@ -48,7 +48,7 @@ public class LaunchConfigScanner extends AwsEntityScanner<LaunchConfiguration,Am
 		return getClient(AmazonAutoScalingClientBuilder.class);
 	}
 	public void doScan() {
-		long ts = getGraphDB().getTimestamp();
+		long ts = getGraphBuilder().getTimestamp();
 		AmazonAutoScalingClient client = getClient();
 
 		DescribeLaunchConfigurationsRequest request = new DescribeLaunchConfigurationsRequest();
@@ -73,7 +73,7 @@ public class LaunchConfigScanner extends AwsEntityScanner<LaunchConfiguration,Am
 		request.withLaunchConfigurationNames(name);
 		DescribeLaunchConfigurationsResult result = client.describeLaunchConfigurations(request);
 		if (result.getLaunchConfigurations().isEmpty()) {
-			getGraphDB().nodes(getEntityTypeName())
+			getGraphBuilder().nodes(getEntityTypeName())
 			.id("name", name, "region", getRegionName(), "account", getAccount()).delete();
 		} else {
 			result.getLaunchConfigurations().forEach(lc -> {
@@ -86,7 +86,7 @@ public class LaunchConfigScanner extends AwsEntityScanner<LaunchConfiguration,Am
 	public void project(LaunchConfiguration lc) {
 		ObjectNode n = toJson(lc);
 
-		getGraphDB().nodes(getEntityTypeName()).idKey("arn").properties(n).merge();
+		getGraphBuilder().nodes(getEntityTypeName()).idKey("arn").properties(n).merge();
 
 	}
 

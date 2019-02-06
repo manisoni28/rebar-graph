@@ -21,7 +21,7 @@ import java.util.stream.Stream;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.collect.Lists;
 
-import rebar.graph.core.GraphDB;
+import rebar.graph.core.GraphBuilder;
 import rebar.graph.core.GraphOperation;
 import rebar.graph.core.Scanner;
 import rebar.graph.neo4j.GraphDriver;
@@ -30,9 +30,9 @@ public class MergeServiceEndpointsOperation implements GraphOperation {
 
 	@Override
 	public Stream<JsonNode> exec(Scanner scanner, JsonNode n,GraphDriver d) {
-		GraphDB g = scanner.getRebarGraph().getGraphDB();
+		GraphBuilder g = scanner.getRebarGraph().getGraphBuilder();
 
-		long ts = scanner.getRebarGraph().getGraphDB().getTimestamp();
+		long ts = scanner.getRebarGraph().getGraphBuilder().getTimestamp();
 
 		
 		JsonNode podRef = n.path("podRef");
@@ -44,7 +44,7 @@ public class MergeServiceEndpointsOperation implements GraphOperation {
 			String clusterId = n.path("clusterId").asText();
 			String endpointsUid = n.path("uid").asText();
 
-			scanner.getRebarGraph().getGraphDB().nodes("KubeService").id("clusterId", clusterId)
+			scanner.getRebarGraph().getGraphBuilder().nodes("KubeService").id("clusterId", clusterId)
 					.id("namespace", n.path("namespace").asText()).id("name", n.path("name").asText())
 					.relationship("EXPOSES").to("KubePod").id("uid", uid).merge();
 

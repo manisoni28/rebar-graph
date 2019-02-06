@@ -96,7 +96,7 @@ public class CatalogScanner extends Scanner {
 		JsonNode n = toJson(e);
 		String urn = toUrn(e);
 		logger.info("writing catalog entry: {}", urn);
-		getGraphDB().nodes(e.getType().name()).id("urn", toUrn(e)).properties(n).merge();
+		getGraphBuilder().nodes(e.getType().name()).id("urn", toUrn(e)).properties(n).merge();
 	}
 
 	@Override

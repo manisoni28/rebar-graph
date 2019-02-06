@@ -64,7 +64,7 @@ public class ElastiCacheScanner extends AwsEntityScanner<CacheCluster,AmazonElas
 	@Override
 	protected void doScan() {
 
-		long ts = getGraphDB().getTimestamp();
+		long ts = getGraphBuilder().getTimestamp();
 		DescribeCacheClustersRequest request = new DescribeCacheClustersRequest()
 				.withShowCacheClustersNotInReplicationGroups(false).withShowCacheNodeInfo(true);
 		do {

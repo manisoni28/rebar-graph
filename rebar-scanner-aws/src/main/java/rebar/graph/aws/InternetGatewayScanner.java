@@ -18,7 +18,7 @@ public class InternetGatewayScanner extends AbstractNetworkScanner<InternetGatew
 	@Override
 	protected void doScan() {
 
-		long ts = getGraphDB().getTimestamp();
+		long ts = getGraphBuilder().getTimestamp();
 		for (InternetGateway igw : getClient().describeInternetGateways().getInternetGateways()) {
 
 			tryExecute(() -> project(igw));
@@ -70,7 +70,7 @@ public class InternetGatewayScanner extends AbstractNetworkScanner<InternetGatew
 
 	private void deleteId(String id) {
 		logger.info("deleting AwsInternetGateway {}", id);
-		getGraphDB().getNeo4jDriver().cypher(
+		getGraphBuilder().getNeo4jDriver().cypher(
 				"match (a:AwsInternetGateway {internetGatewayId:{internetGatewayId},account:{account},region:{region}}) detach delete a")
 				.param("account", getAccount()).param("region", getRegionName()).param("internetGatewayId", id).exec();
 	}

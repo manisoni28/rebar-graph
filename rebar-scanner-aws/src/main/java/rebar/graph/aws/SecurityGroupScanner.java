@@ -65,7 +65,7 @@ public class SecurityGroupScanner extends AwsEntityScanner<SecurityGroup, Amazon
 			});
 		} catch (AmazonEC2Exception e) {
 			if (ImmutableSet.of("InvalidGroup.NotFound").contains(e.getErrorCode())) {
-				getGraphDB().nodes(AwsEntityType.AwsSecurityGroup.name())
+				getGraphBuilder().nodes(AwsEntityType.AwsSecurityGroup.name())
 						.id("region", getRegion().getName(), "account", getAccount(), "groupId", id).delete();
 
 			} else {
@@ -86,7 +86,7 @@ public class SecurityGroupScanner extends AwsEntityScanner<SecurityGroup, Amazon
 	 * catch (AmazonEC2Exception e) { if
 	 * (ImmutableSet.of("InvalidGroup.NotFound").contains(e.getErrorCode())) {
 	 * logger.info("removing security group: {}",name);
-	 * getGraphDB().nodes().label(AwsEntities.SECURITY_GROUP_TYPE).id("account",
+	 * getGraphBuilder().nodes().label(AwsEntities.SECURITY_GROUP_TYPE).id("account",
 	 * getAccount(), "region", getRegion().getName(), "name", name).delete();
 	 * 
 	 * } else { throw e; } }
@@ -131,10 +131,10 @@ public class SecurityGroupScanner extends AwsEntityScanner<SecurityGroup, Amazon
 		ObjectNode n = toJson(sg);
 		n.set("name", n.path("groupName"));
 
-		getGraphDB().nodes("AwsSecurityGroup").withTagPrefixes(TAG_PREFIXES).idKey("arn").properties(n).merge();
+		getGraphBuilder().nodes("AwsSecurityGroup").withTagPrefixes(TAG_PREFIXES).idKey("arn").properties(n).merge();
 
 		if (!Strings.isNullOrEmpty(sg.getVpcId())) {
-			getGraphDB().nodes("AwsVpc").id("vpcId", sg.getVpcId()).relationship("HAS").on("vpcId", "vpcId")
+			getGraphBuilder().nodes("AwsVpc").id("vpcId", sg.getVpcId()).relationship("HAS").on("vpcId", "vpcId")
 					.to("AwsSecurityGroup").id("arn", n.path("arn").asText()).merge();
 		}
 

@@ -24,8 +24,8 @@ import com.google.common.base.Stopwatch;
 import com.google.common.base.Strings;
 import com.machinezoo.noexception.Exceptions;
 
-import rebar.graph.core.GraphDB;
-import rebar.graph.core.GraphDB.NodeOperation;
+import rebar.graph.core.GraphBuilder;
+import rebar.graph.core.GraphBuilder.NodeOperation;
 import rebar.util.Json;
 
 public class IamRoleScanner extends AwsEntityScanner<Role,AmazonIdentityManagementClient> {
@@ -69,7 +69,7 @@ public class IamRoleScanner extends AwsEntityScanner<Role,AmazonIdentityManageme
 	@Override
 	protected void doScan() {
 
-		long ts = getGraphDB().getTimestamp();
+		long ts = getGraphBuilder().getTimestamp();
 		ListRolesRequest request = new ListRolesRequest();
 		do {
 			ListRolesResult result = getClient().listRoles(request);
@@ -111,7 +111,7 @@ public class IamRoleScanner extends AwsEntityScanner<Role,AmazonIdentityManageme
 	}
 
 	private void deleteByName(String name) {
-		getGraphDB().nodes(getEntityType().name()).id("account",getAccount()).id("roleName",name).delete();
+		getGraphBuilder().nodes(getEntityType().name()).id("account",getAccount()).id("roleName",name).delete();
 	}
 	@Override
 	public AwsEntityType getEntityType() {

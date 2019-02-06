@@ -59,7 +59,7 @@ public class LaunchTemplateScanner extends AwsEntityScanner<LaunchTemplate, Amaz
 
 		ObjectNode n = toJson(t);
 
-		getGraphDB().nodes(getEntityTypeName()).idKey("arn").properties(n).merge();
+		getGraphBuilder().nodes(getEntityTypeName()).idKey("arn").properties(n).merge();
 	}
 
 	public void scanLaunchTemplateByName(String name) {
@@ -75,7 +75,7 @@ public class LaunchTemplateScanner extends AwsEntityScanner<LaunchTemplate, Amaz
 			});
 		} catch (AmazonEC2Exception e) {
 			if (e.getErrorCode().contains("InvalidLaunchTemplate")) {
-				getGraphDB().nodes(getEntityTypeName())
+				getGraphBuilder().nodes(getEntityTypeName())
 						.id("name", name, "region", getRegionName(), "account", getAccount()).delete();
 			} else {
 				throw e;
@@ -84,7 +84,7 @@ public class LaunchTemplateScanner extends AwsEntityScanner<LaunchTemplate, Amaz
 	}
 
 	public void scanLaunchTemplates() {
-		long ts = getGraphDB().getTimestamp();
+		long ts = getGraphBuilder().getTimestamp();
 
 		AmazonEC2 ec2 = getClient(AmazonEC2ClientBuilder.class);
 

@@ -18,8 +18,8 @@ import com.google.common.base.Stopwatch;
 import com.google.common.base.Strings;
 import com.machinezoo.noexception.Exceptions;
 
-import rebar.graph.core.GraphDB;
-import rebar.graph.core.GraphDB.NodeOperation;
+import rebar.graph.core.GraphBuilder;
+import rebar.graph.core.GraphBuilder.NodeOperation;
 import rebar.util.Json;
 
 public class IamUserScanner extends AwsEntityScanner<User,AmazonIdentityManagementClient> {
@@ -53,7 +53,7 @@ public class IamUserScanner extends AwsEntityScanner<User,AmazonIdentityManageme
 	@Override
 	protected void doScan() {
 
-		long ts = getGraphDB().getTimestamp();
+		long ts = getGraphBuilder().getTimestamp();
 		ListUsersRequest request = new ListUsersRequest();
 		do {
 			ListUsersResult result = getClient().listUsers(request);
@@ -91,7 +91,7 @@ public class IamUserScanner extends AwsEntityScanner<User,AmazonIdentityManageme
 	}
 
 	private void deleteByName(String name) {
-		getGraphDB().nodes(AwsEntityType.AwsIamUser.name()).id("account",getAccount()).id("userName",name).delete();
+		getGraphBuilder().nodes(AwsEntityType.AwsIamUser.name()).id("account",getAccount()).id("userName",name).delete();
 	}
 	@Override
 	public AwsEntityType getEntityType() {

@@ -22,7 +22,7 @@ import com.amazonaws.services.ec2.AmazonEC2ClientBuilder;
 import com.amazonaws.services.ec2.model.AccountAttribute;
 import com.fasterxml.jackson.databind.JsonNode;
 
-import rebar.graph.core.GraphDB;
+import rebar.graph.core.GraphBuilder;
 import rebar.util.Json;
 
 public class AccountScanner extends AwsEntityScanner<AccountAttribute,AmazonEC2Client> {
@@ -32,8 +32,8 @@ public class AccountScanner extends AwsEntityScanner<AccountAttribute,AmazonEC2C
 	@Override
 	public void doScan() {
 	
-		getAwsScanner().getRebarGraph().getGraphDB().nodes("AwsAccount").idKey("account").properties(
-				Json.objectNode().put("account", getAwsScanner().getAccount()).put(GraphDB.ENTITY_TYPE, "AwsAccount").put(GraphDB.ENTITY_TYPE,"AwsAccount").put(GraphDB.ENTITY_GROUP,"aws")).merge();
+		getAwsScanner().getRebarGraph().getGraphBuilder().nodes("AwsAccount").idKey("account").properties(
+				Json.objectNode().put("account", getAwsScanner().getAccount()).put(GraphBuilder.ENTITY_TYPE, "AwsAccount").put(GraphBuilder.ENTITY_TYPE,"AwsAccount").put(GraphBuilder.ENTITY_GROUP,"aws")).merge();
 	}
 
 	@Override

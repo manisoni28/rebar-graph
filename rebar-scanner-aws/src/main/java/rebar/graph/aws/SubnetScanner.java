@@ -48,12 +48,12 @@ public class SubnetScanner extends AwsEntityScanner<Subnet,AmazonEC2Client> {
 
 		ObjectNode n = toJson(it);
 
-		getGraphDB().nodes(getEntityTypeName()).idKey("arn").withTagPrefixes(TAG_PREFIXES).properties(n).merge();
+		getGraphBuilder().nodes(getEntityTypeName()).idKey("arn").withTagPrefixes(TAG_PREFIXES).properties(n).merge();
 
-		getGraphDB().nodes(AwsEntityType.AwsVpc.name()).id(VpcScanner.VPC_ID_PROPERTY, it.getVpcId()).relationship("HAS")
+		getGraphBuilder().nodes(AwsEntityType.AwsVpc.name()).id(VpcScanner.VPC_ID_PROPERTY, it.getVpcId()).relationship("HAS")
 				.to(AwsEntityType.AwsSubnet.name()).id("subnetId", it.getSubnetId()).merge();
 
-		getGraphDB().nodes("AwsSubnet").id("arn",n.path("arn").asText()).relationship("RESIDES_IN").on("availabilityZone","name").to("AwsAvailabilityZone").merge();
+		getGraphBuilder().nodes("AwsSubnet").id("arn",n.path("arn").asText()).relationship("RESIDES_IN").on("availabilityZone","name").to("AwsAvailabilityZone").merge();
 	}
 
 	protected Optional<String> toArn(Subnet subnet) {
@@ -74,7 +74,7 @@ public class SubnetScanner extends AwsEntityScanner<Subnet,AmazonEC2Client> {
 		} catch (AmazonEC2Exception e) {
 			if (Strings.nullToEmpty(e.getErrorCode()).equals("InvalidSubnetID.NotFound")) {
 
-				getGraphDB().nodes("AwsSubnet").id("account", getAccount(), "subnetId", subnetId).delete();
+				getGraphBuilder().nodes("AwsSubnet").id("account", getAccount(), "subnetId", subnetId).delete();
 
 			} else {
 				throw e;
@@ -85,7 +85,7 @@ public class SubnetScanner extends AwsEntityScanner<Subnet,AmazonEC2Client> {
 	@Override
 	public void doScan() {
 
-		long ts = getGraphDB().getTimestamp();
+		long ts = getGraphBuilder().getTimestamp();
 		AmazonEC2Client client = getClient(AmazonEC2ClientBuilder.class);
 
 		client.describeSubnets().getSubnets().forEach(it -> {

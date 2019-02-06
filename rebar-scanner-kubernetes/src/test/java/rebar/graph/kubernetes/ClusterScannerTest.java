@@ -30,8 +30,8 @@ public class ClusterScannerTest extends KubeIntegrationTest {
 	@Test
 	public void testScanNamespaces() {
 		getKubeScanner().scan();
-		Assertions.assertThat(getRebarGraph().getGraphDB().getNeo4jDriver().cypher("match (c:KubeCluster)-[r]->(a:KubeNamespace) return a").stream().count()).isGreaterThan(0);
-		getRebarGraph().getGraphDB().getNeo4jDriver().cypher("match (a:KubeNamespace) return a").forEach(it->{
+		Assertions.assertThat(getRebarGraph().getGraphBuilder().getNeo4jDriver().cypher("match (c:KubeCluster)-[r]->(a:KubeNamespace) return a").stream().count()).isGreaterThan(0);
+		getRebarGraph().getGraphBuilder().getNeo4jDriver().cypher("match (a:KubeNamespace) return a").forEach(it->{
 			Assertions.assertThat(it.path("kind").asText()).isEqualTo("Namespace");
 			System.out.println(it);
 		});
@@ -40,8 +40,8 @@ public class ClusterScannerTest extends KubeIntegrationTest {
 	@Test
 	public void testScanCluster() {
 		getKubeScanner().scanCluster();
-		Assertions.assertThat(getRebarGraph().getGraphDB().getNeo4jDriver().cypher("match (a:KubeCluster) return a").stream().count()).isGreaterThan(0);
-		getRebarGraph().getGraphDB().getNeo4jDriver().cypher("match (a:KubeCluster) return a").forEach(it->{
+		Assertions.assertThat(getRebarGraph().getGraphBuilder().getNeo4jDriver().cypher("match (a:KubeCluster) return a").stream().count()).isGreaterThan(0);
+		getRebarGraph().getGraphBuilder().getNeo4jDriver().cypher("match (a:KubeCluster) return a").forEach(it->{
 		//	Assertions.assertThat(it.path("kind").asText()).isEqualTo("Namespace");
 			Assertions.assertThat(it.path("graphEntityGroup").asText()).isEqualTo("kubernetes");
 		});
@@ -52,8 +52,8 @@ public class ClusterScannerTest extends KubeIntegrationTest {
 		getKubeScanner().scanNamespaces();
 		
 		
-		Assertions.assertThat(getRebarGraph().getGraphDB().getNeo4jDriver().cypher("match (a:KubeNamespace) return a").stream().count()).isGreaterThan(0);
-		getRebarGraph().getGraphDB().getNeo4jDriver().cypher("match (a:KubeNamespace) return a").forEach(it->{
+		Assertions.assertThat(getRebarGraph().getGraphBuilder().getNeo4jDriver().cypher("match (a:KubeNamespace) return a").stream().count()).isGreaterThan(0);
+		getRebarGraph().getGraphBuilder().getNeo4jDriver().cypher("match (a:KubeNamespace) return a").forEach(it->{
 			Assertions.assertThat(it.path("kind").asText()).isEqualTo("Namespace");
 		});
 		

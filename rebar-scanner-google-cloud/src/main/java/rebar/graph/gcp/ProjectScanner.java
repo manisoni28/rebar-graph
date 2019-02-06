@@ -24,7 +24,7 @@ public class ProjectScanner extends GcpEntityScanner {
 
 		ObjectNode n = toJson(t);
 
-		getScanner().getRebarGraph().getGraphDB().nodes(GcpEntityType.GcpProject.name()).idKey("urn").properties(n)
+		getScanner().getRebarGraph().getGraphBuilder().nodes(GcpEntityType.GcpProject.name()).idKey("urn").properties(n)
 				.merge();
 
 	}

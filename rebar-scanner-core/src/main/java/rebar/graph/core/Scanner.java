@@ -89,7 +89,7 @@ public abstract class Scanner {
 
 	public Stream<JsonNode> execGraphOperation(Class<? extends GraphOperation> operation, JsonNode arg) {
 
-			return getOperation(operation).exec(this,arg, getRebarGraph().getGraphDB().getNeo4jDriver());
+			return getOperation(operation).exec(this,arg, getRebarGraph().getGraphBuilder().getNeo4jDriver());
 		
 	}
 	
@@ -164,10 +164,10 @@ public abstract class Scanner {
 		return getNeo4jDriver();
 	}
 	public final GraphDriver getNeo4jDriver() {
-		return getGraphDB().getNeo4jDriver();
+		return getGraphBuilder().getNeo4jDriver();
 	}
-	public final GraphDB getGraphDB() {
-		return getRebarGraph().getGraphDB();
+	public final GraphBuilder getGraphBuilder() {
+		return getRebarGraph().getGraphBuilder();
 	}
 
 	public final void applyConstraints() {}

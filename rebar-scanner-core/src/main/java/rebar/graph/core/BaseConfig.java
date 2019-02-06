@@ -29,12 +29,12 @@ public class BaseConfig {
 		return new GraphDriver.Builder().withEnv(envConfig()).build();
 	}
 	@Bean
-	GraphDB graphDB() {
-		return new GraphDB(graphDriver());
+	GraphBuilder graphDB() {
+		return new GraphBuilder(graphDriver());
 	}
 	@Bean
 	RebarGraph rebarGraph() {
-		return new RebarGraph.Builder().withEnv(envConfig()).withGraphDB(graphDB()).build();
+		return new RebarGraph.Builder().withEnv(envConfig()).withGraphBuilder(graphDB()).build();
 	}
 	
 	@Bean

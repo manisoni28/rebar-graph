@@ -47,13 +47,13 @@ public class SnsScanner extends AwsEntityScanner<Topic,AmazonSNSClient> {
 
 		ObjectNode n = toJson(topic);
 
-		getGraphDB().nodes(AwsEntityType.AwsSnsTopic.name()).idKey("arn").properties(n).merge();
+		getGraphBuilder().nodes(AwsEntityType.AwsSnsTopic.name()).idKey("arn").properties(n).merge();
 	}
 
 	@Override
 	protected void doScan() {
 
-		long ts = getGraphDB().getTimestamp();
+		long ts = getGraphBuilder().getTimestamp();
 		AmazonSNS sns = getClient(AmazonSNSClientBuilder.class);
 		ListTopicsRequest request = new ListTopicsRequest();
 		do {
@@ -161,7 +161,7 @@ public class SnsScanner extends AwsEntityScanner<Topic,AmazonSNSClient> {
 
 		} while ((!Strings.isNullOrEmpty(token)) && (!token.equals("null")));
 
-		getGraphDB().getNeo4jDriver().cypher(
+		getGraphBuilder().getNeo4jDriver().cypher(
 				"match (a:AwsSnsTopic {arn:{arn}})--(s:AwsSnsSubscription) where not s.arn in {subs} detach delete s")
 				.param("subs", subscriptions)
 				.param("arn", topic.getTopicArn()).exec();
@@ -175,11 +175,11 @@ public class SnsScanner extends AwsEntityScanner<Topic,AmazonSNSClient> {
 		
 		String endpoint = Strings.nullToEmpty(s.getEndpoint());
 		if (s.getEndpoint().startsWith("arn:aws:sqs")) {
-			getGraphDB().nodes(AwsEntityType.AwsSnsSubscription.name()).id("arn", s.getSubscriptionArn())
+			getGraphBuilder().nodes(AwsEntityType.AwsSnsSubscription.name()).id("arn", s.getSubscriptionArn())
 					.relationship("HAS").to(AwsEntityType.AwsSqsQueue.name()).id("arn", s.getEndpoint()).merge();
 		} 
 		else if (s.getEndpoint().startsWith("arn:aws:lambda")) {
-			getGraphDB().nodes(AwsEntityType.AwsSnsSubscription.name()).id("arn", s.getSubscriptionArn())
+			getGraphBuilder().nodes(AwsEntityType.AwsSnsSubscription.name()).id("arn", s.getSubscriptionArn())
 			.relationship("HAS").to(AwsEntityType.AwsLambdaFunction.name()).id("arn", s.getEndpoint()).merge();	
 		}
 		else if (s.getSubscriptionArn().equals("PendingConfirmation")) {
@@ -212,7 +212,7 @@ public class SnsScanner extends AwsEntityScanner<Topic,AmazonSNSClient> {
 
 		String cypher = "match (a:AwsSnsSubscription {arn:{subscriptionArn}}), (t:AwsSnsTopic {arn:{topicArn}}) MERGE (t)-[r:HAS]->(a) ";
 
-		getGraphDB().getNeo4jDriver().cypher(cypher).param("subscriptionArn", subscription.getSubscriptionArn())
+		getGraphBuilder().getNeo4jDriver().cypher(cypher).param("subscriptionArn", subscription.getSubscriptionArn())
 				.param("topicArn", topic.getTopicArn()).exec();
 
 		

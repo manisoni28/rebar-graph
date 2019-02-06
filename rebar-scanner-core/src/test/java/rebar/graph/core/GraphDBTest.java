@@ -24,14 +24,14 @@ import com.google.common.collect.ImmutableMap;
 import rebar.graph.neo4j.GraphException;
 import rebar.util.Json;
 
-class GraphDBTest extends CoreIntegrationTest {
+class GraphBuilderTest extends CoreIntegrationTest {
 
 	@Test
 	public void testIt() {
 
 		Assertions.assertThat(getRebarGraph()).isNotNull();
 
-		getRebarGraph().getGraphDB().nodes("JUnitFoo")
+		getRebarGraph().getGraphBuilder().nodes("JUnitFoo")
 				.properties(Json.objectNode().put("name", "rob " + System.currentTimeMillis()).put("fizz", 123)).idKey("name").merge()
 				.forEach(it -> {
 					System.out.println(">>> " + it);
@@ -49,7 +49,7 @@ class GraphDBTest extends CoreIntegrationTest {
 		Assertions.assertThat(getRebarGraph()).isNotNull();
 
 		try {
-			getRebarGraph().getGraphDB().nodes("JUnitFoo")
+			getRebarGraph().getGraphBuilder().nodes("JUnitFoo")
 					.properties(Json.objectNode().put("name", "rob " + System.currentTimeMillis())).idKey("NOTFOUND")
 					.merge().forEach(it -> {
 
@@ -62,7 +62,7 @@ class GraphDBTest extends CoreIntegrationTest {
 
 	@Test
 	public void testTimestamp() {
-		Assertions.assertThat(getRebarGraph().getGraphDB().getTimestamp()).isCloseTo(System.currentTimeMillis(),
+		Assertions.assertThat(getRebarGraph().getGraphBuilder().getTimestamp()).isCloseTo(System.currentTimeMillis(),
 				Offset.offset(5000L));
 	}
 
@@ -70,7 +70,7 @@ class GraphDBTest extends CoreIntegrationTest {
 	public void testPattern() {
 
 		Assertions
-				.assertThat(GraphDB.toPatternClause(ImmutableMap.of("name", "Rob", "occupation", "developer")))
+				.assertThat(GraphBuilder.toPatternClause(ImmutableMap.of("name", "Rob", "occupation", "developer")))
 				.contains("name:{name}").contains("occupation:{occupation}");
 	}
 }

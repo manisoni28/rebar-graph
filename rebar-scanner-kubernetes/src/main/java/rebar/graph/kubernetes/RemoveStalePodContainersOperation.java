@@ -22,7 +22,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
-import rebar.graph.core.GraphDB;
+import rebar.graph.core.GraphBuilder;
 import rebar.graph.core.GraphOperation;
 import rebar.graph.core.Scanner;
 import rebar.graph.neo4j.GraphDriver;
@@ -39,7 +39,7 @@ public class RemoveStalePodContainersOperation implements GraphOperation {
 			String clusterId = n.path("clusterId").asText();
 			String podUid = n.path("podUid").asText();
 			ArrayNode an = (ArrayNode) n.path("containers");
-			long ts = n.path(GraphDB.UPDATE_TS).asLong();
+			long ts = n.path(GraphBuilder.UPDATE_TS).asLong();
 		
 			List<String> list = Json.objectMapper().treeToValue(an, List.class);
 

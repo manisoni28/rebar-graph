@@ -30,7 +30,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
-import rebar.graph.core.GraphDB;
+import rebar.graph.core.GraphBuilder;
 import rebar.util.Json;
 
 public class RegionScanner extends AwsEntityScanner<Region, AmazonEC2Client> {
@@ -83,9 +83,9 @@ public class RegionScanner extends AwsEntityScanner<Region, AmazonEC2Client> {
 
 	@Override
 	protected void project(Region r) {
-		getGraphDB().nodes("AwsRegion")
+		getGraphBuilder().nodes("AwsRegion")
 				.properties(Json.objectNode().put("name", r.getRegionName()).put("region", r.getRegionName())
-						.put(GraphDB.ENTITY_GROUP, "aws").put(GraphDB.ENTITY_TYPE, getEntityTypeName()))
+						.put(GraphBuilder.ENTITY_GROUP, "aws").put(GraphBuilder.ENTITY_TYPE, getEntityTypeName()))
 				.idKey("region").merge();
 
 	}
@@ -94,13 +94,13 @@ public class RegionScanner extends AwsEntityScanner<Region, AmazonEC2Client> {
 		// for each account, make sure there are AwsAccountRegion entries for each
 		// fastest if we just load the list of regions, and find the non-existing
 
-		Set<String> regions = getGraphDB().getNeo4jDriver().cypher("match (a:AwsRegion) return a.name as name").stream()
+		Set<String> regions = getGraphBuilder().getNeo4jDriver().cypher("match (a:AwsRegion) return a.name as name").stream()
 				.map(it -> it.path("name").asText()).collect(Collectors.toSet());
 		
-		Set<String> accounts = getGraphDB().getNeo4jDriver().cypher("match (a:AwsAccount) return a.account as account").stream()
+		Set<String> accounts = getGraphBuilder().getNeo4jDriver().cypher("match (a:AwsAccount) return a.account as account").stream()
 				.map(it->it.path("account").asText()).collect(Collectors.toSet());
 		
-		List<JsonNode> accountRegions = getGraphDB().getNeo4jDriver().cypher("match (a:AwsAccountRegion) return a").stream().collect(Collectors.toList());
+		List<JsonNode> accountRegions = getGraphBuilder().getNeo4jDriver().cypher("match (a:AwsAccountRegion) return a").stream().collect(Collectors.toList());
 		
 		
 		for (String account: accounts) {
@@ -117,11 +117,11 @@ public class RegionScanner extends AwsEntityScanner<Region, AmazonEC2Client> {
 				n.put("graphEntityType", AwsEntityType.AwsAccountRegion.name());
 				n.put("graphEntityGroup","aws");
 				
-				getGraphDB().nodes(AwsEntityType.AwsAccountRegion.name()).idKey("arn").properties(n).merge();
+				getGraphBuilder().nodes(AwsEntityType.AwsAccountRegion.name()).idKey("arn").properties(n).merge();
 			}
 			
-			getGraphDB().nodes(AwsEntityType.AwsAccountRegion.name()).relationship("RESIDES_IN").on("region", "region").to(AwsEntityType.AwsRegion.name()).merge();
-			getGraphDB().nodes(AwsEntityType.AwsAccount.name()).relationship("HAS").on("account", "account").to(AwsEntityType.AwsAccountRegion.name()).merge();
+			getGraphBuilder().nodes(AwsEntityType.AwsAccountRegion.name()).relationship("RESIDES_IN").on("region", "region").to(AwsEntityType.AwsRegion.name()).merge();
+			getGraphBuilder().nodes(AwsEntityType.AwsAccount.name()).relationship("HAS").on("account", "account").to(AwsEntityType.AwsAccountRegion.name()).merge();
 			
 		}
 		

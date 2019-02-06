@@ -51,7 +51,7 @@ public class ApiGatewayRestApiScanner extends AwsEntityScanner<RestApi,AmazonApi
 	@Override
 	protected void doScan() {
 
-		long ts = getGraphDB().getTimestamp();
+		long ts = getGraphBuilder().getTimestamp();
 		GetRestApisRequest request = new GetRestApisRequest();
 		do {
 

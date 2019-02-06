@@ -49,7 +49,7 @@ public class ComputeInstanceScanner extends GcpEntityScanner {
 		n.remove("labels");
 		n.remove("metadata");
 
-		getScanner().getGraphDB().nodes(getEntityType().name()).idKey("urn").properties(n).merge();
+		getScanner().getGraphBuilder().nodes(getEntityType().name()).idKey("urn").properties(n).merge();
 
 	}
 
@@ -70,7 +70,7 @@ public class ComputeInstanceScanner extends GcpEntityScanner {
 	@Override
 	protected void doScan() {
 
-		long ts = getScanner().getGraphDB().getTimestamp();
+		long ts = getScanner().getGraphBuilder().getTimestamp();
 		getProjectZoneList().forEach(it -> {
 			scanProject(it.getProjectId(), it.getZoneName());
 			gc(getEntityType(), it, ts);
@@ -80,9 +80,9 @@ public class ComputeInstanceScanner extends GcpEntityScanner {
 	}
 
 	private void mergeRelatinships() {
-		getScanner().getGraphDB().nodes(getEntityType().name()).relationship("RESIDES_IN").on("zone", "selfLink")
+		getScanner().getGraphBuilder().nodes(getEntityType().name()).relationship("RESIDES_IN").on("zone", "selfLink")
 				.to(GcpEntityType.GcpZone.name()).merge();
-		getScanner().getGraphDB().nodes(GcpEntityType.GcpProject.name()).relationship("HAS")
+		getScanner().getGraphBuilder().nodes(GcpEntityType.GcpProject.name()).relationship("HAS")
 				.on("projectId", "projectId").to(GcpEntityType.GcpComputeInstance.name()).merge();
 
 	}

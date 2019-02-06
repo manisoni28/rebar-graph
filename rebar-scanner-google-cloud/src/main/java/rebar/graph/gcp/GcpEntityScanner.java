@@ -59,11 +59,11 @@ public abstract class GcpEntityScanner extends EntityScanner<GcpScanner, GcpEnti
 	}
 	protected void deleteByUrn(GcpEntityType type, String urn) {
 		String cypher = "match (a:" + type.name() + " {urn:{urn}}) detach delete a";
-		getScanner().getGraphDB().getNeo4jDriver().cypher(cypher).cypher(cypher).param("urn", urn).exec();
+		getScanner().getGraphBuilder().getNeo4jDriver().cypher(cypher).cypher(cypher).param("urn", urn).exec();
 	}
 	protected void deleteBySelfLink(GcpEntityType type, String url) {
 		String cypher = "match (a:" + type.name() + " {selfLink:{selfLink}}) detach delete a";
-		getScanner().getGraphDB().getNeo4jDriver().cypher(cypher).cypher(cypher).param("selfLink", url).exec();
+		getScanner().getGraphBuilder().getNeo4jDriver().cypher(cypher).cypher(cypher).param("selfLink", url).exec();
 	}
 	protected Optional<String> extractProjectId(String url) {
 		Pattern p = Pattern.compile(".*\\/projects\\/(.*?)\\/.*");
@@ -108,7 +108,7 @@ public abstract class GcpEntityScanner extends EntityScanner<GcpScanner, GcpEnti
 	}
 
 	public List<String> getProjectIds() {
-		return getScanner().getRebarGraph().getGraphDB().getNeo4jDriver()
+		return getScanner().getRebarGraph().getGraphBuilder().getNeo4jDriver()
 				.cypher("match (a:GcpProject) return a.projectId as projectId").stream()
 				.map(n -> n.path("projectId").asText()).collect(Collectors.toList());
 	}
@@ -117,7 +117,7 @@ public abstract class GcpEntityScanner extends EntityScanner<GcpScanner, GcpEnti
 		return "000000000000";
 	}
 	public List<String> getZones() {
-		return getScanner().getRebarGraph().getGraphDB().getNeo4jDriver()
+		return getScanner().getRebarGraph().getGraphBuilder().getNeo4jDriver()
 				.cypher("match (a:GcpZone) return a.name as name").stream().map(n -> n.path("name").asText())
 				.collect(Collectors.toList());
 	}

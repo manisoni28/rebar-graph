@@ -87,7 +87,7 @@ public abstract class ScannerModule {
 			@Override
 			public void run() {
 				try {
-					GraphDriver neo4j = getRebarGraph().getGraphDB().getNeo4jDriver();
+					GraphDriver neo4j = getRebarGraph().getGraphBuilder().getNeo4jDriver();
 
 					String r = Strings.isNullOrEmpty(region) ? "undefined" : region;
 					neo4j.cypher(
@@ -116,7 +116,7 @@ public abstract class ScannerModule {
 			@Override
 			public void run() {
 				try {
-					GraphDriver neo4j = getRebarGraph().getGraphDB().getNeo4jDriver();
+					GraphDriver neo4j = getRebarGraph().getGraphBuilder().getNeo4jDriver();
 					String hostname = InetAddress.getLocalHost().getCanonicalHostName();
 					String ipAddress = InetAddress.getLocalHost().getHostAddress();
 					neo4j.cypher(

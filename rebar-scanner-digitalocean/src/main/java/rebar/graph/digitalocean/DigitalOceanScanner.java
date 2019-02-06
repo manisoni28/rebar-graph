@@ -29,7 +29,7 @@ import com.myjeeva.digitalocean.exception.DigitalOceanException;
 import com.myjeeva.digitalocean.exception.RequestUnsuccessfulException;
 import com.myjeeva.digitalocean.impl.DigitalOceanClient;
 
-import rebar.graph.core.GraphDB.NodeOperation;
+import rebar.graph.core.GraphBuilder.NodeOperation;
 import rebar.graph.core.RebarGraph;
 import rebar.graph.core.Scanner;
 import rebar.util.RebarException;
@@ -102,7 +102,7 @@ public class DigitalOceanScanner extends Scanner {
 
 	protected NodeOperation digitalOceanNodes(String label) {
 
-		return getGraphDB().nodes(label).id("account", getAccount());
+		return getGraphBuilder().nodes(label).id("account", getAccount());
 
 	}
 

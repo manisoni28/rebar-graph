@@ -41,7 +41,7 @@ public class ElbListenerScanner extends AwsEntityScanner<Listener,AmazonElasticL
 
 		
 			String loadBalancerArn = n.path("loadBalancerArn").asText().trim();
-			long ts = ctx.getRebarGraph().getGraphDB().getTimestamp();
+			long ts = ctx.getRebarGraph().getGraphBuilder().getTimestamp();
 			String cypher = "match (a:AwsElb {arn:{arn}}),(x:AwsElbListener {loadBalancerArn:{arn}}) merge (a)-[r:HAS]->(x) set r.graphUpdateTs=timestamp()";
 
 			neo4j.cypher(cypher).param("arn", loadBalancerArn).exec();
@@ -60,9 +60,9 @@ public class ElbListenerScanner extends AwsEntityScanner<Listener,AmazonElasticL
 
 	@Override
 	protected void doScan() {
-		long ts = getGraphDB().getTimestamp();
+		long ts = getGraphBuilder().getTimestamp();
 
-		getGraphDB().nodes("AwsElb").id("region", getRegionName()).id("account", getAccount()).match()
+		getGraphBuilder().nodes("AwsElb").id("region", getRegionName()).id("account", getAccount()).match()
 				.filter(n -> n.path("type").asText().equals("network") || n.path("type").asText().equals("application")).map(n -> n.path("arn").asText())
 				.forEach(arn -> {
 					scanListenersByLoadBalancerArn(arn);
@@ -104,7 +104,7 @@ public class ElbListenerScanner extends AwsEntityScanner<Listener,AmazonElasticL
 
 		n.put("arn", listener.getListenerArn());
 
-		getGraphDB().nodes("AwsElbListener").idKey("arn").properties(n).merge();
+		getGraphBuilder().nodes("AwsElbListener").idKey("arn").properties(n).merge();
 
 	}
 

@@ -83,7 +83,7 @@ public class VpcPeeringConnectionScanner extends AbstractNetworkScanner<VpcPeeri
 	@Override
 	protected void doScan() {
 
-		long ts = getGraphDB().getTimestamp();
+		long ts = getGraphBuilder().getTimestamp();
 		scan((String) WILDCARD);
 
 		gc(AwsEntityType.AwsVpcPeeringConnection, ts);

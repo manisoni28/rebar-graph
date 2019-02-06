@@ -36,7 +36,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
-import rebar.graph.core.GraphDB;
+import rebar.graph.core.GraphBuilder;
 import rebar.graph.core.GraphOperation;
 import rebar.graph.core.Scanner;
 import rebar.graph.core.RelationshipBuilder.Cardinality;
@@ -53,7 +53,7 @@ public class AsgScanner extends AwsEntityScanner<AutoScalingGroup, AmazonEC2Clie
 		@Override
 		public Stream<JsonNode> exec(Scanner ctx, JsonNode n, GraphDriver neo4j) {
 
-			long ts = ctx.getRebarGraph().getGraphDB().getTimestamp();
+			long ts = ctx.getRebarGraph().getGraphBuilder().getTimestamp();
 
 			String region = n.path("region").asText();
 			String account = n.path("account").asText();
@@ -151,7 +151,7 @@ public class AsgScanner extends AwsEntityScanner<AutoScalingGroup, AmazonEC2Clie
 		});
 		n.remove("tags");
 
-		getGraphDB().nodes(getEntityType().name()).withTagPrefixes(TAG_PREFIXES).idKey("arn").properties(n).merge();
+		getGraphBuilder().nodes(getEntityType().name()).withTagPrefixes(TAG_PREFIXES).idKey("arn").properties(n).merge();
 
 		getAwsScanner().execGraphOperation(AsgScanner.AsgRelationshipGraphOperation.class, n);
 	}
@@ -170,7 +170,7 @@ public class AsgScanner extends AwsEntityScanner<AutoScalingGroup, AmazonEC2Clie
 		DescribeAutoScalingGroupsResult result = client.describeAutoScalingGroups(r);
 
 		if (result.getAutoScalingGroups().isEmpty()) {
-			getGraphDB().nodes(getEntityTypeName()).id("name", name, "region", getRegionName(), "account", getAccount())
+			getGraphBuilder().nodes(getEntityTypeName()).id("name", name, "region", getRegionName(), "account", getAccount())
 					.delete();
 		} else {
 			result.getAutoScalingGroups().forEach(it -> {
@@ -182,7 +182,7 @@ public class AsgScanner extends AwsEntityScanner<AutoScalingGroup, AmazonEC2Clie
 
 	public void doScan() {
 
-		long ts = getGraphDB().getTimestamp();
+		long ts = getGraphBuilder().getTimestamp();
 		AmazonAutoScalingClient client = getClient(AmazonAutoScalingClientBuilder.class);
 
 		DescribeAutoScalingGroupsRequest r = new DescribeAutoScalingGroupsRequest();
@@ -200,7 +200,7 @@ public class AsgScanner extends AwsEntityScanner<AutoScalingGroup, AmazonEC2Clie
 		gc(getEntityTypeName(), ts);
 
 		// connect AwsAsg->AwsEc2Instance
-		getGraphDB().nodes("AwsAsg").id("region", getRegionName()).id("account", getAccount()).relationship("HAS")
+		getGraphBuilder().nodes("AwsAsg").id("region", getRegionName()).id("account", getAccount()).relationship("HAS")
 				.on("instances", "instanceId", Cardinality.MANY).on("account", "account").on("region", "region")
 				.to("AwsEc2Instance").id("region", getRegionName()).id("account", getAccount()).merge();
 
@@ -213,7 +213,7 @@ public class AsgScanner extends AwsEntityScanner<AutoScalingGroup, AmazonEC2Clie
 		if (isEntityType(entity, getEntityTypeName())) {
 			scanByName(entity.path("name").asText());
 		} else {
-			throw new RebarException("cannot handle entityType: " + entity.path(GraphDB.ENTITY_TYPE).asText());
+			throw new RebarException("cannot handle entityType: " + entity.path(GraphBuilder.ENTITY_TYPE).asText());
 		}
 
 	}

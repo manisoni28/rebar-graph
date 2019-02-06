@@ -25,7 +25,7 @@ public class IntegrationTestCheck extends KubeIntegrationTest {
 
 		
 		Assertions.assertThat(getRebarGraph()).isSameAs(getRebarGraph());
-		Assertions.assertThat(getRebarGraph().getGraphDB()).isSameAs(getRebarGraph().getGraphDB());
+		Assertions.assertThat(getRebarGraph().getGraphBuilder()).isSameAs(getRebarGraph().getGraphBuilder());
 		Assertions.assertThat(getKubeScanner().getKubernetesClient()).isSameAs(getKubeScanner().getKubernetesClient());
 		
 

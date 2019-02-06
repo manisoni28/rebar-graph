@@ -35,13 +35,13 @@ public class CatalogScannerModule extends ScannerModule {
 
 	@Override
 	public void applyConstraints(boolean apply) {
-		getRebarGraph().getGraphDB().schema().createUniqueConstraint("ServiceCatalogEntry", "urn",apply);
-		getRebarGraph().getGraphDB().schema().createUniqueConstraint("ServiceCatalogEntry", "name",apply);
-		getRebarGraph().getGraphDB().schema().createUniqueConstraint("DatabaseCatalogEntry", "urn",apply);
-		getRebarGraph().getGraphDB().schema().createUniqueConstraint("DatabaseCatalogEntry", "name",apply);
-		getRebarGraph().getGraphDB().schema().createUniqueConstraint("QueueCatalogEntry", "urn",apply);
-		getRebarGraph().getGraphDB().schema().createUniqueConstraint("QueueCatalogEntry", "name",apply);
-		getRebarGraph().getGraphDB().schema().createUniqueConstraint("StreamCatalogEntry", "urn",apply);
-		getRebarGraph().getGraphDB().schema().createUniqueConstraint("StreamCatalogEntry", "name",apply);
+		getRebarGraph().getGraphBuilder().schema().createUniqueConstraint("ServiceCatalogEntry", "urn",apply);
+		getRebarGraph().getGraphBuilder().schema().createUniqueConstraint("ServiceCatalogEntry", "name",apply);
+		getRebarGraph().getGraphBuilder().schema().createUniqueConstraint("DatabaseCatalogEntry", "urn",apply);
+		getRebarGraph().getGraphBuilder().schema().createUniqueConstraint("DatabaseCatalogEntry", "name",apply);
+		getRebarGraph().getGraphBuilder().schema().createUniqueConstraint("QueueCatalogEntry", "urn",apply);
+		getRebarGraph().getGraphBuilder().schema().createUniqueConstraint("QueueCatalogEntry", "name",apply);
+		getRebarGraph().getGraphBuilder().schema().createUniqueConstraint("StreamCatalogEntry", "urn",apply);
+		getRebarGraph().getGraphBuilder().schema().createUniqueConstraint("StreamCatalogEntry", "name",apply);
 	}
 }
