@@ -33,4 +33,15 @@ public class CatalogScannerModule extends ScannerModule {
 		Main.main(args);
 	}
 
+	@Override
+	public void applyConstraints(boolean apply) {
+		getRebarGraph().getGraphDB().schema().createUniqueConstraint("ServiceCatalogEntry", "urn",apply);
+		getRebarGraph().getGraphDB().schema().createUniqueConstraint("ServiceCatalogEntry", "name",apply);
+		getRebarGraph().getGraphDB().schema().createUniqueConstraint("DatabaseCatalogEntry", "urn",apply);
+		getRebarGraph().getGraphDB().schema().createUniqueConstraint("DatabaseCatalogEntry", "name",apply);
+		getRebarGraph().getGraphDB().schema().createUniqueConstraint("QueueCatalogEntry", "urn",apply);
+		getRebarGraph().getGraphDB().schema().createUniqueConstraint("QueueCatalogEntry", "name",apply);
+		getRebarGraph().getGraphDB().schema().createUniqueConstraint("StreamCatalogEntry", "urn",apply);
+		getRebarGraph().getGraphDB().schema().createUniqueConstraint("StreamCatalogEntry", "name",apply);
+	}
 }

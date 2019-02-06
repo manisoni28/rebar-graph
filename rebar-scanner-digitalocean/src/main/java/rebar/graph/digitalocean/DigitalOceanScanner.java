@@ -120,12 +120,6 @@ public class DigitalOceanScanner extends Scanner {
 
 	}
 
-	@Override
-	public void applyConstraints() {
-		getGraphDB().schema().createUniqueConstraint("DigitalOceanAccount", "urn");
-		getGraphDB().schema().createUniqueConstraint("DigitalOceanRegion", "urn");
-		getGraphDB().schema().createUniqueConstraint("DigitalOceanDroplet", "urn");
-	}
 
 	@Override
 	protected void init(RebarGraph g, Map<String, String> config) throws Exception {

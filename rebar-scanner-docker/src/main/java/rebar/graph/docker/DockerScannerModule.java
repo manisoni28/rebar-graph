@@ -74,4 +74,11 @@ public class DockerScannerModule extends ScannerModule {
 	public static void main(String[] args) throws Exception {
 		Main.main(args);
 	}
+	
+	@Override
+	public void applyConstraints(boolean apply) {
+		getRebarGraph().getGraphDB().schema().createUniqueConstraint(DockerEntityType.DockerContainer.name(), "urn",apply);
+		getRebarGraph().getGraphDB().schema().createUniqueConstraint(DockerEntityType.DockerHost.name(), "urn",apply);
+	
+	}
 }

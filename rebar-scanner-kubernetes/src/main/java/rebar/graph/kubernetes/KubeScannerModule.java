@@ -132,5 +132,19 @@ public class KubeScannerModule extends ScannerModule {
 		
 		getExecutor().scheduleWithFixedDelay(new FullScan(scanner), 0, 15, TimeUnit.SECONDS);
 	}
+	
+	public void applyConstraints(boolean apply) {
+
+		getRebarGraph().getGraphDB().schema().createUniqueConstraint("KubeCluster", "name",apply);
+		getRebarGraph().getGraphDB().schema().createUniqueConstraint("KubeCluster", "clusterId",apply);
+		getRebarGraph().getGraphDB().schema().createUniqueConstraint("KubeNode", "uid",apply);
+		getRebarGraph().getGraphDB().schema().createUniqueConstraint("KubePod", "uid",apply);
+		getRebarGraph().getGraphDB().schema().createUniqueConstraint("KubeDeployment", "uid",apply);
+		getRebarGraph().getGraphDB().schema().createUniqueConstraint("KubeReplicaSet", "uid",apply);
+		getRebarGraph().getGraphDB().schema().createUniqueConstraint("KubeDaemonSet", "uid",apply);
+		getRebarGraph().getGraphDB().schema().createUniqueConstraint("KubeService", "uid",apply);
+		getRebarGraph().getGraphDB().schema().createUniqueConstraint("KubeNamespace", "uid",apply);
+
+	}
 
 }

@@ -16,7 +16,8 @@
 package rebar.graph.neo4j;
 
 public interface GraphSchema {
-
 	public void createUniqueConstraint(String label, String attribute);
 	public void dropUniqueConstraint(String label, String attribute);
+	public void createUniqueConstraint(String label, String attribute, boolean apply);
+	public void dropUniqueConstraint(String label, String attribute, boolean apply);
 }

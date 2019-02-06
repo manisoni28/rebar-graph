@@ -104,16 +104,6 @@ public class CatalogScanner extends Scanner {
 
 	}
 
-	@Override
-	public void applyConstraints() {
-		getGraphDB().schema().createUniqueConstraint("ServiceCatalogEntry", "urn");
-		getGraphDB().schema().createUniqueConstraint("ServiceCatalogEntry", "name");
-		getGraphDB().schema().createUniqueConstraint("DatabaseCatalogEntry", "urn");
-		getGraphDB().schema().createUniqueConstraint("DatabaseCatalogEntry", "name");
-		getGraphDB().schema().createUniqueConstraint("QueueCatalogEntry", "urn");
-		getGraphDB().schema().createUniqueConstraint("QueueCatalogEntry", "name");
-		getGraphDB().schema().createUniqueConstraint("StreamCatalogEntry", "urn");
-		getGraphDB().schema().createUniqueConstraint("StreamCatalogEntry", "name");
-	}
+
 
 }

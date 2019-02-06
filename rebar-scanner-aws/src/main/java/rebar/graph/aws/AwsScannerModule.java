@@ -32,6 +32,7 @@ import com.google.common.base.Splitter;
 import com.google.common.collect.Maps;
 
 import rebar.graph.core.ScannerModule;
+import rebar.graph.neo4j.GraphSchema;
 import rebar.graph.core.Main;
 import rebar.util.Json;
 
@@ -141,4 +142,45 @@ public class AwsScannerModule extends ScannerModule {
 
 	}
 
+	public void applyConstraints(boolean apply) {
+		GraphSchema s = getRebarGraph().getGraphDB().getNeo4jDriver().schema();
+		s.createUniqueConstraint("AwsRegion", "name",apply);
+		s.createUniqueConstraint("AwsAvailabilityZone", "name",apply);
+		s.createUniqueConstraint("AwsAccount", "account",apply);
+		s.createUniqueConstraint("AwsSecurityGroup", "arn",apply);
+		s.createUniqueConstraint("AwsSubnet", "arn",apply);
+		s.createUniqueConstraint("AwsEc2Instance", "arn",apply);
+		s.createUniqueConstraint("AwsAmi", "arn",apply);
+		s.createUniqueConstraint("AwsLaunchConfig", "arn",apply);
+		s.createUniqueConstraint("AwsLaunchTemplate", "arn",apply);
+		s.createUniqueConstraint("AwsElb", "arn",apply);
+		s.createUniqueConstraint("AwsElbTargetGroup", "arn",apply);
+		s.createUniqueConstraint("AwsElbListener", "arn",apply);
+		s.createUniqueConstraint("AwsAsg", "arn",apply);
+		s.createUniqueConstraint("AwsEksCluster", "arn",apply);
+		s.createUniqueConstraint("AwsLambdaFunction", "arn",apply);
+		s.createUniqueConstraint("AwsVpc", "arn",apply);
+
+		s.createUniqueConstraint("AwsHostedZone", "id",apply);
+		s.createUniqueConstraint("AwsHostedZone", "arn",apply);
+
+		s.createUniqueConstraint("AwsSqsQueue", "url",apply);
+		s.createUniqueConstraint("AwsSqsQueue", "arn",apply);
+		s.createUniqueConstraint("AwsSnsTopic", "arn",apply);
+		s.createUniqueConstraint("AwsSnsSubscription", "arn",apply);
+
+		s.createUniqueConstraint("AwsS3Bucket", "arn",apply);
+		s.createUniqueConstraint("AwsS3Bucket", "name",apply);
+
+		s.createUniqueConstraint("AwsEmrCluster", "arn",apply);
+
+		s.createUniqueConstraint("AwsRouteTable", "arn",apply);
+		s.createUniqueConstraint("AwsInternetGateway", "arn",apply);
+		s.createUniqueConstraint("AwsEgressOnlyInternetGateway", "arn",apply);
+		s.createUniqueConstraint(AwsEntityType.AwsIamInstanceProfile.name(), "arn",apply);
+		s.createUniqueConstraint(AwsEntityType.AwsIamRole.name(), "arn",apply);
+		s.createUniqueConstraint(AwsEntityType.AwsIamPolicy.name(), "arn",apply);
+		s.createUniqueConstraint(AwsEntityType.AwsIamUser.name(), "arn",apply);
+		s.createUniqueConstraint(AwsEntityType.AwsAccountRegion.name(),"arn",apply);
+	}
 }

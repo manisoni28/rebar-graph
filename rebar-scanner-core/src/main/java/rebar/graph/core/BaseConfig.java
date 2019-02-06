@@ -12,7 +12,7 @@ import rebar.graph.neo4j.GraphDriver;
 import rebar.util.EnvConfig;
 
 @Configuration
-@ComponentScan(basePackageClasses= {CoreSpringConfig.class},basePackages= {"rebar.graph.github"})
+@ComponentScan(basePackageClasses= {CoreSpringConfig.class})
 public class BaseConfig {
 
 	@Bean
@@ -20,6 +20,10 @@ public class BaseConfig {
 		return new EnvConfig();
 	}
 	
+	@Bean
+	ConfigOptions configOptions() {
+		return new ConfigOptions(envConfig());
+	}
 	@Bean
 	GraphDriver graphDriver() {
 		return new GraphDriver.Builder().withEnv(envConfig()).build();

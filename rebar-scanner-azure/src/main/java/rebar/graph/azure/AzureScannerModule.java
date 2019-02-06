@@ -35,4 +35,10 @@ public class AzureScannerModule extends ScannerModule {
 	public static void main(String[] args) throws Exception {
 		Main.main(args);
 	}
+
+	@Override
+	public void applyConstraints(boolean apply) {
+		// TODO Auto-generated method stub
+		
+	}
 }

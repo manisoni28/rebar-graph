@@ -70,6 +70,9 @@ public abstract class ScannerModule {
 		return executor;
 	}
 
+	public ConfigOptions getConfigOptions() {
+		return new ConfigOptions(getConfig());
+	}
 	public EnvConfig getConfig() {
 		return config;
 	}
@@ -154,7 +157,10 @@ public abstract class ScannerModule {
 			}
 
 		}
-
+	
+		
+		applyConstraints(getConfigOptions().isIndexAutoCreateEnabled());
+		
 		if (runModule) {
 			logger.info("init()");
 			doStartModule();
@@ -164,4 +170,7 @@ public abstract class ScannerModule {
 	}
 
 	protected abstract void doStartModule();
+	
+
+	public abstract void applyConstraints(boolean b); 
 }

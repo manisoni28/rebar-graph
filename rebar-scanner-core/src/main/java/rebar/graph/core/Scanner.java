@@ -43,8 +43,7 @@ public abstract class Scanner {
 
 	Boolean failOnError = null;
 	
-	private boolean constraintsApplied=false;
-	
+
 	MeterRegistry meterRegistry = Metrics.globalRegistry; 
 	
 	RebarGraph rebarGraph;
@@ -99,12 +98,7 @@ public abstract class Scanner {
 	public abstract void scan(String scannerType, String a, String b, String c, String d);
 	
 	public final void scan() {
-		if (!constraintsApplied) {
-			if (Boolean.parseBoolean(this.getEnvConfig().get("INDEX_AUTOCREATE").orElse("true"))) {
-				constraintsApplied=true;
-				applyConstraints();
-			}
-		}
+	
 		Stopwatch sw = Stopwatch.createStarted();
 		logger.info("begin scan for {}",this);
 		try {
@@ -176,5 +170,5 @@ public abstract class Scanner {
 		return getRebarGraph().getGraphDB();
 	}
 
-	public abstract void applyConstraints();
+	public final void applyConstraints() {}
 }

@@ -35,4 +35,11 @@ public class DigitalOceanScannerModule extends ScannerModule {
 		Main.main(args);
 	}
 
+	@Override
+	public void applyConstraints(boolean apply) {
+		getRebarGraph().getGraphDB().schema().createUniqueConstraint("DigitalOceanAccount", "urn",apply);
+		getRebarGraph().getGraphDB().schema().createUniqueConstraint("DigitalOceanRegion", "urn",apply);
+		getRebarGraph().getGraphDB().schema().createUniqueConstraint("DigitalOceanDroplet", "urn",apply);
+	}
+
 }

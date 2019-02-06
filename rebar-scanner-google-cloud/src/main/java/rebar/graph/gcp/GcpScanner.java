@@ -148,18 +148,7 @@ public class GcpScanner extends Scanner {
 		throw new UnsupportedOperationException();
 	}
 
-	@Override
-	public void applyConstraints() {
-		GraphSchema schema = getRebarGraph().getGraphDB().schema();
-		schema.createUniqueConstraint(GcpEntityType.GcpProject.name(), "urn");
-		schema.createUniqueConstraint(GcpEntityType.GcpProject.name(), "projectNumber");
-		schema.createUniqueConstraint(GcpEntityType.GcpProject.name(), "projectId");
-		schema.createUniqueConstraint(GcpEntityType.GcpComputeInstance.name(), "urn");
-		schema.createUniqueConstraint(GcpEntityType.GcpZone.name(), "urn");
-		schema.createUniqueConstraint(GcpEntityType.GcpRegion.name(), "urn");
-		schema.createUniqueConstraint(GcpEntityType.GcpRegion.name(), "regionName");
 
-	}
 
 	public ComputeInstanceScanner computeInstanceScanner() {
 		return new ComputeInstanceScanner(this);

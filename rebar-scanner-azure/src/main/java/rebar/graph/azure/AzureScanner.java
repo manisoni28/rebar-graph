@@ -148,11 +148,7 @@ public class AzureScanner extends Scanner {
 		throw new UnsupportedOperationException();
 	}
 
-	@Override
-	public void applyConstraints() {
-		GraphSchema schema = getRebarGraph().getGraphDB().schema();
 
-	}
 
 	public boolean isRegionEnabled(String name) {
 		return Strings.nullToEmpty(name).startsWith("us-");

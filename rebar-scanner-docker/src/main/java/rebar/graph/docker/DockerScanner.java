@@ -80,12 +80,7 @@ public class DockerScanner extends Scanner {
 
 	}
 
-	@Override
-	public void applyConstraints() {
-		getGraphDB().schema().createUniqueConstraint(DockerEntityType.DockerContainer.name(), "urn");
-		getGraphDB().schema().createUniqueConstraint(DockerEntityType.DockerHost.name(), "urn");
-	
-	}
+
 
 	
 	public ContainerScanner containerScanner() {

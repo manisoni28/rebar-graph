@@ -1009,19 +1009,7 @@ public class KubeScanner extends Scanner {
 
 	}
 
-	public void applyConstraints() {
 
-		getRebarGraph().getGraphDB().schema().createUniqueConstraint("KubeCluster", "name");
-		getRebarGraph().getGraphDB().schema().createUniqueConstraint("KubeCluster", "clusterId");
-		getRebarGraph().getGraphDB().schema().createUniqueConstraint("KubeNode", "uid");
-		getRebarGraph().getGraphDB().schema().createUniqueConstraint("KubePod", "uid");
-		getRebarGraph().getGraphDB().schema().createUniqueConstraint("KubeDeployment", "uid");
-		getRebarGraph().getGraphDB().schema().createUniqueConstraint("KubeReplicaSet", "uid");
-		getRebarGraph().getGraphDB().schema().createUniqueConstraint("KubeDaemonSet", "uid");
-		getRebarGraph().getGraphDB().schema().createUniqueConstraint("KubeService", "uid");
-		getRebarGraph().getGraphDB().schema().createUniqueConstraint("KubeNamespace", "uid");
-
-	}
 
 	@Override
 	public void scan(String scannerType, String cluster, String namespace, String type, String name) {

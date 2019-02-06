@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import rebar.graph.core.Main;
 import rebar.graph.core.ScannerModule;
+import rebar.graph.neo4j.GraphSchema;
 
 public class GcpScannerModule extends ScannerModule {
 
@@ -34,5 +35,18 @@ public class GcpScannerModule extends ScannerModule {
 
 	public static void main(String[] args) throws Exception {
 		Main.main(args);
+	}
+	
+	@Override
+	public void applyConstraints(boolean apply) {
+		GraphSchema schema = getRebarGraph().getGraphDB().schema();
+		schema.createUniqueConstraint(GcpEntityType.GcpProject.name(), "urn",apply);
+		schema.createUniqueConstraint(GcpEntityType.GcpProject.name(), "projectNumber",apply);
+		schema.createUniqueConstraint(GcpEntityType.GcpProject.name(), "projectId",apply);
+		schema.createUniqueConstraint(GcpEntityType.GcpComputeInstance.name(), "urn",apply);
+		schema.createUniqueConstraint(GcpEntityType.GcpZone.name(), "urn",apply);
+		schema.createUniqueConstraint(GcpEntityType.GcpRegion.name(), "urn",apply);
+		schema.createUniqueConstraint(GcpEntityType.GcpRegion.name(), "regionName",apply);
+
 	}
 }

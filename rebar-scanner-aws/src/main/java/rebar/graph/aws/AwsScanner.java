@@ -259,47 +259,7 @@ public final class AwsScanner extends Scanner {
 
 	}
 
-	public void applyConstraints() {
-		GraphSchema s = getRebarGraph().getGraphDB().getNeo4jDriver().schema();
-		s.createUniqueConstraint("AwsRegion", "name");
-		s.createUniqueConstraint("AwsAvailabilityZone", "name");
-		s.createUniqueConstraint("AwsAccount", "account");
-		s.createUniqueConstraint("AwsSecurityGroup", "arn");
-		s.createUniqueConstraint("AwsSubnet", "arn");
-		s.createUniqueConstraint("AwsEc2Instance", "arn");
-		s.createUniqueConstraint("AwsAmi", "arn");
-		s.createUniqueConstraint("AwsLaunchConfig", "arn");
-		s.createUniqueConstraint("AwsLaunchTemplate", "arn");
-		s.createUniqueConstraint("AwsElb", "arn");
-		s.createUniqueConstraint("AwsElbTargetGroup", "arn");
-		s.createUniqueConstraint("AwsElbListener", "arn");
-		s.createUniqueConstraint("AwsAsg", "arn");
-		s.createUniqueConstraint("AwsEksCluster", "arn");
-		s.createUniqueConstraint("AwsLambdaFunction", "arn");
-		s.createUniqueConstraint("AwsVpc", "arn");
-
-		s.createUniqueConstraint("AwsHostedZone", "id");
-		s.createUniqueConstraint("AwsHostedZone", "arn");
-
-		s.createUniqueConstraint("AwsSqsQueue", "url");
-		s.createUniqueConstraint("AwsSqsQueue", "arn");
-		s.createUniqueConstraint("AwsSnsTopic", "arn");
-		s.createUniqueConstraint("AwsSnsSubscription", "arn");
-
-		s.createUniqueConstraint("AwsS3Bucket", "arn");
-		s.createUniqueConstraint("AwsS3Bucket", "name");
-
-		s.createUniqueConstraint("AwsEmrCluster", "arn");
-
-		s.createUniqueConstraint("AwsRouteTable", "arn");
-		s.createUniqueConstraint("AwsInternetGateway", "arn");
-		s.createUniqueConstraint("AwsEgressOnlyInternetGateway", "arn");
-		s.createUniqueConstraint(AwsEntityType.AwsIamInstanceProfile.name(), "arn");
-		s.createUniqueConstraint(AwsEntityType.AwsIamRole.name(), "arn");
-		s.createUniqueConstraint(AwsEntityType.AwsIamPolicy.name(), "arn");
-		s.createUniqueConstraint(AwsEntityType.AwsIamUser.name(), "arn");
-		s.createUniqueConstraint(AwsEntityType.AwsAccountRegion.name(),"arn");
-	}
+	
 
 	public CloudTrailEvents cloudTrailEvents() {
 		return new CloudTrailEvents(this);

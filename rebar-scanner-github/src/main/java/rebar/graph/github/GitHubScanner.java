@@ -179,9 +179,6 @@ public class GitHubScanner extends Scanner {
 		throw new UnsupportedOperationException();
 	}
 
-	@Override
-	public void applyConstraints() {
 
-	}
 
 }
