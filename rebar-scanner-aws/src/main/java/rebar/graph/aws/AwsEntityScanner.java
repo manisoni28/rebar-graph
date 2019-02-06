@@ -206,7 +206,7 @@ public abstract class AwsEntityScanner<OBJECTTYPE,CLIENT> extends EntityScanner<
 		return getAwsScanner().getAccount();
 	}
 
-	@Deprecated
+
 	public AwsScanner getAwsScanner() {
 		return getScanner();
 	}
@@ -335,8 +335,8 @@ public abstract class AwsEntityScanner<OBJECTTYPE,CLIENT> extends EntityScanner<
 			return;
 		}
 		logger.info("merging owner AwsAccount({}) -> {}", getAccount(), t.name());
-		getGraphDB().nodes(AwsEntityType.AwsAccount.name()).id("account", getAccount()).relationship("HAS")
-				.on("account", "account").to(t.name()).id("account", getAccount()).merge();
+		getGraphDB().nodes(AwsEntityType.AwsAccountRegion.name()).id("region",getRegionName()).id("account", getAccount()).relationship("HAS")
+				.on("account", "account").on("region", "region").to(t.name()).id("region", getRegionName()).id("account", getAccount()).merge();
 		;
 	}
 

@@ -62,12 +62,12 @@ public class SqsScanner extends AwsEntityScanner<Map<String, String>,AmazonSQSCl
 	}
 
 	private void mergeAccountOwnerRelationshipByUrl(String url) {
-		getGraphDB().nodes(AwsEntityType.AwsAccount.name()).id("account", getAccount()).relationship("HAS")
-				.on("account", "account").to(AwsEntityType.AwsSqsQueue.name()).id("url", url).id("account", getAccount()).merge();
+		getGraphDB().nodes(AwsEntityType.AwsAccountRegion.name()).id("account", getAccount()).relationship("HAS")
+				.on("account", "account").on("region", "region").to(AwsEntityType.AwsSqsQueue.name()).id("url", url).id("account", getAccount()).merge();
 	}
 	private void mergeAccountOwnerRelationship() {
-		getGraphDB().nodes(AwsEntityType.AwsAccount.name()).id("account", getAccount()).relationship("HAS")
-				.on("account", "account").to(AwsEntityType.AwsSqsQueue.name()).id("account", getAccount()).merge();
+		getGraphDB().nodes(AwsEntityType.AwsAccountRegion.name()).id("account", getAccount()).relationship("HAS")
+				.on("account", "account").on("region","region").to(AwsEntityType.AwsSqsQueue.name()).id("account", getAccount()).id("region", getRegionName()).merge();
 	}
 
 	public void scanQueueUrl(String url) {

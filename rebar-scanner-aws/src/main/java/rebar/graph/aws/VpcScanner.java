@@ -64,8 +64,9 @@ public class VpcScanner extends AwsEntityScanner<Vpc, AmazonEC2Client> {
 
 		getGraphDB().nodes(getEntityTypeName()).withTagPrefixes(TAG_PREFIXES).properties( n).idKey("arn").merge();
 
-		getGraphDB().nodes(AwsEntityType.AwsAccount.name()).id("account", getAccount()).relationship("HAS").on("account","account")
-				.to(AwsEntityType.AwsVpc.name()).id("arn", n.path("arn").asText()).merge();
+		getGraphDB().nodes(AwsEntityType.AwsAccountRegion.name()).id("account", getAccount()).id("region",getRegionName()).relationship("HAS").on("account","account")
+		.on("region", getRegionName())
+				.to(AwsEntityType.AwsVpc.name()).id("arn", n.path("arn").asText()).id("region",getRegionName()).merge();
 
 		getGraphDB().nodes(AwsEntityType.AwsVpc.name()).id("arn",n.path("arn").asText()).relationship("RESIDES_IN").on("region", "region").to(AwsEntityType.AwsRegion.name()).merge();
 	}

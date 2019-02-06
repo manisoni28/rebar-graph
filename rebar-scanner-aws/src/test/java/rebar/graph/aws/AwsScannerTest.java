@@ -119,9 +119,9 @@ public class AwsScannerTest extends AwsIntegrationTest {
 						Assertions.assertThat(it.has("region")).as("missing region attribute: %s", arn).isTrue();
 						Assertions.assertThat(it.has("account")).as("missing account attribute: %s", arn).isTrue();
 
-						if (!label.equals("AwsS3Bucket")) {
+						if (!ImmutableList.of("AwsS3Bucket","AwsAccountRegion").contains(label)) {
 							// S3 is semi-global
-							Assertions.assertThat(it.path("region").asText())
+							Assertions.assertThat(it.path("region").asText()).as("%s region attribute should be {}", it.path("arn").asText(),getAwsScanner().getRegionName())
 									.isEqualTo(getAwsScanner().getRegion().getName());
 						}
 
@@ -193,7 +193,7 @@ public class AwsScannerTest extends AwsIntegrationTest {
 		// relationships
 		List<String> validRelationships = Lists.newArrayList();
 		validRelationships.add("AwsVpc RESIDES_IN AwsRegion");
-		validRelationships.add("AwsAccount HAS AwsVpc");
+		validRelationships.add("AwsAccountRegion HAS AwsVpc");
 		validRelationships.add("AwsAccount HAS AwsHostedZone");
 		validRelationships.add("AwsRegion HAS AwsAvailabilityZone");
 		validRelationships.add("AwsSubnet RESIDES_IN AwsAvailabilityZone");
@@ -215,11 +215,11 @@ public class AwsScannerTest extends AwsIntegrationTest {
 		validRelationships.add("AwsEksCluster RESIDES_IN AwsSubnet");
 		validRelationships.add("AwsEksCluster USES AwsSecurityGroup");
 		validRelationships.add("AwsHostedZone HAS AwsHostedZoneRecordSet");
-		validRelationships.add("AwsAccount HAS AwsSnsTopic");
-		validRelationships.add("AwsAccount HAS AwsS3Bucket");
-		validRelationships.add("AwsAccount HAS AwsSqsQueue");
-		validRelationships.add("AwsAccount HAS AwsEmrCluster");
-		validRelationships.add("AwsAccount HAS AwsApiGatewayRestApi");
+		validRelationships.add("AwsAccountRegion HAS AwsSnsTopic");
+		validRelationships.add("AwsAccountRegion HAS AwsS3Bucket");
+		validRelationships.add("AwsAccountRegion HAS AwsSqsQueue");
+		validRelationships.add("AwsAccountRegion HAS AwsEmrCluster");
+		validRelationships.add("AwsAccountRegion HAS AwsApiGatewayRestApi");
 		validRelationships.add("AwsVpc HAS AwsVpcEndpoint");
 		validRelationships.add("AwsVpc HAS AwsRouteTable");
 
@@ -229,16 +229,18 @@ public class AwsScannerTest extends AwsIntegrationTest {
 
 		validRelationships.add("AwsVpcEndpoint RESIDES_IN AwsSubnet");
 		validRelationships.add("AwsVpcEndpoint USES AwsSecurityGroup");
-		validRelationships.add("AwsAccount HAS AwsIamInstanceProfile");
-		validRelationships.add("AwsAccount HAS AwsIamRole");
-		validRelationships.add("AwsAccount HAS AwsIamUser");
-		validRelationships.add("AwsAccount HAS AwsIamPolicy");
+		validRelationships.add("AwsAccountRegion HAS AwsIamInstanceProfile");
+		validRelationships.add("AwsAccountRegion HAS AwsIamRole");
+		validRelationships.add("AwsAccountRegion HAS AwsIamUser");
+		validRelationships.add("AwsAccountRegion HAS AwsIamPolicy");
 		validRelationships.add("AwsIamInstanceProfile USES AwsIamRole");
-		validRelationships.add("AwsAccount HAS AwsSecurityGroup");
-		validRelationships.add("AwsAccount HAS AwsLambdaFunction");
+		validRelationships.add("AwsAccountRegion HAS AwsSecurityGroup");
+		validRelationships.add("AwsAccountRegion HAS AwsLambdaFunction");
 		validRelationships.add("AwsVpc HAS AwsElbTargetGroup");
-		validRelationships.add("AwsAccount HAS AwsElbListener");
-		validRelationships.add("AwsAccount HAS AwsLaunchConfig");
+		validRelationships.add("AwsAccountRegion HAS AwsElbListener");
+		validRelationships.add("AwsAccountRegion HAS AwsLaunchConfig");
+		validRelationships.add("AwsAccount HAS AwsAccountRegion");
+		validRelationships.add("AwsAccountRegion RESIDES_IN AwsRegion");
 		getGraphDriver().cypher(
 				"match (a)-[r]->(b) where labels(a)[0]=~'Aws.*' return a.graphEntityType as fromLabel,r,b.graphEntityType as toLabel,type(r) as relType")
 			.stream().map(it->{

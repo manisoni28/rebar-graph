@@ -4,6 +4,7 @@ public enum AwsEntityType {
 
 	
 	AwsAccount("AwsAccount"),
+	AwsAccountRegion("AwsAccount"),
 	AwsAmi("AwsAmi"),
 	AwsApiGatewayRestApi("AwsApiGatewayRestApi"),
 	AwsAsg("AwsAsg"),

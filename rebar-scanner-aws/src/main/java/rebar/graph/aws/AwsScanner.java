@@ -298,6 +298,7 @@ public final class AwsScanner extends Scanner {
 		s.createUniqueConstraint(AwsEntityType.AwsIamRole.name(), "arn");
 		s.createUniqueConstraint(AwsEntityType.AwsIamPolicy.name(), "arn");
 		s.createUniqueConstraint(AwsEntityType.AwsIamUser.name(), "arn");
+		s.createUniqueConstraint(AwsEntityType.AwsAccountRegion.name(),"arn");
 	}
 
 	public CloudTrailEvents cloudTrailEvents() {
