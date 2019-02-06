@@ -2,9 +2,13 @@
 .project
 .gradle/
 .settings/
+.idea/
+*.ipr
+*.iws
 *.class
 build/
 bin/
+out/
 .serverless/
 serverless.yml
 *.swp

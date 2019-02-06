@@ -2,6 +2,7 @@
 
 
 apply plugin: 'eclipse'
+apply plugin: 'idea'
 apply plugin: 'java'
 
 repositories {
@@ -28,6 +29,7 @@ subprojects {
 
     apply plugin: 'java'
     apply plugin: 'maven'
+    apply plugin: 'eclipse'
     apply plugin: 'eclipse'
     apply plugin: 'jacoco'
     apply plugin: 'checkstyle'
