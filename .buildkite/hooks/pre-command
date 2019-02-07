@@ -6,3 +6,16 @@ set -euxo pipefail
 
 apt update 
 apt install -y openjdk-8-jdk-headless
+
+
+docker kill neo4j || true
+
+docker run \
+    -d --rm \
+    --publish=7474:7474 --publish=7687:7687 \
+    --env=NEO4J_ACCEPT_LICENSE_AGREEMENT=yes \
+    --env=NEO4J_AUTH=none \
+    --name=neo4j \
+    neo4j:3.5
+
+    
