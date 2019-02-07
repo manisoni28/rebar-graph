@@ -26,6 +26,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Supplier;
 
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
@@ -39,6 +40,8 @@ public class RebarGraph {
 
 	static org.slf4j.Logger logger = LoggerFactory.getLogger(RebarGraph.class);
 
+	static ApplicationContext applicationContext;
+	
 	Map<String, Supplier<? extends Scanner>> supplierMap = Maps.newConcurrentMap();
 
 	GraphBuilder graphWriter;
@@ -204,5 +207,9 @@ public class RebarGraph {
 	
 	public boolean isRunning() {
 		return running.get();
+	}
+	
+	public static ApplicationContext getApplicationContext() {
+		return applicationContext;
 	}
 }

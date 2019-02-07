@@ -1,10 +1,15 @@
 package rebar.graph.core;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
+import com.google.common.base.Preconditions;
+
 import rebar.graph.config.CoreSpringConfig;
+import rebar.graph.core.alert.SlackAlertManager;
 import rebar.graph.core.resource.CompositeResourceLoader;
 import rebar.graph.core.resource.FilesystemResourceLoader;
 import rebar.graph.core.resource.GitResourceLoader;
@@ -15,6 +20,9 @@ import rebar.util.EnvConfig;
 @ComponentScan(basePackageClasses= {CoreSpringConfig.class})
 public class BaseConfig {
 
+	@Autowired
+	ApplicationContext applicationContext;
+	
 	@Bean
 	EnvConfig envConfig() {
 		return new EnvConfig();
@@ -34,7 +42,10 @@ public class BaseConfig {
 	}
 	@Bean
 	RebarGraph rebarGraph() {
-		return new RebarGraph.Builder().withEnv(envConfig()).withGraphBuilder(graphDB()).build();
+		RebarGraph.applicationContext = this.applicationContext;
+		Preconditions.checkNotNull(applicationContext);
+		RebarGraph g = new RebarGraph.Builder().withEnv(envConfig()).withGraphBuilder(graphDB()).build();
+		return g;
 	}
 	
 	@Bean
@@ -53,5 +64,10 @@ public class BaseConfig {
 	@Bean
 	CompositeResourceLoader compositeResourceLoader() {
 		return new CompositeResourceLoader();
+	}
+	
+	@Bean
+	SlackAlertManager slackAlertManager() {
+		return new SlackAlertManager();
 	}
 }

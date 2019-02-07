@@ -29,6 +29,7 @@ import com.aliyuncs.profile.DefaultProfile;
 import com.aliyuncs.sts.model.v20150401.GetCallerIdentityRequest;
 import com.aliyuncs.sts.model.v20150401.GetCallerIdentityResponse;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.google.common.base.Preconditions;
 
 import rebar.graph.core.RebarGraph;
 import rebar.graph.core.Scanner;
@@ -36,12 +37,19 @@ import rebar.util.EnvConfig;
 import rebar.util.Json;
 import rebar.util.RebarException;
 
-public class AlibabaScanner extends Scanner {
+public class AliyunScanner extends Scanner {
 
 	String profileName=null;
 	DefaultProfile profile;
 
+	
+	public IAcsClient getClient() {
+		Preconditions.checkNotNull(profile);
+		IAcsClient client = new DefaultAcsClient(profile);
+		return client;
+	}
 	public void init(RebarGraph g, Map<String,String> m) {
+	
 		EnvConfig cfg = getEnvConfig();
 
 		if (cfg.get(AliyunConfig.ALIYUN_ACCESS_KEY_ID).isPresent()
@@ -58,14 +66,17 @@ public class AlibabaScanner extends Scanner {
 			return;
 		}
 
-		DefaultProfile profile = null;
+	
+	
 		if (profileName == null) {
-			profile = AliyunConfig.load().getProfile();
+			this.profile = AliyunConfig.load().getProfile();
 		} else {
-			profile = AliyunConfig.load().getProfile(profileName);
+			this.profile = AliyunConfig.load().getProfile(profileName);
 			;
 		}
-
+		if (profile == null) {
+			throw new RebarException("profile not set");
+		}
 		
 	}
 
@@ -73,7 +84,7 @@ public class AlibabaScanner extends Scanner {
 	public void doScan() {
 		try {
 			IAcsClient client = new DefaultAcsClient(profile);
-
+			
 			DescribeInstancesRequest request = new DescribeInstancesRequest();
 			request.setPageSize(10);
 			request.setConnectTimeout(5000); // Set the connection timeout to 5000 milliseconds
@@ -86,6 +97,7 @@ public class AlibabaScanner extends Scanner {
 			GetCallerIdentityRequest cirq = new GetCallerIdentityRequest();
 			GetCallerIdentityResponse cirr = client.getAcsResponse(cirq);
 
+		
 			Json.logger().info(Json.objectMapper().valueToTree(cirr));
 
 			vpcrs.getVpcs().forEach(it -> {
