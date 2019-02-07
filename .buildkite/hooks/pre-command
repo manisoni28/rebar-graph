@@ -1,0 +1,8 @@
+#!/bin/bash
+
+set -euxo pipefail
+
+# https://buildkite.com/docs/agent/v3/hooks#available-hooks
+
+apt update 
+apt install -y openjdk-8-jdk-headless
